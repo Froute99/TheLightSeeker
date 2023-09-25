@@ -20,6 +20,10 @@ protected:
 	virtual void BeginPlay() override;
 
 
+	UPROPERTY(EditDefaultsOnly, Category = "View")
+		class USpringArmComponent* SpringArm;
+	UPROPERTY(EditDefaultsOnly, Category = "View")
+		class UCameraComponent* Camera;
 
 /************************
  * Game Abilities System
@@ -28,7 +32,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "LightSeeker|Abilities")
 		TWeakObjectPtr<class UCharacterAbilitySystemComponent> ASC;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "LightSeeker|Abilities")
-		TWeakObjectPtr<class UCharacterAttributeSetBase> AttributeSet;
+		TWeakObjectPtr<class UCharacterAttributeSet> AttributeSet;
 
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "LightSeeker|Abilities")

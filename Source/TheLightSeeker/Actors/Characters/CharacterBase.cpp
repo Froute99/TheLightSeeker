@@ -3,6 +3,18 @@
 
 #include "Actors/Characters/CharacterBase.h"
 
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubSystems.h"
+
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
+
+#include "Components/CapsuleComponent.h"
+
+#include "GameAbilitySystem/CharacterAttributeSet.h"
+#include "GameAbilitySystem/CharacterAbilitySystemComponent.h"
+
+
 // Sets default values
 ACharacterBase::ACharacterBase()
 {

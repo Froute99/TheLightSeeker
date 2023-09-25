@@ -9,8 +9,8 @@ public class TheLightSeeker : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
 		PublicDependencyModuleNames.AddRange(new string[] {
-			"Core", "CoreUObject", "Engine", "InputCore",
-			"GameplayAbilities", "GameplayTags", "GameplayTasks"
+			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput",
+			"GameplayAbilities", "GameplayTags", "GameplayTasks",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {
@@ -23,6 +23,12 @@ public class TheLightSeeker : ModuleRules
 		// Uncomment if you are using online features
 		// PrivateDependencyModuleNames.Add("OnlineSubsystem");
 
+		PublicIncludePaths.AddRange(new string[] {
+			"TheLightSeeker/",
+			"TheLightSeeker/Actors",
+			"TheLightSeeker/GameAbilitySystem",
+		});
+
 		// To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
 
 
@@ -34,3 +40,4 @@ public class TheLightSeeker : ModuleRules
 
 	}
 }
+
