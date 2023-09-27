@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Actors/Characters/CharacterBase.h"
+#include "CharacterBase.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubSystems.h"
@@ -23,7 +23,10 @@ ACharacterBase::ACharacterBase()
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SPRINGARM"));
 	SpringArm->SetupAttachment(GetCapsuleComponent());
 	SpringArm->TargetArmLength = 400.0f;
-	SpringArm->SetRelativeRotation(FRotator(-15.0f, 0.0f, 0.0f));
+	SpringArm->bUsePawnControlRotation = true;
+	SpringArm->SetRelativeLocation(FVector(0.0f, 0.0f, 100.0f));
+
+	//SpringArm->SetRelativeRotation(FRotator(-15.0f, 0.0f, 0.0f));
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("CAMERA"));
 	Camera->SetupAttachment(SpringArm);
@@ -35,7 +38,6 @@ ACharacterBase::ACharacterBase()
 void ACharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
