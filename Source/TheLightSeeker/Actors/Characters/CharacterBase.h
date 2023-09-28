@@ -5,12 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 
+#include "AbilitySystemInterface.h"
 #include "InputAction.h"
 
 #include "CharacterBase.generated.h"
 
 UCLASS()
-class THELIGHTSEEKER_API ACharacterBase : public ACharacter
+class THELIGHTSEEKER_API ACharacterBase : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -23,53 +24,46 @@ protected:
 	virtual void BeginPlay() override;
 
 
-	UPROPERTY(VisibleAnywhere, Category = "View")
+	UPROPERTY(EditDefaultsOnly, Category = "View")
 		class USpringArmComponent* SpringArm;
-	UPROPERTY(VisibleAnywhere, Category = "View")
+	UPROPERTY(EditDefaultsOnly, Category = "View")
 		class UCameraComponent* Camera;
 
-/***********************************
+/************************
  * Game Abilities System
- ***********************************/
+ ************************/
 
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "LightSeeker|Abilities")
-	//	TWeakObjectPtr<class UCharacterAbilitySystemComponent> ASC;
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "LightSeeker|Abilities")
-	//	TWeakObjectPtr<class UCharacterAttributeSetBase> AttributeSet;
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
-
-	//UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "LightSeeker|Abilities")
-	//	TArray<TSubclassOf<class UGameplayAbility>> CharacterAbilities;
-	//UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "LightSeeker|Abilities")
-	//	TSubclassOf<class UGameplayEffect> DefaultAttributes;
-	//UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "LightSeeker|Abilities")
-	//	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character|Abilities")
+		TWeakObjectPtr<class UCharacterAbilitySystemComponent> ASC;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character|Abilities")
+		TWeakObjectPtr<class UCharacterAttributeSet> AttributeSet;
 
 
-	//UFUNCTION(BlueprintCallable, Category = "Character|Attributes")
-	//	float GetCharacterLevel() const;
-	//UFUNCTION(BlueprintCallable, Category = "Character|Attributes")
-	//	float GetHealth() const;
-	//UFUNCTION(BlueprintCallable, Category = "Character|Attributes")
-	//	float GetMaxHealth() const;
-	//UFUNCTION(BlueprintCallable, Category = "Character|Attributes")
-	//	float GetStamina() const;
-	//UFUNCTION(BlueprintCallable, Category = "Character|Attributes")
-	//	float GetMaxStamina() const;
-
-	//virtual void OnRep_PlayerState() override;
-	//void InitializeStartingValues(class APlayerState* PS);
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Character|Abilities")
+		TArray<TSubclassOf<class UGameplayAbility>> CharacterAbilities;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Character|Abilities")
+		TSubclassOf<class UGameplayEffect> DefaultAttributes;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Character|Abilities")
+		TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
 
 
-	//virtual void AddCharacterAbilities();
-	//virtual void InitializeAttributes();
-	//virtual void AddStartupEffects();
+	UFUNCTION(BlueprintCallable, Category = "Character|Attributes")
+		int32 GetCharacterLevel() const;
+	UFUNCTION(BlueprintCallable, Category = "Character|Attributes")
+		float GetHealth() const;
+	UFUNCTION(BlueprintCallable, Category = "Character|Attributes")
+		float GetMaxHealth() const;
 
 
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	virtual void OnRep_PlayerState() override;
+	void InitializeStartingValues(class ALightSeekerPlayerState* PS);
 
+
+	virtual void AddCharacterAbilities();
+	virtual void InitializeAttributes();
+	virtual void AddStartupEffects();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 		class UInputMappingContext* MappingContext;
@@ -80,6 +74,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 		class UInputAction* JumpAction;
 
+public:	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
