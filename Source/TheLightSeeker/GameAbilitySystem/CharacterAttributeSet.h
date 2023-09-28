@@ -42,6 +42,28 @@ public:
 	ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, MaxHealth);
 
 
+	UPROPERTY(BlueprintReadOnly, Category = "DamageRate", ReplicatedUsing = OnRep_DamageRate)
+		FGameplayAttributeData DamageRate;
+	ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, DamageRate);
+
+	UPROPERTY(BlueprintReadOnly, Category = "MovementSpeed", ReplicatedUsing = OnRep_MovementSpeed)
+		FGameplayAttributeData MovementSpeed;
+	ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, MovementSpeed);
+
+	UPROPERTY(BlueprintReadOnly, Category = "AttackSpeed", ReplicatedUsing = OnRep_AttackSpeed)
+		FGameplayAttributeData AttackSpeed;
+	ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, AttackSpeed);
+
+	UPROPERTY(BlueprintReadOnly, Category = "AdditionalProjectiles", ReplicatedUsing = OnRep_AdditionalProjectiles)
+		FGameplayAttributeData AdditionalProjectiles;
+	ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, AdditionalProjectiles);
+
+	// Need Enum
+	//UPROPERTY(BlueprintReadOnly, Category = "ElementalEnforced", ReplicatedUsing = OnRep_ElementalEnforced)
+	//	FGameplayAttributeData ElementalEnforced;
+	//ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, ElementalEnforced);
+
+
 
 	UFUNCTION()
 		virtual void OnRep_Level(const FGameplayAttributeData& OldLevel);
@@ -49,6 +71,15 @@ public:
 		virtual void OnRep_Health(const FGameplayAttributeData& OldHealth);
 	UFUNCTION()
 		virtual void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth);
+
+	UFUNCTION()
+		virtual void OnRep_DamageRate(const FGameplayAttributeData& OldValue);
+	UFUNCTION()
+		virtual void OnRep_MovementSpeed(const FGameplayAttributeData& OldValue);
+	UFUNCTION()
+		virtual void OnRep_AttackSpeed(const FGameplayAttributeData& OldValue);
+	UFUNCTION()
+		virtual void OnRep_AdditionalProjectiles(const FGameplayAttributeData& OldValue);
 
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+
+#include "AbilitySystemInterface.h"
+
 #include "CharacterBase.generated.h"
 
 UCLASS()
-class THELIGHTSEEKER_API ACharacterBase : public ACharacter
+class THELIGHTSEEKER_API ACharacterBase : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -29,33 +32,32 @@ protected:
  * Game Abilities System
  ************************/
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "LightSeeker|Abilities")
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character|Abilities")
 		TWeakObjectPtr<class UCharacterAbilitySystemComponent> ASC;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "LightSeeker|Abilities")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character|Abilities")
 		TWeakObjectPtr<class UCharacterAttributeSet> AttributeSet;
 
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "LightSeeker|Abilities")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Character|Abilities")
 		TArray<TSubclassOf<class UGameplayAbility>> CharacterAbilities;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "LightSeeker|Abilities")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Character|Abilities")
 		TSubclassOf<class UGameplayEffect> DefaultAttributes;
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "LightSeeker|Abilities")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Character|Abilities")
 		TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
 
 
 	UFUNCTION(BlueprintCallable, Category = "Character|Attributes")
-		float GetCharacterLevel() const;
+		int32 GetCharacterLevel() const;
 	UFUNCTION(BlueprintCallable, Category = "Character|Attributes")
 		float GetHealth() const;
 	UFUNCTION(BlueprintCallable, Category = "Character|Attributes")
 		float GetMaxHealth() const;
-	UFUNCTION(BlueprintCallable, Category = "Character|Attributes")
-		float GetStamina() const;
-	UFUNCTION(BlueprintCallable, Category = "Character|Attributes")
-		float GetMaxStamina() const;
+
 
 	virtual void OnRep_PlayerState() override;
-	void InitializeStartingValues(class APlayerState* PS);
+	void InitializeStartingValues(class ALightSeekerPlayerState* PS);
 
 
 	virtual void AddCharacterAbilities();
