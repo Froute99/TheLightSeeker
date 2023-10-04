@@ -86,11 +86,14 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	check(EIC && PC);
 
+
 	EIC->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACharacterBase::EnhancedMove);
 	EIC->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACharacterBase::EnhancedLook);
 	EIC->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacterBase::Jump);
-
 	EIC->BindAction(ZoomAction, ETriggerEvent::Triggered, this, &ACharacterBase::CameraZoom);
+	EIC->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ACharacterBase::Attack);
+	EIC->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &ACharacterBase::Dodge);
+
 
 	ULocalPlayer* LocalPlayer = PC->GetLocalPlayer();
 
@@ -245,6 +248,23 @@ void ACharacterBase::InitializeAttributes()
 
 void ACharacterBase::AddStartupEffects()
 {
+
+}
+
+void ACharacterBase::Attack(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Log, TEXT("Attack"));
+
+	GetMesh()->PlayAnimation(AttackMontage, false);
+	//PlayAnimMontage(AttackMontage);
+}
+
+void ACharacterBase::Dodge(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Log, TEXT("Dodge"));
+
+	GetMesh()->PlayAnimation(DodgeMontage, false);
+	//PlayAnimMontage(DodgeMontage);
 }
 
 //void ACharacterBase::BindASCInput()
