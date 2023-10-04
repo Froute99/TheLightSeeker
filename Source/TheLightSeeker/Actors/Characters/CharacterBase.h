@@ -24,10 +24,26 @@ protected:
 	virtual void BeginPlay() override;
 
 
-	UPROPERTY(EditDefaultsOnly, Category = "View")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Mesh")
+		TObjectPtr<USkeletalMeshComponent> SkeletalMesh;
+
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "View")
 		class USpringArmComponent* SpringArm;
-	UPROPERTY(EditDefaultsOnly, Category = "View")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "View")
 		class UCameraComponent* Camera;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "View")
+		float MinZoomLength = 100.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "View")
+		float MaxZoomLength = 1000.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "View")
+		float DefaultArmLength = 400.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "View")
+		float ZoomStep = 40.f;
+
 
 /************************
  * Game Abilities System
@@ -35,25 +51,25 @@ protected:
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character|Abilities")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Abilities")
 		TWeakObjectPtr<class UCharacterAbilitySystemComponent> ASC;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character|Abilities")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Abilities")
 		TWeakObjectPtr<class UCharacterAttributeSet> AttributeSet;
 
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Character|Abilities")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Abilities")
 		TArray<TSubclassOf<class UGameplayAbility>> CharacterAbilities;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Character|Abilities")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Abilities")
 		TSubclassOf<class UGameplayEffect> DefaultAttributes;
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Character|Abilities")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Abilities")
 		TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
 
 
-	UFUNCTION(BlueprintCallable, Category = "Character|Attributes")
+	UFUNCTION(BlueprintCallable, Category = "Abilities")
 		int32 GetCharacterLevel() const;
-	UFUNCTION(BlueprintCallable, Category = "Character|Attributes")
+	UFUNCTION(BlueprintCallable, Category = "Abilities")
 		float GetHealth() const;
-	UFUNCTION(BlueprintCallable, Category = "Character|Attributes")
+	UFUNCTION(BlueprintCallable, Category = "Abilities")
 		float GetMaxHealth() const;
 
 
@@ -65,14 +81,27 @@ protected:
 	virtual void InitializeAttributes();
 	virtual void AddStartupEffects();
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 		class UInputMappingContext* MappingContext;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 		class UInputAction* MoveAction;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 		class UInputAction* LookAction;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 		class UInputAction* JumpAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+		class UInputAction* ZoomAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+		class UInputAction* Skill1Action;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+		class UInputAction* Skill2Action;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+		class UInputAction* Skill3Action;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+		class UInputAction* Skill4Action;
+
+
 
 public:	
 	// Called every frame
@@ -82,5 +111,6 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	void EnhancedMove(const FInputActionValue& Value);
 	void EnhancedLook(const FInputActionValue& Value);
+	void CameraZoom(const FInputActionValue& Value);
 
 };

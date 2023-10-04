@@ -22,9 +22,11 @@ ACharacterBase::ACharacterBase()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+
+
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SPRINGARM"));
 	SpringArm->SetupAttachment(GetCapsuleComponent());
-	SpringArm->TargetArmLength = 400.0f;
+	SpringArm->TargetArmLength = DefaultArmLength;
 	SpringArm->bUsePawnControlRotation = true;
 	SpringArm->SetRelativeLocation(FVector(0.0f, 0.0f, 100.0f));
 
@@ -68,6 +70,8 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	EIC->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACharacterBase::EnhancedLook);
 	EIC->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacterBase::Jump);
 
+	EIC->BindAction(ZoomAction, ETriggerEvent::Triggered, this, &ACharacterBase::CameraZoom);
+
 	ULocalPlayer* LocalPlayer = PC->GetLocalPlayer();
 
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
@@ -97,6 +101,15 @@ void ACharacterBase::EnhancedLook(const FInputActionValue& Value)
 	AddControllerYawInput(-LookAxisVector.X);
 	AddControllerPitchInput(LookAxisVector.Y);
 
+}
+
+void ACharacterBase::CameraZoom(const FInputActionValue& Value)
+{
+	if (Value.GetMagnitude() == 0.f || !Controller) return;
+
+
+	const float NewTargetArmLength = SpringArm->TargetArmLength + Value.GetMagnitude() * ZoomStep;
+	SpringArm->TargetArmLength = FMath::Clamp(NewTargetArmLength, MinZoomLength, MaxZoomLength);
 }
 
 int32 ACharacterBase::GetCharacterLevel() const
