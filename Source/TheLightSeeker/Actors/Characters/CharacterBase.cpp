@@ -41,6 +41,22 @@ ACharacterBase::ACharacterBase()
 
 }
 
+void ACharacterBase::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+
+	ALightSeekerPlayerState* PS = GetPlayerState<ALightSeekerPlayerState>();
+	if (PS)
+	{
+		InitializeStartingValues(PS);
+		//InitializeAttributes();
+		AddStartupEffects();
+		AddCharacterAbilities();
+	}
+
+}
+
 
 // Called when the game starts or when spawned
 void ACharacterBase::BeginPlay()
@@ -116,6 +132,30 @@ void ACharacterBase::CameraZoom(const FInputActionValue& Value)
 	SpringArm->TargetArmLength = FMath::Clamp(NewTargetArmLength, MinZoomLength, MaxZoomLength);
 }
 
+void ACharacterBase::SetCharacterLevel(float Value)
+{
+	if (AttributeSet.IsValid())
+	{
+		AttributeSet->SetLevel(Value);
+	}
+}
+
+void ACharacterBase::SetHealth(float Value)
+{
+	if (AttributeSet.IsValid())
+	{
+		AttributeSet->SetHealth(Value);
+	}
+}
+
+void ACharacterBase::SetMaxHealth(float Value)
+{
+	if (AttributeSet.IsValid())
+	{
+		AttributeSet->SetMaxHealth(Value);
+	}
+}
+
 int32 ACharacterBase::GetCharacterLevel() const
 {
 	if (AttributeSet.IsValid())
@@ -154,13 +194,14 @@ void ACharacterBase::OnRep_PlayerState()
 	{
 		InitializeStartingValues(PS);
 		//BindASCInput();
-		InitializeAttributes();
+		
 	}
 
 }
 
 void ACharacterBase::InitializeStartingValues(ALightSeekerPlayerState* PS)
 {
+	UE_LOG(LogTemp, Log, TEXT("InitializeStartingValues"));
 	ASC = Cast<UCharacterAbilitySystemComponent>(PS->GetAbilitySystemComponent());
 	PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
 
@@ -168,12 +209,11 @@ void ACharacterBase::InitializeStartingValues(ALightSeekerPlayerState* PS)
 
 	//AbilitySystemComponent->SetTagMapCount(DeadTag, 0);
 
+	SetHealth(GetMaxHealth());
+	SetCharacterLevel(GetCharacterLevel());
+
+
 	InitializeAttributes();
-
-
-	AttributeSet->SetHealth(GetMaxHealth());
-	AttributeSet->SetLevel(GetCharacterLevel());
-
 }
 
 void ACharacterBase::AddCharacterAbilities()
@@ -182,6 +222,25 @@ void ACharacterBase::AddCharacterAbilities()
 
 void ACharacterBase::InitializeAttributes()
 {
+	if (!ASC.IsValid()) return;
+	
+
+	if (!DefaultAttributes)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s() Missing DefaultAttributes for %s. Please fill in the character's Blueprint."), *FString(__FUNCTION__), *GetName());
+		return;
+	}
+
+	FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
+	EffectContext.AddSourceObject(this);
+
+	FGameplayEffectSpecHandle NewHandle = ASC->MakeOutgoingSpec(DefaultAttributes, GetCharacterLevel(), EffectContext);
+
+	if (NewHandle.IsValid())
+	{
+		FActiveGameplayEffectHandle ActiveGEHandle = ASC->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), ASC.Get());
+	}
+
 }
 
 void ACharacterBase::AddStartupEffects()
@@ -196,23 +255,6 @@ void ACharacterBase::AddStartupEffects()
 //	}
 //
 //	ASCInputBound = true;
-//
-//}
-//
-//void ACharacterBase::InitializeStartingValues(AKidKingPlayerState* PS)
-//{
-//	AbilitySystemComponent = Cast<UCharacterAbilitySystemComponent>(PS->GetAbilitySystemComponent());
-//	PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
-//
-//	AttributeSetBase = PS->GetAttributeSetBase();
-//
-//	AbilitySystemComponent->SetTagMapCount(DeadTag, 0);
-//
-//	InitializeAttributes();
-//
-//
-//	AttributeSetBase->SetHealth(GetMaxHealth());
-//	AttributeSetBase->SetStamina(GetMaxStamina());
 //
 //}
 

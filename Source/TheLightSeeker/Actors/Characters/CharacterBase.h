@@ -19,6 +19,18 @@ public:
 	// Sets default values for this character's properties
 	ACharacterBase();
 
+	virtual void PossessedBy(AController* NewController) override;
+
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	void EnhancedMove(const FInputActionValue& Value);
+	void EnhancedLook(const FInputActionValue& Value);
+	void CameraZoom(const FInputActionValue& Value);
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -65,6 +77,10 @@ protected:
 		TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
 
 
+	void SetCharacterLevel(float Value);
+	void SetHealth(float Value);
+	void SetMaxHealth(float Value);
+
 	UFUNCTION(BlueprintCallable, Category = "Abilities")
 		int32 GetCharacterLevel() const;
 	UFUNCTION(BlueprintCallable, Category = "Abilities")
@@ -102,15 +118,5 @@ protected:
 		class UInputAction* Skill4Action;
 
 
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	void EnhancedMove(const FInputActionValue& Value);
-	void EnhancedLook(const FInputActionValue& Value);
-	void CameraZoom(const FInputActionValue& Value);
 
 };
