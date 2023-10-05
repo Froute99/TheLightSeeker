@@ -15,6 +15,8 @@
 #include "GameAbilitySystem/CharacterAttributeSet.h"
 #include "GameAbilitySystem/CharacterAbilitySystemComponent.h"
 
+#include "ProjectileBase.h"
+
 
 // Sets default values
 ACharacterBase::ACharacterBase()
@@ -23,17 +25,37 @@ ACharacterBase::ACharacterBase()
 	PrimaryActorTick.bCanEverTick = true;
 
 
-
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SPRINGARM"));
 	SpringArm->SetupAttachment(GetCapsuleComponent());
 	SpringArm->TargetArmLength = DefaultArmLength;
 	SpringArm->bUsePawnControlRotation = true;
 	SpringArm->SetRelativeLocation(FVector(0.0f, 0.0f, 100.0f));
-
 	//SpringArm->SetRelativeRotation(FRotator(-15.0f, 0.0f, 0.0f));
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("CAMERA"));
 	Camera->SetupAttachment(SpringArm);
+
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+
+	GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetMesh()->SetCollisionProfileName(FName("NoCollision"));
+
+}
+
+void ACharacterBase::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+
+	ALightSeekerPlayerState* PS = GetPlayerState<ALightSeekerPlayerState>();
+	if (PS)
+	{
+		InitializeStartingValues(PS);
+		//InitializeAttributes();
+		AddStartupEffects();
+		AddCharacterAbilities();
+	}
 
 }
 
@@ -66,11 +88,14 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	check(EIC && PC);
 
+
 	EIC->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACharacterBase::EnhancedMove);
 	EIC->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACharacterBase::EnhancedLook);
 	EIC->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacterBase::Jump);
-
 	EIC->BindAction(ZoomAction, ETriggerEvent::Triggered, this, &ACharacterBase::CameraZoom);
+	EIC->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ACharacterBase::Attack);
+	EIC->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &ACharacterBase::Dodge);
+
 
 	ULocalPlayer* LocalPlayer = PC->GetLocalPlayer();
 
@@ -112,6 +137,30 @@ void ACharacterBase::CameraZoom(const FInputActionValue& Value)
 	SpringArm->TargetArmLength = FMath::Clamp(NewTargetArmLength, MinZoomLength, MaxZoomLength);
 }
 
+void ACharacterBase::SetCharacterLevel(float Value)
+{
+	if (AttributeSet.IsValid())
+	{
+		AttributeSet->SetLevel(Value);
+	}
+}
+
+void ACharacterBase::SetHealth(float Value)
+{
+	if (AttributeSet.IsValid())
+	{
+		AttributeSet->SetHealth(Value);
+	}
+}
+
+void ACharacterBase::SetMaxHealth(float Value)
+{
+	if (AttributeSet.IsValid())
+	{
+		AttributeSet->SetMaxHealth(Value);
+	}
+}
+
 int32 ACharacterBase::GetCharacterLevel() const
 {
 	if (AttributeSet.IsValid())
@@ -150,13 +199,14 @@ void ACharacterBase::OnRep_PlayerState()
 	{
 		InitializeStartingValues(PS);
 		//BindASCInput();
-		InitializeAttributes();
+		
 	}
 
 }
 
 void ACharacterBase::InitializeStartingValues(ALightSeekerPlayerState* PS)
 {
+	UE_LOG(LogTemp, Log, TEXT("InitializeStartingValues"));
 	ASC = Cast<UCharacterAbilitySystemComponent>(PS->GetAbilitySystemComponent());
 	PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
 
@@ -164,12 +214,11 @@ void ACharacterBase::InitializeStartingValues(ALightSeekerPlayerState* PS)
 
 	//AbilitySystemComponent->SetTagMapCount(DeadTag, 0);
 
+	SetHealth(GetMaxHealth());
+	SetCharacterLevel(GetCharacterLevel());
+
+
 	InitializeAttributes();
-
-
-	AttributeSet->SetHealth(GetMaxHealth());
-	AttributeSet->SetLevel(GetCharacterLevel());
-
 }
 
 void ACharacterBase::AddCharacterAbilities()
@@ -178,11 +227,53 @@ void ACharacterBase::AddCharacterAbilities()
 
 void ACharacterBase::InitializeAttributes()
 {
+	if (!ASC.IsValid()) return;
+	
+
+	if (!DefaultAttributes)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s() Missing DefaultAttributes for %s. Please fill in the character's Blueprint."), *FString(__FUNCTION__), *GetName());
+		return;
+	}
+
+	FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
+	EffectContext.AddSourceObject(this);
+
+	FGameplayEffectSpecHandle NewHandle = ASC->MakeOutgoingSpec(DefaultAttributes, GetCharacterLevel(), EffectContext);
+
+	if (NewHandle.IsValid())
+	{
+		FActiveGameplayEffectHandle ActiveGEHandle = ASC->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), ASC.Get());
+	}
+
 }
 
 void ACharacterBase::AddStartupEffects()
 {
+
 }
+
+void ACharacterBase::Attack(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Log, TEXT("Attack"));
+
+	GetMesh()->PlayAnimation(AttackMontage, false);
+
+
+
+
+
+	//PlayAnimMontage(AttackMontage);
+}
+
+void ACharacterBase::Dodge(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Log, TEXT("Dodge"));
+
+	GetMesh()->PlayAnimation(DodgeMontage, false);
+	//PlayAnimMontage(DodgeMontage);
+}
+
 
 //void ACharacterBase::BindASCInput()
 //{
@@ -192,23 +283,6 @@ void ACharacterBase::AddStartupEffects()
 //	}
 //
 //	ASCInputBound = true;
-//
-//}
-//
-//void ACharacterBase::InitializeStartingValues(AKidKingPlayerState* PS)
-//{
-//	AbilitySystemComponent = Cast<UCharacterAbilitySystemComponent>(PS->GetAbilitySystemComponent());
-//	PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
-//
-//	AttributeSetBase = PS->GetAttributeSetBase();
-//
-//	AbilitySystemComponent->SetTagMapCount(DeadTag, 0);
-//
-//	InitializeAttributes();
-//
-//
-//	AttributeSetBase->SetHealth(GetMaxHealth());
-//	AttributeSetBase->SetStamina(GetMaxStamina());
 //
 //}
 
