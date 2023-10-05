@@ -15,6 +15,8 @@
 #include "GameAbilitySystem/CharacterAttributeSet.h"
 #include "GameAbilitySystem/CharacterAbilitySystemComponent.h"
 
+#include "ProjectileBase.h"
+
 
 // Sets default values
 ACharacterBase::ACharacterBase()
@@ -256,6 +258,11 @@ void ACharacterBase::Attack(const FInputActionValue& Value)
 	UE_LOG(LogTemp, Log, TEXT("Attack"));
 
 	GetMesh()->PlayAnimation(AttackMontage, false);
+
+
+
+
+
 	//PlayAnimMontage(AttackMontage);
 }
 
@@ -266,6 +273,7 @@ void ACharacterBase::Dodge(const FInputActionValue& Value)
 	GetMesh()->PlayAnimation(DodgeMontage, false);
 	//PlayAnimMontage(DodgeMontage);
 }
+
 
 //void ACharacterBase::BindASCInput()
 //{
