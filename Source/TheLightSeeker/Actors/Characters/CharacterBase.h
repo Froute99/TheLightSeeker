@@ -57,6 +57,10 @@ protected:
 		float ZoomStep = 40.f;
 
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Default")
+		TSubclassOf<AActor> ArrowActor;
+
+
 /************************
  * Game Abilities System
  ************************/

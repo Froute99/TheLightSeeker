@@ -64,6 +64,15 @@ void ACharacterBase::PossessedBy(AController* NewController)
 void ACharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+
+	if (!ArrowActor)
+	{
+		FString Msg = FString::Printf(TEXT("Missing Arrow Blueprint %s. Please fill in the character's Blueprint."), *GetName());
+		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, *Msg);
+		return;
+	}
+
 }
 
 UAbilitySystemComponent* ACharacterBase::GetAbilitySystemComponent() const
@@ -255,15 +264,34 @@ void ACharacterBase::AddStartupEffects()
 
 void ACharacterBase::Attack(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Log, TEXT("Attack"));
 
 	GetMesh()->PlayAnimation(AttackMontage, false);
 
+	FVector Location = GetActorLocation();
+	FVector LocationOffset{ 0,0,80.f };
+
+	FRotator Rotation = GetActorRotation();
+	FRotator RotationOffset{ 0,90.f,0 };
 
 
+	AProjectileBase* Arrow = GetWorld()->SpawnActor<AProjectileBase>(ArrowActor, Location + LocationOffset, Rotation);
+	//Arrow->SetActorRotation({ 0,-90,0 });
+	//Arrow->SetActorScale3D(FVector{ 0.155f });
+
+	//Arrow->AddActorWorldRotation()
+	
+	if (Arrow)
+	{
+		//FVector LaunchDirection = MuzzleRotation.Vector();
+
+		FVector LaunchDirection = GetActorForwardVector();
+		Arrow->FireInDirection(LaunchDirection);
+		UE_LOG(LogTemp, Log, TEXT("Shoot an arrow"));
 
 
-	//PlayAnimMontage(AttackMontage);
+		//Projectile->FireInDirection(LaunchDirection);
+	}
+
 }
 
 void ACharacterBase::Dodge(const FInputActionValue& Value)
@@ -271,7 +299,7 @@ void ACharacterBase::Dodge(const FInputActionValue& Value)
 	UE_LOG(LogTemp, Log, TEXT("Dodge"));
 
 	GetMesh()->PlayAnimation(DodgeMontage, false);
-	//PlayAnimMontage(DodgeMontage);
+
 }
 
 
