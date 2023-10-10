@@ -2,13 +2,18 @@
 
 
 #include "Actors/Enemies/EnemyBase.h"
-
+//#include "BehaviorTree/BehaviorTree.h"
 #include "GameAbilitySystem/CharacterAttributeSet.h"
 #include "GameAbilitySystem/CharacterAbilitySystemComponent.h"
 
 AEnemyBase::AEnemyBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
+}
+
+UBehaviorTree* AEnemyBase::GetBTAsset() const
+{
+	return BTAsset;
 }
 
 void AEnemyBase::BeginPlay()
@@ -26,6 +31,11 @@ void AEnemyBase::BeginPlay()
 		// 
 		// tag change callbacks
 	}
+}
+
+float AEnemyBase::GetAttackRange() const
+{
+	return AttackRange;
 }
 
 UAbilitySystemComponent* AEnemyBase::GetAbilitySystemComponent() const

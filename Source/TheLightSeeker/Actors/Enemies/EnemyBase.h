@@ -9,6 +9,7 @@
 /**
  *   A Base class for all kind of enemies
  */
+
 UCLASS()
 class THELIGHTSEEKER_API AEnemyBase : public ACharacter, public IAbilitySystemInterface
 {
@@ -17,11 +18,24 @@ class THELIGHTSEEKER_API AEnemyBase : public ACharacter, public IAbilitySystemIn
 public:
 	AEnemyBase();
 
+	class UBehaviorTree* GetBTAsset() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Enemy")
+	float GetAttackRange() const;
+
 protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Mesh")
 	TObjectPtr<USkeletalMeshComponent> SkeletalMesh;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
+	class UBehaviorTree* BTAsset;
+
+
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy")
+	float AttackRange;
 
 /************************
  * Game Abilities System

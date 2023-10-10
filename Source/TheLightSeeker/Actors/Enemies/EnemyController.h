@@ -10,13 +10,13 @@
  * 
  */
 UCLASS()
-class THELIGHTSEEKER_API AEnemyController : public AAIController
+class THELIGHTSEEKER_API AEnemyController : public AAIController 
 {
 	GENERATED_BODY()
 	
 public:
 	virtual void OnPossess(APawn* InPawn) override;
 
-	UPROPERTY(EditAnywhere)
-	UBehaviorTree* BTAsset;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class UBlackboardData* BBAsset;
 };
