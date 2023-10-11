@@ -36,7 +36,7 @@ void AEnemyController::OnPossess(APawn* InPawn)
 
 			float AttackRange = CastChecked<AEnemyBase>(InPawn)->GetAttackRange();
 			BlackboardComponent->SetValueAsFloat(FName("AttackRange"), AttackRange);
-			UE_LOG(LogTemp, Log, TEXT("Registered Enemy AttackRange successfully"));
+			UE_LOG(LogTemp, Log, TEXT("Registered Enemy AttackRange successfully as %f"), AttackRange);
 		}
 	}
 	else

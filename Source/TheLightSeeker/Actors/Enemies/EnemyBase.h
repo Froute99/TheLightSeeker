@@ -43,12 +43,10 @@ protected:
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy|Abilities")
-	TWeakObjectPtr<class UCharacterAbilitySystemComponent> ASC;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy|Abilities")
-	TWeakObjectPtr<class UCharacterAttributeSet> AttributeSet;
-
+	UPROPERTY()
+	class UCharacterAbilitySystemComponent* AbilitySystemComponent;
+	UPROPERTY()
+	class UCharacterAttributeSet* AttributeSet;
 
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Enemy|Abilities")

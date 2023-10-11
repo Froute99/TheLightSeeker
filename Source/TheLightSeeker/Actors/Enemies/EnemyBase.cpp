@@ -8,6 +8,12 @@
 
 AEnemyBase::AEnemyBase()
 {
+	AbilitySystemComponent = CreateDefaultSubobject<UCharacterAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent->SetIsReplicated(true);
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+
+	AttributeSet = CreateDefaultSubobject<UCharacterAttributeSet>(TEXT("AttributeSet"));
+
 	PrimaryActorTick.bCanEverTick = true;
 }
 
@@ -20,9 +26,9 @@ void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (ASC.IsValid())
+	if (AbilitySystemComponent != nullptr)
 	{
-		ASC->InitAbilityActorInfo(this, this);
+		AbilitySystemComponent->InitAbilityActorInfo(this, this);
 		InitializeAttributes();
 		AddStartupEffects();
 		AddCharacterAbilities();
@@ -40,30 +46,34 @@ float AEnemyBase::GetAttackRange() const
 
 UAbilitySystemComponent* AEnemyBase::GetAbilitySystemComponent() const
 {
-	if (ASC.IsValid())
-	{
-		return ASC.Get();
-	}
-	return nullptr;
+	return AbilitySystemComponent;
 }
 
 float AEnemyBase::GetHealth() const
 {
-	if (AttributeSet.IsValid())
-	{
-		return AttributeSet->GetMaxHealth();
-	}
-	return 0.0f;
+	return AttributeSet->GetMaxHealth();
 }
 
 void AEnemyBase::AddCharacterAbilities()
 {
+	// Grant abilities, but only on the server	
+	if (GetLocalRole() != ROLE_Authority || AbilitySystemComponent == nullptr || AbilitySystemComponent->CharacterAbilitiesGiven)
+	{
+		return;
+	}
 
+	for (TSubclassOf<UGameplayAbility>& StartupAbility : EnemyAbilities)
+	{
+		AbilitySystemComponent->GiveAbility(
+			FGameplayAbilitySpec(StartupAbility, 1, -1, this));
+	}
+
+	AbilitySystemComponent->CharacterAbilitiesGiven = true;
 }
 
 void AEnemyBase::InitializeAttributes()
 {
-	if (!ASC.IsValid())
+	if (AbilitySystemComponent == nullptr)
 	{
 		return;
 	}
@@ -75,9 +85,35 @@ void AEnemyBase::InitializeAttributes()
 	}
 
 	// effect context, handle
-}
-
+	// Can run on Server and Client
+	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+	EffectContext.AddSourceObject(this);
+	
+	FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(DefaultAttributes, 0.0f, EffectContext);
+	if (NewHandle.IsValid())
+	{
+		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent);
+	}
+}	
+	
 void AEnemyBase::AddStartupEffects()
 {
-	ASC->StartupEffectApplied = false;
+	if(GetLocalRole() != ROLE_Authority || AbilitySystemComponent == nullptr || AbilitySystemComponent->StartupEffectApplied)
+	{
+		return;
+	}
+
+	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+	EffectContext.AddSourceObject(this);
+
+	for (TSubclassOf<UGameplayEffect> GameplayEffect : StartupEffects)
+	{
+		FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, 0.0f, EffectContext);
+		if (NewHandle.IsValid())
+		{
+			FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent);
+		}
+	}
+
+	AbilitySystemComponent->StartupEffectApplied = true;
 }
