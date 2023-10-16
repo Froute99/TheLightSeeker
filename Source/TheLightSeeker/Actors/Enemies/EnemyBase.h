@@ -3,7 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Actors/Characters/CharacterBase.h"
+#include "GameFramework/Character.h"
+
+#include "AbilitySystemInterface.h"
+
+#include "AttributeSet.h"
+#include "AbilitySystemComponent.h"
+
 #include "EnemyBase.generated.h"
 
 /**
@@ -14,7 +20,7 @@ UCLASS()
 class THELIGHTSEEKER_API AEnemyBase : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
-	
+
 public:
 	AEnemyBase();
 
@@ -33,7 +39,6 @@ protected:
 	class UBehaviorTree* BTAsset;
 
 
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy")
 	float AttackRange;
 
@@ -41,14 +46,22 @@ protected:
  * Game Abilities System
  ************************/
 
+public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+
+	void HandleDamage(float Damage, const FHitResult& HitResult, const FGameplayTagContainer& SourceTags,
+		class ACharacterBase* SourceCharacter, class AActor* SourceActor);
+
+	void HandleHealthChanged(float Value, const FGameplayTagContainer& SourceTags);
+
+
+protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy|Abilities")
 	TWeakObjectPtr<class UCharacterAbilitySystemComponent> ASC;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy|Abilities")
 	TWeakObjectPtr<class UCharacterAttributeSet> AttributeSet;
-
 
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Enemy|Abilities")

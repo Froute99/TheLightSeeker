@@ -268,7 +268,7 @@ void ACharacterBase::Attack(const FInputActionValue& Value)
 	GetMesh()->PlayAnimation(AttackMontage, false);
 
 	FVector Location = GetActorLocation();
-	FVector LocationOffset{ 0,0,80.f };
+	FVector LocationOffset{ 0,0,30.f };
 
 	FRotator Rotation = GetActorRotation();
 	FRotator RotationOffset{ 0,90.f,0 };
@@ -286,7 +286,7 @@ void ACharacterBase::Attack(const FInputActionValue& Value)
 
 		FVector LaunchDirection = GetActorForwardVector();
 		Arrow->FireInDirection(LaunchDirection);
-		UE_LOG(LogTemp, Log, TEXT("Shoot an arrow"));
+		//UE_LOG(LogTemp, Log, TEXT("Shoot an arrow"));
 
 
 		//Projectile->FireInDirection(LaunchDirection);

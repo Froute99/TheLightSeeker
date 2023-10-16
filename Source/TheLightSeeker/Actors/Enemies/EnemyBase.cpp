@@ -3,6 +3,8 @@
 
 #include "Actors/Enemies/EnemyBase.h"
 //#include "BehaviorTree/BehaviorTree.h"
+#include "Actors/Characters/CharacterBase.h"
+
 #include "GameAbilitySystem/CharacterAttributeSet.h"
 #include "GameAbilitySystem/CharacterAbilitySystemComponent.h"
 
@@ -45,6 +47,17 @@ UAbilitySystemComponent* AEnemyBase::GetAbilitySystemComponent() const
 		return ASC.Get();
 	}
 	return nullptr;
+}
+
+void AEnemyBase::HandleDamage(float Damage, const FHitResult& HitResult, const FGameplayTagContainer& SourceTags, ACharacterBase* SourceCharacter, AActor* SourceActor)
+{
+	FString Name = SourceCharacter->GetName();
+	UE_LOG(LogTemp, Log, TEXT("Damaged from: %s"), *Name);
+}
+
+void AEnemyBase::HandleHealthChanged(float Value, const FGameplayTagContainer& SourceTags)
+{
+	UE_LOG(LogTemp, Log, TEXT("Health Changed"));
 }
 
 float AEnemyBase::GetHealth() const
