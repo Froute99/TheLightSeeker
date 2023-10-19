@@ -76,7 +76,7 @@ void AProjectileBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 				UE_LOG(LogTemp, Log, TEXT("ASC was null"));
 				return;
 			}
-
+			//ASC->ReceiveDamage()
 			
 		}
 	}

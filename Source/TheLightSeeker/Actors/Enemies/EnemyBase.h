@@ -29,6 +29,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Enemy")
 	float GetAttackRange() const;
 
+	virtual void PossessedBy(AController* NewController) override;
+
 protected:
 	virtual void BeginPlay() override;
 

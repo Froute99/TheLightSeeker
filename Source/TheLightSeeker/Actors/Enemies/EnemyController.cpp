@@ -8,6 +8,14 @@
 #include "Actors/Enemies/EnemyBase.h"
 #include "Kismet/GameplayStatics.h"
 
+#include "Actors/Characters/LightSeekerPlayerState.h"
+
+AEnemyController::AEnemyController(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	bWantsPlayerState = true;
+}
+
 void AEnemyController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);

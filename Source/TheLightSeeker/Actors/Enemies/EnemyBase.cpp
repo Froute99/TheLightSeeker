@@ -8,9 +8,12 @@
 #include "GameAbilitySystem/CharacterAttributeSet.h"
 #include "GameAbilitySystem/CharacterAbilitySystemComponent.h"
 
+#include "Actors/Characters/LightSeekerPlayerState.h"
+
 AEnemyBase::AEnemyBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
 }
 
 UBehaviorTree* AEnemyBase::GetBTAsset() const
@@ -38,6 +41,29 @@ void AEnemyBase::BeginPlay()
 float AEnemyBase::GetAttackRange() const
 {
 	return AttackRange;
+}
+
+void AEnemyBase::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	UE_LOG(LogTemp, Log, TEXT("Enemy PoessedBy"));
+
+	//ALightSeekerPlayerState* PS = NewController->GetPlayerState<ALightSeekerPlayerState>();
+	ALightSeekerPlayerState* PS = GetPlayerState<ALightSeekerPlayerState>();
+	if (PS)	
+	{
+		UE_LOG(LogTemp, Log, TEXT("PS is valid"));
+
+		//InitializeStartingValues(PS);
+		ASC = Cast<UCharacterAbilitySystemComponent>(PS->GetAbilitySystemComponent());
+		PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
+		AttributeSet = PS->GetAttributeSet();
+
+		//InitializeAttributes();
+		AddStartupEffects();
+		AddCharacterAbilities();
+	}
 }
 
 UAbilitySystemComponent* AEnemyBase::GetAbilitySystemComponent() const
