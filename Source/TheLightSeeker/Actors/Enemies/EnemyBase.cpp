@@ -5,6 +5,7 @@
 //#include "BehaviorTree/BehaviorTree.h"
 #include "GameAbilitySystem/CharacterAttributeSet.h"
 #include "GameAbilitySystem/CharacterAbilitySystemComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -94,6 +95,9 @@ void AEnemyBase::InitializeAttributes()
 	{
 		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent);
 	}
+	
+	// set WalkSpeed based on attribute
+	GetCharacterMovement()->MaxWalkSpeed = AttributeSet->GetMovementSpeed();
 }	
 	
 void AEnemyBase::AddStartupEffects()
