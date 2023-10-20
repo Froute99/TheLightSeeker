@@ -19,6 +19,18 @@ public:
 	// Sets default values for this character's properties
 	ACharacterBase();
 
+	virtual void PossessedBy(AController* NewController) override;
+
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	void EnhancedMove(const FInputActionValue& Value);
+	void EnhancedLook(const FInputActionValue& Value);
+	void CameraZoom(const FInputActionValue& Value);
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -45,6 +57,10 @@ protected:
 		float ZoomStep = 40.f;
 
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Default")
+		TSubclassOf<AActor> ArrowActor;
+
+
 /************************
  * Game Abilities System
  ************************/
@@ -65,6 +81,10 @@ protected:
 		TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
 
 
+	void SetCharacterLevel(float Value);
+	void SetHealth(float Value);
+	void SetMaxHealth(float Value);
+
 	UFUNCTION(BlueprintCallable, Category = "Abilities")
 		int32 GetCharacterLevel() const;
 	UFUNCTION(BlueprintCallable, Category = "Abilities")
@@ -81,36 +101,42 @@ protected:
 	virtual void InitializeAttributes();
 	virtual void AddStartupEffects();
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 		class UInputMappingContext* MappingContext;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 		class UInputAction* MoveAction;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 		class UInputAction* LookAction;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 		class UInputAction* JumpAction;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 		class UInputAction* ZoomAction;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+		class UInputAction* AttackAction;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+		class UInputAction* DodgeAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 		class UInputAction* Skill1Action;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 		class UInputAction* Skill2Action;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 		class UInputAction* Skill3Action;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 		class UInputAction* Skill4Action;
 
 
+/************************
+ * Game Abilities System
+ ************************/
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation|Montages")
+		UAnimMontage* AttackMontage;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation|Montages")
+		UAnimMontage* DodgeMontage;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	void EnhancedMove(const FInputActionValue& Value);
-	void EnhancedLook(const FInputActionValue& Value);
-	void CameraZoom(const FInputActionValue& Value);
+	void Attack(const FInputActionValue& Value);
+	void Dodge(const FInputActionValue& Value);
+
 
 };
