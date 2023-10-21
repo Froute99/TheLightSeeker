@@ -3,7 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Actors/Characters/CharacterBase.h"
+#include "GameFramework/Character.h"
+
+#include "AbilitySystemInterface.h"
+
+#include "AttributeSet.h"
+#include "AbilitySystemComponent.h"
+
 #include "EnemyBase.generated.h"
 
 /**
@@ -14,7 +20,7 @@ UCLASS()
 class THELIGHTSEEKER_API AEnemyBase : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
-	
+
 public:
 	AEnemyBase();
 
@@ -22,6 +28,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Enemy")
 	float GetAttackRange() const;
+
+	virtual void PossessedBy(AController* NewController) override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -33,7 +41,6 @@ protected:
 	class UBehaviorTree* BTAsset;
 
 
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy")
 	float AttackRange;
 
@@ -41,14 +48,22 @@ protected:
  * Game Abilities System
  ************************/
 
+public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+
+	void HandleDamage(float Damage, const FHitResult& HitResult, const FGameplayTagContainer& SourceTags,
+		class ACharacterBase* SourceCharacter, class AActor* SourceActor);
+
+	void HandleHealthChanged(float Value, const FGameplayTagContainer& SourceTags);
+
+
+protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy|Abilities")
 	TWeakObjectPtr<class UCharacterAbilitySystemComponent> ASC;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy|Abilities")
 	TWeakObjectPtr<class UCharacterAttributeSet> AttributeSet;
-
 
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Enemy|Abilities")
@@ -60,10 +75,21 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Enemy|Abilities")
 	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
 
+
+	void SetHealth(float Value);
+	void SetMaxHealth(float Value);
+
 	UFUNCTION(BlueprintCallable, Category = "Enemy|Abilities")
 	float GetHealth() const;
+	UFUNCTION(BlueprintCallable, Category = "Enemy|Abilities")
+	float GetMaxHealth() const;
+
+
+	virtual void OnRep_PlayerState() override;
+	void InitializeStartingValues(class ALightSeekerPlayerState* PS);
 
 	virtual void AddCharacterAbilities();
 	virtual void InitializeAttributes();
 	virtual void AddStartupEffects();
+
 };

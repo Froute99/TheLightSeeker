@@ -42,6 +42,11 @@ public:
 	ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, MaxHealth);
 
 
+	UPROPERTY(BlueprintReadOnly, Category = "Damage", ReplicatedUsing = OnRep_DefaultDamage)
+		FGameplayAttributeData DefaultDamage;
+	ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, DefaultDamage);
+
+
 	UPROPERTY(BlueprintReadOnly, Category = "DamageRate", ReplicatedUsing = OnRep_DamageRate)
 		FGameplayAttributeData DamageRate;
 	ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, DamageRate);
@@ -71,6 +76,9 @@ public:
 		virtual void OnRep_Health(const FGameplayAttributeData& OldHealth);
 	UFUNCTION()
 		virtual void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth);
+
+	UFUNCTION()
+		virtual void OnRep_DefaultDamage(const FGameplayAttributeData& OldDamage);
 
 	UFUNCTION()
 		virtual void OnRep_DamageRate(const FGameplayAttributeData& OldValue);
