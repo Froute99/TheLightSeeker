@@ -25,17 +25,6 @@ void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (ASC.IsValid())
-	{
-		ASC->InitAbilityActorInfo(this, this);
-		InitializeAttributes();
-		AddStartupEffects();
-		AddCharacterAbilities();
-
-		// health change handle (for future interface)
-		// 
-		// tag change callbacks
-	}
 }
 
 float AEnemyBase::GetAttackRange() const
@@ -47,20 +36,10 @@ void AEnemyBase::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
-	UE_LOG(LogTemp, Log, TEXT("Enemy PoessedBy"));
-
-	//ALightSeekerPlayerState* PS = NewController->GetPlayerState<ALightSeekerPlayerState>();
 	ALightSeekerPlayerState* PS = GetPlayerState<ALightSeekerPlayerState>();
 	if (PS)	
 	{
-		UE_LOG(LogTemp, Log, TEXT("PS is valid"));
-
-		//InitializeStartingValues(PS);
-		ASC = Cast<UCharacterAbilitySystemComponent>(PS->GetAbilitySystemComponent());
-		PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
-		AttributeSet = PS->GetAttributeSet();
-
-		//InitializeAttributes();
+		InitializeStartingValues(PS);
 		AddStartupEffects();
 		AddCharacterAbilities();
 	}
@@ -90,9 +69,58 @@ float AEnemyBase::GetHealth() const
 {
 	if (AttributeSet.IsValid())
 	{
+		return AttributeSet->GetHealth();
+	}
+	return 0.0f;
+}
+
+float AEnemyBase::GetMaxHealth() const
+{
+	if (AttributeSet.IsValid())
+	{
 		return AttributeSet->GetMaxHealth();
 	}
 	return 0.0f;
+}
+
+void AEnemyBase::SetHealth(float Value)
+{
+	if (AttributeSet.IsValid())
+	{
+		AttributeSet->SetHealth(Value);
+	}
+}
+
+void AEnemyBase::SetMaxHealth(float Value)
+{
+	if (AttributeSet.IsValid())
+	{
+		AttributeSet->SetMaxHealth(Value);
+	}
+}
+
+void AEnemyBase::OnRep_PlayerState()
+{
+	ALightSeekerPlayerState* PS = GetPlayerState<ALightSeekerPlayerState>();
+
+	if (PS)
+	{
+		InitializeStartingValues(PS);
+		//BindASCInput();
+	}
+}
+
+void AEnemyBase::InitializeStartingValues(ALightSeekerPlayerState* PS)
+{
+	UE_LOG(LogTemp, Log, TEXT("InitializeStartingValues : Enemy"));
+	ASC = Cast<UCharacterAbilitySystemComponent>(PS->GetAbilitySystemComponent());
+	PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
+
+	AttributeSet = PS->GetAttributeSet();
+
+	InitializeAttributes();
+
+	SetHealth(GetMaxHealth());
 }
 
 void AEnemyBase::AddCharacterAbilities()
@@ -112,6 +140,17 @@ void AEnemyBase::InitializeAttributes()
 		UE_LOG(LogTemp, Error, TEXT("%s() Missing DefaultAttributes for %s. Please fill in the character's Blueprint."), *FString(__FUNCTION__), *GetName());
 		return;
 	}
+
+	FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
+	EffectContext.AddSourceObject(this);
+
+	FGameplayEffectSpecHandle NewHandle = ASC->MakeOutgoingSpec(DefaultAttributes, 1, EffectContext);
+
+	if (NewHandle.IsValid())
+	{
+		FActiveGameplayEffectHandle ActiveGEHandle = ASC->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), ASC.Get());
+	}
+
 
 	// effect context, handle
 }

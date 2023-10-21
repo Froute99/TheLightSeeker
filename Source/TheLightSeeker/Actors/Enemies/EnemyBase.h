@@ -75,10 +75,21 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Enemy|Abilities")
 	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
 
+
+	void SetHealth(float Value);
+	void SetMaxHealth(float Value);
+
 	UFUNCTION(BlueprintCallable, Category = "Enemy|Abilities")
 	float GetHealth() const;
+	UFUNCTION(BlueprintCallable, Category = "Enemy|Abilities")
+	float GetMaxHealth() const;
+
+
+	virtual void OnRep_PlayerState() override;
+	void InitializeStartingValues(class ALightSeekerPlayerState* PS);
 
 	virtual void AddCharacterAbilities();
 	virtual void InitializeAttributes();
 	virtual void AddStartupEffects();
+
 };

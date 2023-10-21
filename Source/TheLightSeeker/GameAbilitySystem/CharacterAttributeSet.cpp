@@ -106,7 +106,6 @@ void UCharacterAttributeSet::PostGameplayEffectExecute(const struct FGameplayEff
 		}
 	}
 
-
 }
 
 void UCharacterAttributeSet::OnRep_Level(const FGameplayAttributeData& OldLevel)
