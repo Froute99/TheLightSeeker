@@ -208,9 +208,7 @@ void ACharacterBase::OnRep_PlayerState()
 	{
 		InitializeStartingValues(PS);
 		//BindASCInput();
-		
 	}
-
 }
 
 void ACharacterBase::InitializeStartingValues(ALightSeekerPlayerState* PS)
@@ -223,8 +221,8 @@ void ACharacterBase::InitializeStartingValues(ALightSeekerPlayerState* PS)
 
 	//AbilitySystemComponent->SetTagMapCount(DeadTag, 0);
 
-	SetHealth(GetMaxHealth());
-	SetCharacterLevel(GetCharacterLevel());
+	//SetHealth(GetMaxHealth());
+	//SetCharacterLevel(GetCharacterLevel());
 
 
 	InitializeAttributes();
@@ -268,28 +266,19 @@ void ACharacterBase::Attack(const FInputActionValue& Value)
 	GetMesh()->PlayAnimation(AttackMontage, false);
 
 	FVector Location = GetActorLocation();
-	FVector LocationOffset{ 0,0,80.f };
+	FVector LocationOffset{ 0,0,30.f };
 
 	FRotator Rotation = GetActorRotation();
 	FRotator RotationOffset{ 0,90.f,0 };
 
-
-	AProjectileBase* Arrow = GetWorld()->SpawnActor<AProjectileBase>(ArrowActor, Location + LocationOffset, Rotation);
-	//Arrow->SetActorRotation({ 0,-90,0 });
-	//Arrow->SetActorScale3D(FVector{ 0.155f });
-
-	//Arrow->AddActorWorldRotation()
+	FActorSpawnParameters Parameter{};
+	Parameter.Instigator = this;
+	AProjectileBase* Arrow = GetWorld()->SpawnActor<AProjectileBase>(ArrowActor, Location + LocationOffset, Rotation, Parameter);
 	
 	if (Arrow)
 	{
-		//FVector LaunchDirection = MuzzleRotation.Vector();
-
 		FVector LaunchDirection = GetActorForwardVector();
 		Arrow->FireInDirection(LaunchDirection);
-		UE_LOG(LogTemp, Log, TEXT("Shoot an arrow"));
-
-
-		//Projectile->FireInDirection(LaunchDirection);
 	}
 
 }

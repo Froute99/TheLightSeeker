@@ -2,10 +2,19 @@
 
 
 #include "Actors/Enemies/EnemyController.h"
+#include "Actors/Characters/CharacterBase.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "Actors/Enemies/EnemyBase.h"
 #include "Kismet/GameplayStatics.h"
+
+#include "Actors/Characters/LightSeekerPlayerState.h"
+
+AEnemyController::AEnemyController(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	bWantsPlayerState = true;
+}
 
 void AEnemyController::OnPossess(APawn* InPawn)
 {
@@ -28,7 +37,7 @@ void AEnemyController::OnPossess(APawn* InPawn)
 				TArray<AActor*> actors;
 				UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACharacterBase::StaticClass(), actors);
 				
-				check(actors.Num() == 1);
+				check(actors.Num() >= 1);
 
 				BlackboardComponent->SetValueAsObject(FName("Player"), actors[0]);
 				UE_LOG(LogTemp, Log, TEXT("Registered Player into blackboard successfully"));

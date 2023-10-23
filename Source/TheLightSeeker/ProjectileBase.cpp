@@ -5,12 +5,16 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/BoxComponent.h"
 
+#include "Actors/Characters/CharacterBase.h"
+#include "Actors/Enemies/EnemyBase.h"
+
+#include "GameAbilitySystem/CharacterAbilitySystemComponent.h"
+
 // Sets default values
 AProjectileBase::AProjectileBase()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 
 
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
@@ -56,8 +60,26 @@ void AProjectileBase::FireInDirection(const FVector& ShootDirection)
 
 void AProjectileBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Log, TEXT("Overlapped"));
+	if (OtherActor && (OtherActor != this))
+	{
+		AEnemyBase* Overlapped = Cast<AEnemyBase>(OtherActor);
 
+		if (Overlapped == nullptr) return;
+
+		if (Overlapped->StaticClass() == AEnemyBase::StaticClass())
+		{
+			UE_LOG(LogTemp, Log, TEXT("Overlapped with enemy"));
+			UCharacterAbilitySystemComponent* ASC = Cast<UCharacterAbilitySystemComponent>(Overlapped->GetAbilitySystemComponent());
+
+			if (!ASC)
+			{
+				UE_LOG(LogTemp, Log, TEXT("ASC was null"));
+				return;
+			}
+			//ASC->ReceiveDamage()
+			
+		}
+	}
 
 }
 

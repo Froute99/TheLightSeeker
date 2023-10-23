@@ -15,6 +15,8 @@ class THELIGHTSEEKER_API AEnemyController : public AAIController
 	GENERATED_BODY()
 	
 public:
+	AEnemyController(const FObjectInitializer& ObjectInitializer);
+
 	virtual void OnPossess(APawn* InPawn) override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
