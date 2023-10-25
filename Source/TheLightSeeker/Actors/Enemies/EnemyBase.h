@@ -23,6 +23,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Enemy")
 	float GetAttackRange() const;
 
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	virtual UCharacterAttributeSet* GetAttributeSet() const override;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -40,8 +43,6 @@ protected:
 /************************
  * Game Abilities System
  ************************/
-
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	UPROPERTY()
 	class UCharacterAbilitySystemComponent* AbilitySystemComponent;

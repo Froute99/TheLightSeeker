@@ -50,6 +50,11 @@ UAbilitySystemComponent* AEnemyBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
+UCharacterAttributeSet* AEnemyBase::GetAttributeSet() const
+{
+	return AttributeSet;
+}
+
 float AEnemyBase::GetHealth() const
 {
 	return AttributeSet->GetMaxHealth();
