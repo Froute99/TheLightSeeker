@@ -69,16 +69,16 @@ void ALightSeekerPlayerState::BeginPlay()
 
 void ALightSeekerPlayerState::HealthChanged(const FOnAttributeChangeData& Data)
 {
-	UE_LOG(LogTemp, Log, TEXT("%s : Player Health Changed"), __FUNCTION__);
+	UE_LOG(LogTemp, Log, TEXT("%s : Player Health Changed"), *FString(__FUNCTION__));
 }
 
 void ALightSeekerPlayerState::MaxHealthChanged(const FOnAttributeChangeData& Data)
 {
-	UE_LOG(LogTemp, Log, TEXT("%s : Player Max Health Changed"), __FUNCTION__);
+	UE_LOG(LogTemp, Log, TEXT("%s : Player Max Health Changed"), *FString(__FUNCTION__));
 }
 
 void ALightSeekerPlayerState::LevelChanged(const FOnAttributeChangeData& Data)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s : Player Level Changed!"), __FUNCTION__);
+	UE_LOG(LogTemp, Warning, TEXT("%s : Player Level Changed!"), *FString(__FUNCTION__));
 }
 

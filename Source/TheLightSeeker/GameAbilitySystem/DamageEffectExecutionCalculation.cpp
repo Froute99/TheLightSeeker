@@ -10,11 +10,13 @@ struct FDamageStatics
 {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Health);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(DefaultDamage);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(DamageRate);
 
 
 	FDamageStatics()
 	{
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UCharacterAttributeSet, DefaultDamage, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UCharacterAttributeSet, DamageRate, Source, false);
 
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UCharacterAttributeSet, Health, Target, false);
 	}
@@ -30,6 +32,7 @@ UDamageEffectExecutionCalculation::UDamageEffectExecutionCalculation()
 {
 	RelevantAttributesToCapture.Add(DamageStatics().HealthDef);
 	RelevantAttributesToCapture.Add(DamageStatics().DefaultDamageDef);
+	RelevantAttributesToCapture.Add(DamageStatics().DamageRateDef);
 }
 
 void UDamageEffectExecutionCalculation::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
@@ -54,6 +57,20 @@ void UDamageEffectExecutionCalculation::Execute_Implementation(const FGameplayEf
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DefaultDamageDef, EvaluationParameters, BaseDamage);
 
 	float DamageDone = BaseDamage;
+
+	float DamagePercent = 0.f;
+	if (ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DamageRateDef, EvaluationParameters, DamagePercent))
+	{
+		if (DamagePercent <= 0.f)
+		{
+			UE_LOG(LogTemp, Log, TEXT("%s: Damage rate was 0 or below"), *FString(__FUNCTION__));
+		}
+		else
+		{
+			DamageDone *= (DamagePercent / 100.f);
+		}
+	}
+
 
 	if (DamageDone < 0.0f)		DamageDone = 0.0f;
 
