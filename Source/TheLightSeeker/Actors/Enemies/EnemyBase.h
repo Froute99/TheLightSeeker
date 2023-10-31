@@ -2,8 +2,12 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "TheLightSeeker.h" // include ENEMYLOG
 #include "Actors/Characters/CharacterBase.h"
+#include "GameFramework/Character.h"
+#include "AbilitySystemInterface.h"
+#include "AttributeSet.h"
+#include "AbilitySystemComponent.h"
 #include "EnemyBase.generated.h"
 
 /**
@@ -23,8 +27,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Enemy")
 	float GetAttackRange() const;
 
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	virtual UCharacterAttributeSet* GetAttributeSet() const override;
+	void OnDeath();
 
 protected:
 	virtual void BeginPlay() override;
@@ -44,11 +47,20 @@ protected:
  * Game Abilities System
  ************************/
 
+protected:
 	UPROPERTY()
-	class UCharacterAbilitySystemComponent* AbilitySystemComponent;
+	class UCharacterAbilitySystemComponent* ASC;
 	UPROPERTY()
 	class UCharacterAttributeSet* AttributeSet;
 
+public:
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	virtual UCharacterAttributeSet* GetAttributeSet() const;
+
+	void HandleDamage(float Damage, const FHitResult& HitResult, const FGameplayTagContainer& SourceTags,
+		class ACharacterBase* SourceCharacter, class AActor* SourceActor);
+
+	void HandleHealthChanged(float Value, const FGameplayTagContainer& SourceTags);
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Enemy|Abilities")
 	TArray<TSubclassOf<class UGameplayAbility>> EnemyAbilities;
@@ -59,8 +71,13 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Enemy|Abilities")
 	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
 
+	void SetHealth(float Value);
+	void SetMaxHealth(float Value);
+
 	UFUNCTION(BlueprintCallable, Category = "Enemy|Abilities")
 	float GetHealth() const;
+	UFUNCTION(BlueprintCallable, Category = "Enemy|Abilities")
+	float GetMaxHealth() const;
 
 	virtual void AddCharacterAbilities();
 	virtual void InitializeAttributes();

@@ -2,16 +2,16 @@
 
 
 #include "Actors/Enemies/EnemyBase.h"
-//#include "BehaviorTree/BehaviorTree.h"
 #include "GameAbilitySystem/CharacterAttributeSet.h"
 #include "GameAbilitySystem/CharacterAbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Actors/Characters/LightSeekerPlayerState.h"
 
 AEnemyBase::AEnemyBase()
 {
-	AbilitySystemComponent = CreateDefaultSubobject<UCharacterAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
-	AbilitySystemComponent->SetIsReplicated(true);
-	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+	ASC = CreateDefaultSubobject<UCharacterAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	ASC->SetIsReplicated(true);
+	ASC->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
 	AttributeSet = CreateDefaultSubobject<UCharacterAttributeSet>(TEXT("AttributeSet"));
 
@@ -27,9 +27,10 @@ void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (AbilitySystemComponent != nullptr)
+	if (ASC != nullptr)
 	{
-		AbilitySystemComponent->InitAbilityActorInfo(this, this);
+		UE_LOG(Enemy, Log, TEXT("Enemy ASC initialized"));
+		ASC->InitAbilityActorInfo(this, this);
 		InitializeAttributes();
 		AddStartupEffects();
 		AddCharacterAbilities();
@@ -38,6 +39,10 @@ void AEnemyBase::BeginPlay()
 		// 
 		// tag change callbacks
 	}
+	else
+	{
+		UE_LOG(Enemy, Log, TEXT("Enemy ASC Init could not called"));
+	}
 }
 
 float AEnemyBase::GetAttackRange() const
@@ -45,9 +50,45 @@ float AEnemyBase::GetAttackRange() const
 	return AttackRange;
 }
 
+void AEnemyBase::OnDeath()
+{
+	UE_LOG(Enemy, Log, TEXT("Enemy OnDeath Called"));
+	Destroy();
+
+	/*
+	// Only runs on Server
+	RemoveCharacterAbilities();
+
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCharacterMovement()->GravityScale = 0;
+	GetCharacterMovement()->Velocity = FVector(0);
+
+	OnCharacterDied.Broadcast(this);
+
+	if (AbilitySystemComponent.IsValid())
+	{
+		AbilitySystemComponent->CancelAllAbilities();
+
+		FGameplayTagContainer EffectTagsToRemove;
+		EffectTagsToRemove.AddTag(EffectRemoveOnDeathTag);
+		int32 NumEffectsRemoved = AbilitySystemComponent->RemoveActiveEffectsWithTags(EffectTagsToRemove);
+
+		AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
+	}
+
+	if (DeathMontage)
+	{
+		PlayAnimMontage(DeathMontage);
+	}
+	else
+	{
+		FinishDying();
+	} */
+}
+
 UAbilitySystemComponent* AEnemyBase::GetAbilitySystemComponent() const
 {
-	return AbilitySystemComponent;
+	return ASC;
 }
 
 UCharacterAttributeSet* AEnemyBase::GetAttributeSet() const
@@ -55,31 +96,76 @@ UCharacterAttributeSet* AEnemyBase::GetAttributeSet() const
 	return AttributeSet;
 }
 
+void AEnemyBase::HandleDamage(float Damage, const FHitResult & HitResult, const FGameplayTagContainer & SourceTags, ACharacterBase * SourceCharacter, AActor * SourceActor)
+{
+	FString Name = SourceCharacter->GetName();
+	UE_LOG(LogTemp, Log, TEXT("Damaged from: %s"), *Name);
+}
+
+void AEnemyBase::HandleHealthChanged(float Value, const FGameplayTagContainer& SourceTags)
+{
+	UE_LOG(LogTemp, Log, TEXT("Health Changed"));
+}
+
 float AEnemyBase::GetHealth() const
 {
-	return AttributeSet->GetMaxHealth();
+	if (AttributeSet)
+	{
+		return AttributeSet->GetHealth();
+	}
+	return 0.0f;
+}
+
+float AEnemyBase::GetMaxHealth() const
+{
+	if (AttributeSet)
+	{
+		return AttributeSet->GetMaxHealth();
+	}
+	return 0.0f;
+}
+
+void AEnemyBase::SetHealth(float Value)
+{
+	if (AttributeSet)
+	{
+		AttributeSet->SetHealth(Value);
+		if (Value <= 0.0f)
+		{
+			OnDeath();
+		}
+	}
+}
+
+void AEnemyBase::SetMaxHealth(float Value)
+{
+	if (AttributeSet)
+	{
+		AttributeSet->SetMaxHealth(Value);
+	}
 }
 
 void AEnemyBase::AddCharacterAbilities()
 {
 	// Grant abilities, but only on the server	
-	if (GetLocalRole() != ROLE_Authority || AbilitySystemComponent == nullptr || AbilitySystemComponent->CharacterAbilitiesGiven)
+	if (GetLocalRole() != ROLE_Authority || ASC == nullptr || ASC->CharacterAbilitiesGiven)
 	{
+		UE_LOG(Enemy, Log, TEXT("AddCharacterAbilities failed"));
 		return;
 	}
 
 	for (TSubclassOf<UGameplayAbility>& StartupAbility : EnemyAbilities)
 	{
-		AbilitySystemComponent->GiveAbility(
+		ASC->GiveAbility(
 			FGameplayAbilitySpec(StartupAbility, 1, -1, this));
 	}
 
-	AbilitySystemComponent->CharacterAbilitiesGiven = true;
+	ASC->CharacterAbilitiesGiven = true;
 }
 
 void AEnemyBase::InitializeAttributes()
 {
-	if (AbilitySystemComponent == nullptr)
+	if (ASC == nullptr)
 	{
 		return;
 	}
@@ -89,16 +175,14 @@ void AEnemyBase::InitializeAttributes()
 		UE_LOG(LogTemp, Error, TEXT("%s() Missing DefaultAttributes for %s. Please fill in the character's Blueprint."), *FString(__FUNCTION__), *GetName());
 		return;
 	}
-
-	// effect context, handle
-	// Can run on Server and Client
-	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+	FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
 	EffectContext.AddSourceObject(this);
-	
-	FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(DefaultAttributes, 0.0f, EffectContext);
+
+	FGameplayEffectSpecHandle NewHandle = ASC->MakeOutgoingSpec(DefaultAttributes, 1, EffectContext);
+
 	if (NewHandle.IsValid())
 	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent);
+		FActiveGameplayEffectHandle ActiveGEHandle = ASC->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), ASC);
 	}
 	
 	// set WalkSpeed based on attribute
@@ -107,22 +191,22 @@ void AEnemyBase::InitializeAttributes()
 	
 void AEnemyBase::AddStartupEffects()
 {
-	if(GetLocalRole() != ROLE_Authority || AbilitySystemComponent == nullptr || AbilitySystemComponent->StartupEffectApplied)
+	if(GetLocalRole() != ROLE_Authority || ASC == nullptr || ASC->StartupEffectApplied)
 	{
 		return;
 	}
 
-	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+	FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
 	EffectContext.AddSourceObject(this);
 
 	for (TSubclassOf<UGameplayEffect> GameplayEffect : StartupEffects)
 	{
-		FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, 0.0f, EffectContext);
+		FGameplayEffectSpecHandle NewHandle = ASC->MakeOutgoingSpec(GameplayEffect, 0.0f, EffectContext);
 		if (NewHandle.IsValid())
 		{
-			FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent);
+			FActiveGameplayEffectHandle ActiveGEHandle = ASC->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), ASC);
 		}
 	}
 
-	AbilitySystemComponent->StartupEffectApplied = true;
+	ASC->StartupEffectApplied = true;
 }

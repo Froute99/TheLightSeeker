@@ -8,6 +8,5 @@ EBTNodeResult::Type UBTTask_MeleeEnemyAttack::ExecuteTask(UBehaviorTreeComponent
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
 	UE_LOG(LogTemp, Log, TEXT("Enemy: MeleeEnemyAttack Execute called"));
-
 	return Result;
 }

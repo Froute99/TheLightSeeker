@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "TheLightSeeker.h"
 #include "BehaviorTree/Decorators/BTDecorator_Blackboard.h"
 #include "BTDecorator_IsInAttackRange.generated.h"
 
@@ -15,5 +15,6 @@ class THELIGHTSEEKER_API UBTDecorator_IsInAttackRange : public UBTDecorator_Blac
 	GENERATED_BODY()
 	
 public:
+	UBTDecorator_IsInAttackRange(const FObjectInitializer& ObjectInitializer);
 	bool CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const override;
 };

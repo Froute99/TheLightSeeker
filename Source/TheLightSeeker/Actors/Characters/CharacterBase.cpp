@@ -52,7 +52,7 @@ void ACharacterBase::PossessedBy(AController* NewController)
 	if (PS)
 	{
 		InitializeStartingValues(PS);
-		//InitializeAttributes();
+		InitializeAttributes();
 		AddStartupEffects();
 		AddCharacterAbilities();
 	}

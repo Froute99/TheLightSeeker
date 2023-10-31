@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "TheLightSeeker.h"
 #include "BehaviorTree/BTTaskNode.h"
 #include "BTTask_MeleeEnemyAttack.generated.h"
 
