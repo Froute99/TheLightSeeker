@@ -116,7 +116,5 @@ void UGA_MeleeEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 				}
 			}
 		}
-		SetAbilityDoneDelegate.Broadcast();
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 	}
 }
