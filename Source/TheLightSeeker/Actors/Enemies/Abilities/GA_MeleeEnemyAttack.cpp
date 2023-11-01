@@ -45,7 +45,7 @@ void UGA_MeleeEnemyAttack::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 
 void UGA_MeleeEnemyAttack::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	UE_LOG(Enemy, Log, TEXT("MeleeEnemyAttack Canccled"));
+	UE_LOG(Enemy, Log, TEXT("MeleeEnemyAttack Canceled"));
 	SetAbilityDoneDelegate.Broadcast();
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
@@ -59,11 +59,14 @@ void UGA_MeleeEnemyAttack::OnCompleted(FGameplayTag EventTag, FGameplayEventData
 
 void UGA_MeleeEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
+	UE_LOG(Enemy, Log, TEXT("EventReceived called: %s"), EventTag.GetTagName());
+
 	// Montage told us to end the ability before the montage finished playing.
 	// Montage was set to continue playing animation even after ability ends so this is okay.
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.EndAbility")))
 	{
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		OnCompleted(EventTag, EventData);
+		//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		return;
 	}
 
@@ -72,10 +75,10 @@ void UGA_MeleeEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 	if (GetOwningActorFromActorInfo()->GetLocalRole() == ROLE_Authority 
 		&& EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.Enemy.MeleeAttack")))
 	{
-		UE_LOG(Enemy, Log, TEXT("Attack event from Montage called"));
 		
 		AEnemyBase* EnemyBase = Cast<AEnemyBase>(GetActorInfo().OwnerActor.Get());
-		
+		check(EnemyBase != nullptr);
+
 		if (EnemyBase)
 		{
 			FHitResult Out;
@@ -83,7 +86,6 @@ void UGA_MeleeEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 				EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetCapsuleComponent()->GetScaledCapsuleRadius() / 2.0f,
 				EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetAttackRange(),
 				ECollisionChannel::ECC_GameTraceChannel1);
-
 
 			// DEBUG 
 			UKismetSystemLibrary::DrawDebugLine(GetWorld(), EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetCapsuleComponent()->GetScaledCapsuleRadius() / 2.0f,
