@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 
+DECLARE_MULTICAST_DELEGATE(FDelegate_SetAbilityEnd); // Enemy Abilitly End event
+
 DECLARE_LOG_CATEGORY_EXTERN(Enemy, Log, All);
 
 #define ENEMY_CALLINFO (FString(__FUNCTION__) + TEXT("(") + FString::FromInt(__LINE__) + TEXT(")"))

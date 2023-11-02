@@ -4,22 +4,23 @@
 
 #include "TheLightSeeker.h"
 #include "Abilities/GameplayAbility.h"
-#include "GA_MeleeEnemyAttack.generated.h"
+#include "GA_RangeEnemyAttack.generated.h"
+
 
 /**
- *	Basic Attack Ability of Melee type enemy
+ *  Basic Attack Ability of Range type enemy
  */
 
 UCLASS()
-class THELIGHTSEEKER_API UGA_MeleeEnemyAttack : public UGameplayAbility
+class THELIGHTSEEKER_API UGA_RangeEnemyAttack : public UGameplayAbility
 {
 	GENERATED_BODY()
-	
+
 public:
-	UGA_MeleeEnemyAttack();
+	UGA_RangeEnemyAttack();
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	UAnimMontage* MeleeAttackMontage;
+	UAnimMontage* RangeAttackMontage;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
