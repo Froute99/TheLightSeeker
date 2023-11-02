@@ -97,7 +97,8 @@ protected:
 	void InitializeStartingValues(class ALightSeekerPlayerState* PS);
 
 
-	virtual void AddCharacterAbilities(TSubclassOf<UGameplayAbility>& Ability);
+	UFUNCTION(BlueprintCallable, Category = "Abilities")
+		virtual void AddCharacterAbilities(TSubclassOf<UGameplayAbility>& Ability);
 	virtual void InitializeAttributes();
 	virtual void AddStartupEffects();
 
@@ -127,7 +128,7 @@ protected:
 
 
 /************************
- * Game Abilities System
+ * Animations
  ************************/
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation|Montages")
