@@ -97,7 +97,7 @@ protected:
 	void InitializeStartingValues(class ALightSeekerPlayerState* PS);
 
 
-	virtual void AddCharacterAbilities();
+	virtual void AddCharacterAbilities(TSubclassOf<UGameplayAbility>& Ability);
 	virtual void InitializeAttributes();
 	virtual void AddStartupEffects();
 
