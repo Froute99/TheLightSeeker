@@ -27,6 +27,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Enemy")
 	float GetAttackRange() const;
 
+	UFUNCTION(BlueprintCallable)
 	void OnDeath();
 
 protected:
@@ -37,8 +38,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
 	class UBehaviorTree* BTAsset;
-
-
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy")
 	float AttackRange;
@@ -59,8 +58,9 @@ public:
 
 	void HandleDamage(float Damage, const FHitResult& HitResult, const FGameplayTagContainer& SourceTags,
 		class ACharacterBase* SourceCharacter, class AActor* SourceActor);
-
 	void HandleHealthChanged(float Value, const FGameplayTagContainer& SourceTags);
+
+	virtual void OnHealthChanged(const FOnAttributeChangeData& Data);
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Enemy|Abilities")
 	TArray<TSubclassOf<class UGameplayAbility>> EnemyAbilities;
@@ -82,4 +82,8 @@ public:
 	virtual void AddCharacterAbilities();
 	virtual void InitializeAttributes();
 	virtual void AddStartupEffects();
+
+	bool IsAlive() const;
+
+	FDelegateHandle HealthChangedDelegateHandle;
 };

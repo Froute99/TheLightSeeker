@@ -9,20 +9,11 @@
 #include "Components/CapsuleComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 
-UGA_MeleeEnemyAttack::UGA_MeleeEnemyAttack()
-{
-	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
-
-	//FGameplayTag AttackTag = FGameplayTag::RequestGameplayTag(FName("Ability.Enemy.MeleeAttack"));
-	//AbilityTags.AddTag(AttackTag);
-	//ActivationOwnedTags.AddTag(AttackTag);
-}
-
 void UGA_MeleeEnemyAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	UE_LOG(Enemy, Log, TEXT("MeleeEnemyAttack called"));
+	//UE_LOG(Enemy, Log, TEXT("MeleeEnemyAttack called"));
 
-	if (!MeleeAttackMontage)
+	if (!AttackMontage)
 	{
 		UE_LOG(Enemy, Error, TEXT("MeleeEnemyAttack class does not have Montage to play"))
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
@@ -30,13 +21,12 @@ void UGA_MeleeEnemyAttack::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
 
-	UAnimMontage* MontageToPlay = MeleeAttackMontage;
+	UAnimMontage* MontageToPlay = AttackMontage;
 	
 	// Play fire montage and wait for event telling us to spawn the projectile
 	UAT_PlayMontageAndWaitForEvent* Task = UAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, MontageToPlay, FGameplayTagContainer(), 1.0f, NAME_None, false, 1.0f);
@@ -47,20 +37,6 @@ void UGA_MeleeEnemyAttack::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 	Task->EventReceived.AddDynamic(this, &UGA_MeleeEnemyAttack::EventReceived);
 	// ReadyForActivation() is how you activate the AbilityTask in C++. Blueprint has magic from K2Node_LatentGameplayTaskCall that will automatically call ReadyForActivation().
 	Task->ReadyForActivation();
-}
-
-void UGA_MeleeEnemyAttack::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
-{
-	UE_LOG(Enemy, Log, TEXT("MeleeEnemyAttack Cancelled"));
-	SetAbilityDoneDelegate.Broadcast();
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-}
-
-void UGA_MeleeEnemyAttack::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
-{
-	UE_LOG(Enemy, Log, TEXT("MeleeEnemyAttack Completed"));
-	SetAbilityDoneDelegate.Broadcast();
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 void UGA_MeleeEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -101,24 +77,24 @@ void UGA_MeleeEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 			
 			if (IsHitPlayer)
 			{
-				UE_LOG(Enemy, Log, TEXT("Attack event player hit %s"), *AActor::GetDebugName(Out.GetActor()));
+				//UE_LOG(Enemy, Log, TEXT("Attack event player hit %s"), *AActor::GetDebugName(Out.GetActor()));
 				
 
 				ACharacterBase* Player = Cast<ACharacterBase>(Out.GetActor());
 				if (Player)
 				{
-					UE_LOG(Enemy, Log, TEXT("Attack event player hit2"));
+					//UE_LOG(Enemy, Log, TEXT("Attack event player hit2"));
 					ALightSeekerPlayerState* PS = Cast<ALightSeekerPlayerState>(Player->GetPlayerState());
 
 					if (PS)
 					{
-						UE_LOG(Enemy, Log, TEXT("Player HP before enemy attack: %f"), PS->GetHealth());
+						//UE_LOG(Enemy, Log, TEXT("Player HP before enemy attack: %f"), PS->GetHealth());
 
 						FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
 						PS->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
 
 
-						UE_LOG(Enemy, Log, TEXT("Player HP after enemy attack: %f"), PS->GetHealth());
+						//UE_LOG(Enemy, Log, TEXT("Player HP after enemy attack: %f"), PS->GetHealth());
 
 					}
 				}

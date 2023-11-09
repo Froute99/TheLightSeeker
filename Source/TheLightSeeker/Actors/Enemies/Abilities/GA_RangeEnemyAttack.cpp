@@ -7,18 +7,14 @@
 #include "Actors/Enemies/EnemyBase.h"
 #include "Actors/Characters/LightSeekerPlayerState.h"
 #include "Components/CapsuleComponent.h"
+#include "Actors/Enemies/Abilities/RangeEnemyProjectile.h"
 #include "Kismet/KismetSystemLibrary.h"
-
-UGA_RangeEnemyAttack::UGA_RangeEnemyAttack()
-{
-	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
-}
 
 void UGA_RangeEnemyAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	UE_LOG(Enemy, Log, TEXT("RangeEnemyAttack called"));
 
-	if (!RangeAttackMontage)
+	if (!AttackMontage)
 	{
 		UE_LOG(Enemy, Error, TEXT("RangeEnemyAttack class does not have Montage to play"))
 			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
@@ -31,7 +27,7 @@ void UGA_RangeEnemyAttack::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
 
-	UAnimMontage* MontageToPlay = RangeAttackMontage;
+	UAnimMontage* MontageToPlay = AttackMontage;
 
 	// Play fire montage and wait for event telling us to spawn the projectile
 	UAT_PlayMontageAndWaitForEvent* Task = UAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, MontageToPlay, FGameplayTagContainer(), 1.0f, NAME_None, false, 1.0f);
@@ -44,30 +40,25 @@ void UGA_RangeEnemyAttack::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 	Task->ReadyForActivation();
 }
 
-void UGA_RangeEnemyAttack::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
+void UGA_RangeEnemyAttack::SetPlayerReference(AActor* Player)
 {
-	UE_LOG(Enemy, Log, TEXT("RangeEnemyAttack Cancelled"));
-	SetAbilityDoneDelegate.Broadcast();
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-}
-
-void UGA_RangeEnemyAttack::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
-{
-	UE_LOG(Enemy, Log, TEXT("RangeEnemyAttack Completed"));
-	SetAbilityDoneDelegate.Broadcast();
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	if (!Cast<ACharacterBase>(Player))
+	{
+		UE_LOG(Enemy, Error, TEXT("SetPlayerReference: given player is not a player actor"));
+		return;
+	}
+	PlayerReference = Player;
 }
 
 void UGA_RangeEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	UE_LOG(Enemy, Log, TEXT("EventReceived called: %s"), EventTag.GetTagName());
+	//UE_LOG(Enemy, Log, TEXT("EventReceived called: %s"), EventTag.GetTagName());
 
 	// Montage told us to end the ability before the montage finished playing.
 	// Montage was set to continue playing animation even after ability ends so this is okay.
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.EndAbility")))
 	{
 		OnCompleted(EventTag, EventData);
-		//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		return;
 	}
 
@@ -76,48 +67,29 @@ void UGA_RangeEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 	if (GetOwningActorFromActorInfo()->GetLocalRole() == ROLE_Authority
 		&& EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.Enemy.RangeAttack")))
 	{
-
 		AEnemyBase* EnemyBase = Cast<AEnemyBase>(GetActorInfo().OwnerActor.Get());
-		check(EnemyBase != nullptr);
 
-		if (EnemyBase)
+		if (EnemyBase && PlayerReference)
 		{
-			FHitResult Out;
-			bool IsHitPlayer = GetWorld()->LineTraceSingleByChannel(Out,
-				EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetCapsuleComponent()->GetScaledCapsuleRadius() / 2.0f,
-				EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetAttackRange(),
-				ECollisionChannel::ECC_GameTraceChannel1);
+			FVector PlayerLocation = PlayerReference->GetActorLocation();
+
+			FActorSpawnParameters Parameter{};
+			Parameter.Instigator = EnemyBase;
+			FVector LaunchLocation = EnemyBase->GetActorLocation() + FVector(0.0f, 0.0f, EnemyBase->GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+			ARangeEnemyProjectile* Projectile = GetWorld()->SpawnActor<ARangeEnemyProjectile>(ProjectileActor, 
+				    LaunchLocation,
+					FRotator(), Parameter);
+
+			if (Projectile)
+			{
+				Projectile->DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
+				FVector LaunchDirection = PlayerLocation - LaunchLocation;
+				Projectile->FireInDirection(LaunchDirection.GetSafeNormal());
+			}
 
 			// DEBUG 
-			UKismetSystemLibrary::DrawDebugLine(GetWorld(), EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetCapsuleComponent()->GetScaledCapsuleRadius() / 2.0f,
-				EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetAttackRange(), FLinearColor::Blue, 5.0f);
-			UKismetSystemLibrary::DrawDebugCapsule(GetWorld(), EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetCapsuleComponent()->GetScaledCapsuleRadius() / 2.0f, 50.0f, 50.0f, FRotator(), FLinearColor::Blue, 5.0f);
-			UKismetSystemLibrary::DrawDebugCapsule(GetWorld(), EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetAttackRange(), 50.0f, 50.0f, FRotator(), FLinearColor::Blue, 5.0f);
-
-			if (IsHitPlayer)
-			{
-				UE_LOG(Enemy, Log, TEXT("Attack event player hit %s"), *AActor::GetDebugName(Out.GetActor()));
-
-
-				ACharacterBase* Player = Cast<ACharacterBase>(Out.GetActor());
-				if (Player)
-				{
-					UE_LOG(Enemy, Log, TEXT("Attack event player hit2"));
-					ALightSeekerPlayerState* PS = Cast<ALightSeekerPlayerState>(Player->GetPlayerState());
-
-					if (PS)
-					{
-						UE_LOG(Enemy, Log, TEXT("Player HP before enemy attack: %f"), PS->GetHealth());
-
-						FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
-						PS->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
-
-
-						UE_LOG(Enemy, Log, TEXT("Player HP after enemy attack: %f"), PS->GetHealth());
-
-					}
-				}
-			}
+			UKismetSystemLibrary::DrawDebugLine(GetWorld(), EnemyBase->GetActorLocation(),
+				PlayerLocation, FLinearColor::Blue, 5.0f);
 		}
 	}
 }

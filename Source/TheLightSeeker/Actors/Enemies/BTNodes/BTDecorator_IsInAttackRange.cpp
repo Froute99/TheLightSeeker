@@ -29,8 +29,19 @@ bool UBTDecorator_IsInAttackRange::CalculateRawConditionValue(UBehaviorTreeCompo
 		return false;
 	}
 
-	float attackRange = OwnerComp.GetBlackboardComponent()->GetValueAsFloat(FName("AttackRange"));
-	float distance = Target->GetDistanceTo(ControllingPawn);
-	bResult = (distance <= attackRange);
+	float AttackRange = OwnerComp.GetBlackboardComponent()->GetValueAsFloat(FName("AttackRange"));
+	float Distance = Target->GetDistanceTo(ControllingPawn);
+
+	if (Distance > AttackRange)
+	{
+		bResult = false;
+		return bResult;
+	}
+
+	float AngleInRadians = FMath::DegreesToRadians(AllowableFaceAngleDiff);
+	float DotProductResult = FVector::DotProduct(ControllingPawn->GetActorForwardVector(),
+		(Target->GetActorLocation() - ControllingPawn->GetActorLocation()).GetSafeNormal());
+
+	bResult = (DotProductResult > 0.0f) && (cos(AngleInRadians) < DotProductResult);
 	return bResult;
 }
