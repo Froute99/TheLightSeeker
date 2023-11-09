@@ -29,14 +29,14 @@ void AEnemyBase::BeginPlay()
 
 	if (ASC != nullptr)
 	{
-		UE_LOG(Enemy, Log, TEXT("Enemy ASC initialized"));
+		//UE_LOG(Enemy, Log, TEXT("Enemy ASC initialized"));
 		ASC->InitAbilityActorInfo(this, this);
 		InitializeAttributes();
 		AddStartupEffects();
 		AddCharacterAbilities();
 
 		// health change handle (for future interface)
-		// 
+		HealthChangedDelegateHandle = ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this, &AEnemyBase::OnHealthChanged);
 		// tag change callbacks
 	}
 	else
@@ -96,7 +96,7 @@ UCharacterAttributeSet* AEnemyBase::GetAttributeSet() const
 	return AttributeSet;
 }
 
-void AEnemyBase::HandleDamage(float Damage, const FHitResult & HitResult, const FGameplayTagContainer & SourceTags, ACharacterBase * SourceCharacter, AActor * SourceActor)
+void AEnemyBase::HandleDamage(float Damage, const FHitResult& HitResult, const FGameplayTagContainer& SourceTags, ACharacterBase* SourceCharacter, AActor* SourceActor)
 {
 	FString Name = SourceCharacter->GetName();
 	UE_LOG(LogTemp, Log, TEXT("Damaged from: %s"), *Name);
@@ -105,6 +105,17 @@ void AEnemyBase::HandleDamage(float Damage, const FHitResult & HitResult, const 
 void AEnemyBase::HandleHealthChanged(float Value, const FGameplayTagContainer& SourceTags)
 {
 	UE_LOG(LogTemp, Log, TEXT("Health Changed"));
+}
+
+void AEnemyBase::OnHealthChanged(const FOnAttributeChangeData& Data)
+{
+	float Health = Data.NewValue;
+
+	// If the minion died, handle death
+	if (!IsAlive())
+	{
+		OnDeath();
+	}
 }
 
 float AEnemyBase::GetHealth() const
@@ -209,4 +220,9 @@ void AEnemyBase::AddStartupEffects()
 	}
 
 	ASC->StartupEffectApplied = true;
+}
+
+bool AEnemyBase::IsAlive() const
+{
+	return GetHealth() > 0.0f;
 }

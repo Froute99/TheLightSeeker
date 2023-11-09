@@ -25,9 +25,9 @@ public:
 	void SetTaskDone();
 	
 	UPROPERTY(EditAnywhere, Category = Node)
-	TSubclassOf<class UGameplayAbility> AbilityToActivate;
+	TSubclassOf<class UEnemyGameplayAbility> AbilityToActivate;
 
-	UGameplayAbility* RunningAbility;
+	class UEnemyGameplayAbility* RunningAbility;
 
 	bool IsTaskDone;
 };

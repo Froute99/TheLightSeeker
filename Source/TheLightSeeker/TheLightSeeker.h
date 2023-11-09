@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 
 DECLARE_MULTICAST_DELEGATE(FDelegate_SetAbilityEnd); // Enemy Abilitly End event
+DECLARE_MULTICAST_DELEGATE(FDelegate_HealthChanged); // Enemy Abilitly End event
 
 DECLARE_LOG_CATEGORY_EXTERN(Enemy, Log, All);
 

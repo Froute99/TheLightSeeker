@@ -5,8 +5,9 @@
 #include "CharacterAbilitySystemComponent.h"
 #include "AIController.h"
 #include "Actors/Enemies/EnemyBase.h"
-#include "Enemies/Abilities/GA_MeleeEnemyAttack.h"
+#include "Enemies/Abilities/EnemyGameplayAbility.h"
 #include "Enemies/Abilities/GA_RangeEnemyAttack.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 UBTTask_TriggerAbilityByClass::UBTTask_TriggerAbilityByClass()
 {
@@ -40,18 +41,12 @@ EBTNodeResult::Type UBTTask_TriggerAbilityByClass::ExecuteTask(UBehaviorTreeComp
 	else
 	{
 		IsTaskDone = false;
-		RunningAbility = ASC->GetAnimatingAbility();
+		RunningAbility = Cast<UEnemyGameplayAbility>(ASC->GetAnimatingAbility());
 
-		/*
-		*  EnemyAttack Ability 만들고 상속받은걸로 정리하기?
-		*/
-		if (UGA_MeleeEnemyAttack* Ability = Cast<UGA_MeleeEnemyAttack>(RunningAbility))
-		{
-			Ability->SetAbilityDoneDelegate.AddUFunction(this, FName("SetTaskDone"));
-		}
 		if (UGA_RangeEnemyAttack* Ability = Cast<UGA_RangeEnemyAttack>(RunningAbility))
 		{
-			Ability->SetAbilityDoneDelegate.AddUFunction(this, FName("SetTaskDone"));
+			Ability->SetAbilityDoneDelegateHandle.AddUFunction(this, FName("SetTaskDone"));
+			Ability->SetPlayerReference(Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(FName("Player"))));
 		}
 	}
 
@@ -68,11 +63,7 @@ void UBTTask_TriggerAbilityByClass::TickTask(UBehaviorTreeComponent& OwnerComp, 
 
 void UBTTask_TriggerAbilityByClass::SetTaskDone()
 {
-	UE_LOG(Enemy, Log, TEXT("UBTTask_TriggerAbilityByClass SetTaskDone called"));
 	IsTaskDone = true;
-	if (UGA_MeleeEnemyAttack* Ability = Cast<UGA_MeleeEnemyAttack>(RunningAbility))
-	{
-		Ability->SetAbilityDoneDelegate.Clear();
-	}
+	RunningAbility->SetAbilityDoneDelegateHandle.Clear();
 }
  
