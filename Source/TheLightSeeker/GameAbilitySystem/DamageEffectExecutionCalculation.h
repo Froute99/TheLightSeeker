@@ -13,8 +13,9 @@ UCLASS()
 class THELIGHTSEEKER_API UDamageEffectExecutionCalculation : public UGameplayEffectExecutionCalculation
 {
 	GENERATED_BODY()
-public:
 
+public:
 	UDamageEffectExecutionCalculation();
 	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
+
 };
