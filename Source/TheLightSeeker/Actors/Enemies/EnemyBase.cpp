@@ -38,6 +38,11 @@ void AEnemyBase::BeginPlay()
 		// health change handle (for future interface)
 		HealthChangedDelegateHandle = ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this, &AEnemyBase::OnHealthChanged);
 		// tag change callbacks
+
+
+		UE_LOG(Enemy, Log, TEXT("After init - Health: %f"), GetHealth());
+		UE_LOG(Enemy, Log, TEXT("After init - MaxHealth: %f"), GetMaxHealth());
+		UE_LOG(Enemy, Log, TEXT("After init - Speed: %f"), AttributeSet->GetMovementSpeed());
 	}
 	else
 	{
@@ -186,6 +191,7 @@ void AEnemyBase::InitializeAttributes()
 		UE_LOG(LogTemp, Error, TEXT("%s() Missing DefaultAttributes for %s. Please fill in the character's Blueprint."), *FString(__FUNCTION__), *GetName());
 		return;
 	}
+
 	FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
 	EffectContext.AddSourceObject(this);
 

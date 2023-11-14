@@ -54,6 +54,8 @@ protected:
 
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	UFUNCTION(Blueprintcallable)
 	virtual UCharacterAttributeSet* GetAttributeSet() const;
 
 	void HandleDamage(float Damage, const FHitResult& HitResult, const FGameplayTagContainer& SourceTags,
