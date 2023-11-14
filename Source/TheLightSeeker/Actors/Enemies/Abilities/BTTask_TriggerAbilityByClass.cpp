@@ -42,10 +42,10 @@ EBTNodeResult::Type UBTTask_TriggerAbilityByClass::ExecuteTask(UBehaviorTreeComp
 	{
 		IsTaskDone = false;
 		RunningAbility = Cast<UEnemyGameplayAbility>(ASC->GetAnimatingAbility());
+		Cast<UEnemyGameplayAbility>(RunningAbility)->SetAbilityDoneDelegateHandle.AddUFunction(this, FName("SetTaskDone"));
 
 		if (UGA_RangeEnemyAttack* Ability = Cast<UGA_RangeEnemyAttack>(RunningAbility))
 		{
-			Ability->SetAbilityDoneDelegateHandle.AddUFunction(this, FName("SetTaskDone"));
 			Ability->SetPlayerReference(Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(FName("Player"))));
 		}
 	}
@@ -63,6 +63,7 @@ void UBTTask_TriggerAbilityByClass::TickTask(UBehaviorTreeComponent& OwnerComp, 
 
 void UBTTask_TriggerAbilityByClass::SetTaskDone()
 {
+	UE_LOG(Enemy, Log, TEXT("SetTaskDone"));
 	IsTaskDone = true;
 	RunningAbility->SetAbilityDoneDelegateHandle.Clear();
 }
