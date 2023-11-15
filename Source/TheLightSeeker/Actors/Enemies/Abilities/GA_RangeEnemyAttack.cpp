@@ -30,7 +30,7 @@ void UGA_RangeEnemyAttack::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 	UAnimMontage* MontageToPlay = AttackMontage;
 
 	// Play fire montage and wait for event telling us to spawn the projectile
-	UAT_PlayMontageAndWaitForEvent* Task = UAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, MontageToPlay, FGameplayTagContainer(), 1.0f, NAME_None, false, 1.0f);
+	UAT_PlayMontageAndWaitForEvent* Task = UAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, MontageToPlay, AttackMontageForWeapon, FGameplayTagContainer(), 1.0f, NAME_None, false, 1.0f);
 	Task->OnBlendOut.AddDynamic(this, &UGA_RangeEnemyAttack::OnCompleted);
 	Task->OnCompleted.AddDynamic(this, &UGA_RangeEnemyAttack::OnCompleted);
 	Task->OnInterrupted.AddDynamic(this, &UGA_RangeEnemyAttack::OnCancelled);

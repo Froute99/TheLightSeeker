@@ -26,7 +26,7 @@ void UGA_AssassinEnemyAttack::ActivateAbility(const FGameplayAbilitySpecHandle H
 	UAnimMontage* MontageToPlay = AttackMontage;
 
 	// Play fire montage and wait for event telling us to spawn the projectile
-	UAT_PlayMontageAndWaitForEvent* Task = UAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, MontageToPlay, FGameplayTagContainer(), 0.5f, NAME_None, false, 1.0f);
+	UAT_PlayMontageAndWaitForEvent* Task = UAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, MontageToPlay, AttackMontageForWeapon, FGameplayTagContainer(), 0.5f, NAME_None, false, 1.0f);
 	Task->OnBlendOut.AddDynamic(this, &UGA_AssassinEnemyAttack::OnCompleted);
 	Task->OnCompleted.AddDynamic(this, &UGA_AssassinEnemyAttack::OnCompleted);
 	Task->OnInterrupted.AddDynamic(this, &UGA_AssassinEnemyAttack::OnCancelled);

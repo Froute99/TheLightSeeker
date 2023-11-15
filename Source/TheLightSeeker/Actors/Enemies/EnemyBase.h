@@ -30,17 +30,23 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnDeath();
 
+	UFUNCTION()
+	TWeakObjectPtr<USkeletalMeshComponent> GetWeaponMesh() const;
+
 protected:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Mesh")
-	TObjectPtr<USkeletalMeshComponent> SkeletalMesh;
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Mesh")
+	//TObjectPtr<USkeletalMeshComponent> SkeletalMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
 	class UBehaviorTree* BTAsset;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy")
 	float AttackRange;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Mesh")
+	TObjectPtr<USkeletalMeshComponent> WeaponMesh;
 
 /************************
  * Game Abilities System

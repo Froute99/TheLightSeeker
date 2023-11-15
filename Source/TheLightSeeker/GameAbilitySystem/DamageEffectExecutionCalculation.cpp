@@ -34,6 +34,7 @@ UDamageEffectExecutionCalculation::UDamageEffectExecutionCalculation()
 
 void UDamageEffectExecutionCalculation::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
+	UE_LOG(LogTemp, Error, TEXT("ExecTest"));
 	UAbilitySystemComponent* TargetABSC = ExecutionParams.GetTargetAbilitySystemComponent();
 	AActor* TargetActor = TargetABSC ? TargetABSC->GetAvatarActor() : nullptr;
 
@@ -48,11 +49,18 @@ void UDamageEffectExecutionCalculation::Execute_Implementation(const FGameplayEf
 	EvaluationParameters.SourceTags = SourceTags;
 	EvaluationParameters.TargetTags = TargetTags;
 
+	FGameplayTagContainer Container;
+	Spec.GetAllAssetTags(Container);
+	for (auto tag : Container)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Tag: %s"), tag.GetTagName());
+	}
 
 	//float BaseDamage = FMath::Max<float>(Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Damage")), false, -1.0f), 0.0f);
 	float BaseDamage = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DefaultDamageDef, EvaluationParameters, BaseDamage);
 
+	UE_LOG(LogTemp, Warning, TEXT("BaseDamage: %f"), BaseDamage);
 	float DamageDone = BaseDamage;
 
 	if (DamageDone < 0.0f)		DamageDone = 0.0f;

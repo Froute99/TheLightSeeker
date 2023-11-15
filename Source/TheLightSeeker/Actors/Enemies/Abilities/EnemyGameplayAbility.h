@@ -15,10 +15,13 @@ class THELIGHTSEEKER_API UEnemyGameplayAbility : public UGameplayAbility
 	GENERATED_BODY()
 
 public:
-
 	UEnemyGameplayAbility();
+
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	UAnimMontage* AttackMontage;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	UAnimMontage* AttackMontageForWeapon;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	TSubclassOf<UGameplayEffect> DamageGameplayEffect;

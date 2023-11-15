@@ -6,6 +6,7 @@
 #include "GameAbilitySystem/CharacterAbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Actors/Characters/LightSeekerPlayerState.h"
+#include "Components/CapsuleComponent.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -16,6 +17,9 @@ AEnemyBase::AEnemyBase()
 	AttributeSet = CreateDefaultSubobject<UCharacterAttributeSet>(TEXT("AttributeSet"));
 
 	PrimaryActorTick.bCanEverTick = true;
+
+	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
+	WeaponMesh->SetupAttachment(GetCapsuleComponent());
 }
 
 UBehaviorTree* AEnemyBase::GetBTAsset() const
@@ -89,6 +93,11 @@ void AEnemyBase::OnDeath()
 	{
 		FinishDying();
 	} */
+}
+
+TWeakObjectPtr<USkeletalMeshComponent> AEnemyBase::GetWeaponMesh() const
+{
+	return WeaponMesh;
 }
 
 UAbilitySystemComponent* AEnemyBase::GetAbilitySystemComponent() const

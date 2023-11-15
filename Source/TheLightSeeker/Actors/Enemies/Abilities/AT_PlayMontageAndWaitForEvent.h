@@ -66,6 +66,7 @@ public:
 		UGameplayAbility* OwningAbility,
 		FName TaskInstanceName,
 		UAnimMontage* MontageToPlay,
+		UAnimMontage* WeaponMontageToPlay,
 		FGameplayTagContainer EventTags,
 		float Rate = 1.f,
 		FName StartSection = NAME_None,
@@ -76,6 +77,10 @@ private:
 	/** Montage that is playing */
 	UPROPERTY()
 	UAnimMontage* MontageToPlay;
+
+	/** Optional, Additional Montage to play for weapon */
+	UPROPERTY()
+	UAnimMontage* OptionalMontageToPlay;
 
 	/** List of tags to match against gameplay events */
 	UPROPERTY()

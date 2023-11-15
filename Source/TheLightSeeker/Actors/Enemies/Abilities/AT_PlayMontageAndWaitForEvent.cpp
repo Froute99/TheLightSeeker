@@ -7,6 +7,7 @@
 #include "Animation/AnimInstance.h"
 #include "GameAbilitySystem/CharacterAbilitySystemComponent.h"
 #include "GameFramework/Character.h"
+#include "Actors/Enemies/EnemyBase.h"
 
 UAT_PlayMontageAndWaitForEvent::UAT_PlayMontageAndWaitForEvent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -27,7 +28,6 @@ void UAT_PlayMontageAndWaitForEvent::Activate()
 	if (AbilitySystemComponent.IsValid())
 	{
 		const FGameplayAbilityActorInfo* ActorInfo = Ability->GetCurrentActorInfo();
-		UE_LOG(LogTemp, Log, TEXT("ActorInfo name: %s"), *ActorInfo->OwnerActor.Get()->GetFullName());
 		UAnimInstance* AnimInstance = ActorInfo->GetAnimInstance();
 		if (AnimInstance != nullptr)
 		{
@@ -58,6 +58,19 @@ void UAT_PlayMontageAndWaitForEvent::Activate()
 				}
 
 				bPlayedMontage = true;
+
+				if (OptionalMontageToPlay)
+				{
+					AEnemyBase* EnemyBase = Cast<AEnemyBase>(Character);
+					if (EnemyBase)
+					{
+						UAnimInstance* WeaponAnimInstance = EnemyBase->GetWeaponMesh()->GetAnimInstance();
+						if (WeaponAnimInstance->Montage_Play(OptionalMontageToPlay, Rate) <= 0.0f)
+						{
+							UE_LOG(LogTemp, Warning, TEXT("UGDAbilityTask_PlayMontageAndWaitForEvent failed to play OptionalMontage!"));
+						}
+					}
+				}
 			}
 			else
 			{
@@ -136,12 +149,13 @@ void UAT_PlayMontageAndWaitForEvent::OnDestroy(bool AbilityEnded)
 	Super::OnDestroy(AbilityEnded);
 }
 
-UAT_PlayMontageAndWaitForEvent* UAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(UGameplayAbility* OwningAbility, FName TaskInstanceName, UAnimMontage* MontageToPlay, FGameplayTagContainer EventTags, float Rate, FName StartSection, bool bStopWhenAbilityEnds, float AnimRootMotionTranslationScale)
+UAT_PlayMontageAndWaitForEvent* UAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(UGameplayAbility* OwningAbility, FName TaskInstanceName, UAnimMontage* MontageToPlay, UAnimMontage* WeaponMontageToPlay, FGameplayTagContainer EventTags, float Rate, FName StartSection, bool bStopWhenAbilityEnds, float AnimRootMotionTranslationScale)
 {
 	UAbilitySystemGlobals::NonShipping_ApplyGlobalAbilityScaler_Rate(Rate);
 
 	UAT_PlayMontageAndWaitForEvent* MyObj = NewAbilityTask<UAT_PlayMontageAndWaitForEvent>(OwningAbility, TaskInstanceName);
 	MyObj->MontageToPlay = MontageToPlay;
+	MyObj->OptionalMontageToPlay = WeaponMontageToPlay;
 	MyObj->EventTags = EventTags;
 	MyObj->Rate = Rate;
 	MyObj->StartSection = StartSection;
