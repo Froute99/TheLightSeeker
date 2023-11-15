@@ -77,7 +77,6 @@ void AProjectileBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 				return;
 			}
 			//ASC->ReceiveDamage()
-			
 		}
 	}
 

@@ -17,6 +17,7 @@
 
 #include "ProjectileBase.h"
 
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 ACharacterBase::ACharacterBase()
@@ -54,7 +55,7 @@ void ACharacterBase::PossessedBy(AController* NewController)
 		InitializeStartingValues(PS);
 		InitializeAttributes();
 		AddStartupEffects();
-		AddCharacterAbilities();
+		//AddCharacterAbilities();
 	}
 
 }
@@ -228,8 +229,11 @@ void ACharacterBase::InitializeStartingValues(ALightSeekerPlayerState* PS)
 	InitializeAttributes();
 }
 
-void ACharacterBase::AddCharacterAbilities()
+void ACharacterBase::AddCharacterAbilities(TSubclassOf<UGameplayAbility>& Ability)
 {
+	// TODO: Search about InputID
+	ASC->GiveAbility(FGameplayAbilitySpec(Ability, 1, -1, this));
+
 }
 
 void ACharacterBase::InitializeAttributes()
@@ -253,6 +257,7 @@ void ACharacterBase::InitializeAttributes()
 		FActiveGameplayEffectHandle ActiveGEHandle = ASC->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), ASC.Get());
 	}
 
+	GetCharacterMovement()->MaxWalkSpeed = AttributeSet->GetMovementSpeed();
 }
 
 void ACharacterBase::AddStartupEffects()

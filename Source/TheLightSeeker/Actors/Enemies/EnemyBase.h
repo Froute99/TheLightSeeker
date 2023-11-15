@@ -53,9 +53,9 @@ protected:
  ************************/
 
 protected:
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Abilities")
 	class UCharacterAbilitySystemComponent* ASC;
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Abilities")
 	class UCharacterAttributeSet* AttributeSet;
 
 public:
