@@ -54,7 +54,10 @@ void UDamageEffectExecutionCalculation::Execute_Implementation(const FGameplayEf
 
 	//float BaseDamage = FMath::Max<float>(Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Damage")), false, -1.0f), 0.0f);
 	float BaseDamage = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DefaultDamageDef, EvaluationParameters, BaseDamage);
+	if (ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DefaultDamageDef, EvaluationParameters, BaseDamage))
+	{
+		UE_LOG(LogTemp, Log, TEXT("Base damage: %f"), BaseDamage);
+	}
 
 	float DamageDone = BaseDamage;
 
@@ -67,12 +70,15 @@ void UDamageEffectExecutionCalculation::Execute_Implementation(const FGameplayEf
 		}
 		else
 		{
+			UE_LOG(LogTemp, Log, TEXT("Damage rate: %f"), DamagePercent);
 			DamageDone *= (DamagePercent / 100.f);
 		}
 	}
 
 
+	UE_LOG(LogTemp, Log, TEXT("DamageDone: %f"), DamageDone);
 	if (DamageDone < 0.0f)		DamageDone = 0.0f;
 
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics().HealthProperty, EGameplayModOp::Additive, -DamageDone));
+
 }

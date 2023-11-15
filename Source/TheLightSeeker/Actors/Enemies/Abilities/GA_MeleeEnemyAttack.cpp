@@ -91,7 +91,8 @@ void UGA_MeleeEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 						//UE_LOG(Enemy, Log, TEXT("Player HP before enemy attack: %f"), PS->GetHealth());
 
 						FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
-						PS->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+						//PS->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+						EnemyBase->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*DamageEffectSpecHandle.Data.Get(), PS->GetAbilitySystemComponent());
 
 
 						//UE_LOG(Enemy, Log, TEXT("Player HP after enemy attack: %f"), PS->GetHealth());

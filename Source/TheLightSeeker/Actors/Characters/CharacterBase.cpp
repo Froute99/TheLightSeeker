@@ -17,6 +17,7 @@
 
 #include "ProjectileBase.h"
 
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 ACharacterBase::ACharacterBase()
@@ -256,6 +257,7 @@ void ACharacterBase::InitializeAttributes()
 		FActiveGameplayEffectHandle ActiveGEHandle = ASC->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), ASC.Get());
 	}
 
+	GetCharacterMovement()->MaxWalkSpeed = AttributeSet->GetMovementSpeed();
 }
 
 void ACharacterBase::AddStartupEffects()

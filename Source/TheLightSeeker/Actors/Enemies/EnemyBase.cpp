@@ -16,6 +16,7 @@ AEnemyBase::AEnemyBase()
 	AttributeSet = CreateDefaultSubobject<UCharacterAttributeSet>(TEXT("AttributeSet"));
 
 	PrimaryActorTick.bCanEverTick = true;
+
 }
 
 UBehaviorTree* AEnemyBase::GetBTAsset() const
@@ -29,7 +30,7 @@ void AEnemyBase::BeginPlay()
 
 	if (ASC != nullptr)
 	{
-		//UE_LOG(Enemy, Log, TEXT("Enemy ASC initialized"));
+		UE_LOG(Enemy, Log, TEXT("Enemy ASC initialized"));
 		ASC->InitAbilityActorInfo(this, this);
 		InitializeAttributes();
 		AddStartupEffects();
@@ -99,12 +100,12 @@ UCharacterAttributeSet* AEnemyBase::GetAttributeSet() const
 void AEnemyBase::HandleDamage(float Damage, const FHitResult& HitResult, const FGameplayTagContainer& SourceTags, ACharacterBase* SourceCharacter, AActor* SourceActor)
 {
 	FString Name = SourceCharacter->GetName();
-	UE_LOG(LogTemp, Log, TEXT("Damaged from: %s"), *Name);
+	UE_LOG(Enemy, Log, TEXT("Damaged from: %s"), *Name);
 }
 
 void AEnemyBase::HandleHealthChanged(float Value, const FGameplayTagContainer& SourceTags)
 {
-	UE_LOG(LogTemp, Log, TEXT("Health Changed"));
+	UE_LOG(Enemy, Log, TEXT("Health Changed"));
 }
 
 void AEnemyBase::OnHealthChanged(const FOnAttributeChangeData& Data)
@@ -183,7 +184,7 @@ void AEnemyBase::InitializeAttributes()
 
 	if (!DefaultAttributes)
 	{
-		UE_LOG(LogTemp, Error, TEXT("%s() Missing DefaultAttributes for %s. Please fill in the character's Blueprint."), *FString(__FUNCTION__), *GetName());
+		UE_LOG(Enemy, Error, TEXT("%s() Missing DefaultAttributes for %s. Please fill in the character's Blueprint."), *FString(__FUNCTION__), *GetName());
 		return;
 	}
 	FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();
@@ -196,10 +197,13 @@ void AEnemyBase::InitializeAttributes()
 		FActiveGameplayEffectHandle ActiveGEHandle = ASC->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), ASC);
 	}
 	
+	// Temporary
+	SetHealth(AttributeSet->GetMaxHealth());
+
 	// set WalkSpeed based on attribute
 	GetCharacterMovement()->MaxWalkSpeed = AttributeSet->GetMovementSpeed();
-}	
-	
+}
+
 void AEnemyBase::AddStartupEffects()
 {
 	if(GetLocalRole() != ROLE_Authority || ASC == nullptr || ASC->StartupEffectApplied)
