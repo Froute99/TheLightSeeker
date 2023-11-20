@@ -55,7 +55,7 @@ void ACharacterBase::PossessedBy(AController* NewController)
 		InitializeStartingValues(PS);
 		InitializeAttributes();
 		AddStartupEffects();
-		//AddCharacterAbilities();
+		AddCharacterAbilities();
 	}
 
 }
@@ -229,10 +229,22 @@ void ACharacterBase::InitializeStartingValues(ALightSeekerPlayerState* PS)
 	InitializeAttributes();
 }
 
-void ACharacterBase::AddCharacterAbilities(TSubclassOf<UGameplayAbility>& Ability)
+void ACharacterBase::AddCharacterAbilities(/*TSubclassOf<UGameplayAbility>& Ability*/)
 {
-	// TODO: Search about InputID
-	ASC->GiveAbility(FGameplayAbilitySpec(Ability, 1, -1, this));
+	//// TODO: Search about InputID
+	//ASC->GiveAbility(FGameplayAbilitySpec(Ability, 1, -1, this));
+
+	if (GetLocalRole() != ROLE_Authority || !ASC.IsValid() || ASC->CharacterAbilitiesGiven)
+	{
+		return;
+	}
+
+	for (TSubclassOf<UGameplayAbility>& StartupAbility : CharacterAbilities)
+	{
+		ASC->GiveAbility(FGameplayAbilitySpec(StartupAbility, 1, -1, this));
+	}
+
+	ASC->CharacterAbilitiesGiven = true;
 
 }
 
@@ -267,24 +279,33 @@ void ACharacterBase::AddStartupEffects()
 
 void ACharacterBase::Attack(const FInputActionValue& Value)
 {
-
-	GetMesh()->PlayAnimation(AttackMontage, false);
-
-	FVector Location = GetActorLocation();
-	FVector LocationOffset{ 0,0,30.f };
-
-	FRotator Rotation = GetActorRotation();
-	FRotator RotationOffset{ 0,90.f,0 };
-
-	FActorSpawnParameters Parameter{};
-	Parameter.Instigator = this;
-	AProjectileBase* Arrow = GetWorld()->SpawnActor<AProjectileBase>(ArrowActor, Location + LocationOffset, Rotation, Parameter);
-	
-	if (Arrow)
+	bool Succeed = ASC->TryActivateAbilitiesByTag(FGameplayTag::RequestGameplayTag(FName("Ability.Player.DefaultAttack")).GetSingleTagContainer());
+	if (Succeed)
 	{
-		FVector LaunchDirection = GetActorForwardVector();
-		Arrow->FireInDirection(LaunchDirection);
+		UE_LOG(LogTemp, Log, TEXT("Activate Default Attack"));
 	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("Can't activate Default Attack"));
+	}
+
+	//GetMesh()->PlayAnimation(AttackMontage, false);
+
+	//FVector Location = GetActorLocation();
+	//FVector LocationOffset{ 0,0,30.f };
+
+	//FRotator Rotation = GetActorRotation();
+	//FRotator RotationOffset{ 0,90.f,0 };
+
+	//FActorSpawnParameters Parameter{};
+	//Parameter.Instigator = this;
+	//AProjectileBase* Arrow = GetWorld()->SpawnActor<AProjectileBase>(ArrowActor, Location + LocationOffset, Rotation, Parameter);
+	//
+	//if (Arrow)
+	//{
+	//	FVector LaunchDirection = GetActorForwardVector();
+	//	Arrow->FireInDirection(LaunchDirection);
+	//}
 
 }
 

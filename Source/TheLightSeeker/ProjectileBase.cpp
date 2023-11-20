@@ -10,6 +10,8 @@
 
 #include "GameAbilitySystem/CharacterAbilitySystemComponent.h"
 
+#include "GameAbilitySystem/CharacterDefaultDamageEffect.h"
+
 // Sets default values
 AProjectileBase::AProjectileBase()
 {
@@ -43,7 +45,7 @@ AProjectileBase::AProjectileBase()
 void AProjectileBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
@@ -64,19 +66,43 @@ void AProjectileBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 	{
 		AEnemyBase* Overlapped = Cast<AEnemyBase>(OtherActor);
 
-		if (Overlapped == nullptr) return;
+		if (!IsValid(Overlapped)) return;
 
-		if (Overlapped->StaticClass() == AEnemyBase::StaticClass())
+		if (!DamageEffectSpecHandle.IsValid())
+		{
+			UE_LOG(LogTemp, Error, TEXT("%s() DamageEffectSpecHandle not created: %s."), *FString(__FUNCTION__), *GetName());
+			return;
+		}
+
+
+		//if (Overlapped->StaticClass() == AEnemyBase::StaticClass())		// redundant check
 		{
 			UE_LOG(LogTemp, Log, TEXT("Overlapped with enemy"));
-			UCharacterAbilitySystemComponent* ASC = Cast<UCharacterAbilitySystemComponent>(Overlapped->GetAbilitySystemComponent());
+			UCharacterAbilitySystemComponent* EnemyASC = Cast<UCharacterAbilitySystemComponent>(Overlapped->GetAbilitySystemComponent());
 
-			if (!ASC)
+			if (!EnemyASC)
 			{
 				UE_LOG(LogTemp, Log, TEXT("ASC was null"));
 				return;
 			}
-			//ASC->ReceiveDamage()
+
+			UCharacterAbilitySystemComponent* PlayerASC = Cast<UCharacterAbilitySystemComponent>(Cast<ACharacterBase>(GetInstigator())->GetAbilitySystemComponent());
+			PlayerASC->ApplyGameplayEffectSpecToTarget(*DamageEffectSpecHandle.Data.Get(), EnemyASC);
+
+
+			//EnemyASC->ReceiveDamage()
+
+			//if (!IsValid(ProjectileEffect))
+			//{
+			//	UE_LOG(LogTemp, Error, TEXT("%s() Missing Projectile Effect for %s."), *FString(__FUNCTION__), *GetName());
+			//	return;
+			//}
+			
+
+
+			
+			//ACharacterBase* Player = Cast<ACharacterBase>(GetInstigator());
+			//Player->GetAbilitySystemComponent()->ApplyGameplayEffectToTarget(ProjectileEffect, Overlapped->GetAbilitySystemComponent());
 		}
 	}
 

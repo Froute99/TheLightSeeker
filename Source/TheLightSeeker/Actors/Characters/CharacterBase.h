@@ -65,7 +65,9 @@ protected:
  * Game Abilities System
  ************************/
 
+public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Abilities")
 		TWeakObjectPtr<class UCharacterAbilitySystemComponent> ASC;
@@ -98,7 +100,7 @@ protected:
 
 
 	UFUNCTION(BlueprintCallable, Category = "Abilities")
-		virtual void AddCharacterAbilities(TSubclassOf<UGameplayAbility>& Ability);
+		virtual void AddCharacterAbilities(/*TSubclassOf<UGameplayAbility>& Ability*/);
 	virtual void InitializeAttributes();
 	virtual void AddStartupEffects();
 

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Abilities/GameplayAbility.h"
 #include "ProjectileBase.generated.h"
 
 UCLASS()
@@ -39,5 +40,9 @@ public:
 		void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 			bool bFromSweep, const FHitResult& SweepResult);
+
+
+	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
+		FGameplayEffectSpecHandle DamageEffectSpecHandle;
 
 };
