@@ -84,7 +84,8 @@ public:
 
 
 	void SetCharacterLevel(float Value);
-	void SetHealth(float Value);
+	UFUNCTION(BlueprintCallable, Category = "Abilities")
+		void SetHealth(float Value);
 	void SetMaxHealth(float Value);
 
 	UFUNCTION(BlueprintCallable, Category = "Abilities")
@@ -140,6 +141,14 @@ public:
 
 	void Attack(const FInputActionValue& Value);
 	void Dodge(const FInputActionValue& Value);
+
+
+
+
+public:
+	// This member is temporary here. Should moved to HUD class or something.
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+		class UPlayerHealthBarWidget* HealthBar;
 
 
 };

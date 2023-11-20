@@ -27,6 +27,7 @@ public class TheLightSeeker : ModuleRules
 			"TheLightSeeker/",
 			"TheLightSeeker/Actors",
 			"TheLightSeeker/GameAbilitySystem",
+			"TheLightSeeker/UI",
 		});
 
 		// To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
@@ -35,7 +36,8 @@ public class TheLightSeeker : ModuleRules
 		PublicIncludePaths.AddRange(new string[] {
 			"TheLightSeeker/",
 			"TheLightSeeker/Actors",
-
+			"TheLightSeeker/GameAbilitySystem",
+			"TheLightSeeker/UI",
 		});
 
 	}
