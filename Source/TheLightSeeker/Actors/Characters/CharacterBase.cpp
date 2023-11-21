@@ -214,7 +214,6 @@ void ACharacterBase::OnRep_PlayerState()
 
 void ACharacterBase::InitializeStartingValues(ALightSeekerPlayerState* PS)
 {
-	UE_LOG(LogTemp, Log, TEXT("InitializeStartingValues"));
 	ASC = Cast<UCharacterAbilitySystemComponent>(PS->GetAbilitySystemComponent());
 	PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
 

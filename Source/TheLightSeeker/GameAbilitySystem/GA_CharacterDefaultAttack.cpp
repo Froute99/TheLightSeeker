@@ -28,6 +28,7 @@ void UGA_CharacterDefaultAttack::ActivateAbility(const FGameplayAbilitySpecHandl
 	//Task->EventReceived.AddDynamic(this, &UGA_CharacterDefaultAttack::EventReceived);
 	//Task->ReadyForActivation();
 
+
 	ACharacterBase* Player = Cast<ACharacterBase>(Cast<ALightSeekerPlayerState>(GetActorInfo().OwnerActor.Get())->GetPawn());
 	FActorSpawnParameters Parameter{};
 	Parameter.Instigator = Player;
@@ -57,10 +58,6 @@ void UGA_CharacterDefaultAttack::ActivateAbility(const FGameplayAbilitySpecHandl
 
 
 
-
-
-
-
 }
 
 void UGA_CharacterDefaultAttack::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -82,48 +79,48 @@ void UGA_CharacterDefaultAttack::EventReceived(FGameplayTag EventTag, FGameplayE
 		return;
 	}
 
-	ACharacterBase* Player = Cast<ACharacterBase>(Cast<ALightSeekerPlayerState>(GetActorInfo().OwnerActor.Get())->GetPawn());
-	//ACharacterBase* Player = Cast<ACharacterBase>(GetActorInfo().OwnerActor.Get());
-	//ACharacterBase* Player = Cast<ACharacterBase>(GetOwningActorFromActorInfo());
-	if (!Player)
-	{
-		UE_LOG(LogTemp, Log, TEXT("No player"));
-		return;
-	}
+	//ACharacterBase* Player = Cast<ACharacterBase>(Cast<ALightSeekerPlayerState>(GetActorInfo().OwnerActor.Get())->GetPawn());
+	////ACharacterBase* Player = Cast<ACharacterBase>(GetActorInfo().OwnerActor.Get());
+	////ACharacterBase* Player = Cast<ACharacterBase>(GetOwningActorFromActorInfo());
+	//if (!Player)
+	//{
+	//	UE_LOG(LogTemp, Log, TEXT("No player"));
+	//	return;
+	//}
 
-	// Only spawn projectiles on the Server.
-	// Predicting projectiles is an advanced topic not covered in this example.
-	if (GetOwningActorFromActorInfo()->GetLocalRole() == ROLE_Authority
-		&& EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.Player.DefaultAttack")))
-	{
-		//AEnemyBase* EnemyBase = Cast<AEnemyBase>(GetActorInfo().OwnerActor.Get());
-		UE_LOG(LogTemp, Log, TEXT("Event Received"));
+	//// Only spawn projectiles on the Server.
+	//// Predicting projectiles is an advanced topic not covered in this example.
+	//if (GetOwningActorFromActorInfo()->GetLocalRole() == ROLE_Authority
+	//	&& EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.Player.DefaultAttack")))
+	//{
+	//	//AEnemyBase* EnemyBase = Cast<AEnemyBase>(GetActorInfo().OwnerActor.Get());
+	//	UE_LOG(LogTemp, Log, TEXT("Event Received"));
 
-		FActorSpawnParameters Parameter{};
-		Parameter.Instigator = Player;
+	//	FActorSpawnParameters Parameter{};
+	//	Parameter.Instigator = Player;
 
 
-		//GetMesh()->PlayAnimation(AttackMontage, false);
+	//	//GetMesh()->PlayAnimation(AttackMontage, false);
 
-		FVector Location = Player->GetActorLocation();
-		FVector LocationOffset{ 0,0,30.f };
+	//	FVector Location = Player->GetActorLocation();
+	//	FVector LocationOffset{ 0,0,30.f };
 
-		FRotator Rotation = Player->GetActorRotation();
-		FRotator RotationOffset{ 0,90.f,0 };
+	//	FRotator Rotation = Player->GetActorRotation();
+	//	FRotator RotationOffset{ 0,90.f,0 };
 
-		AProjectileBase* Arrow = GetWorld()->SpawnActor<AProjectileBase>(ArrowActor, Location + LocationOffset, Rotation, Parameter);
+	//	AProjectileBase* Arrow = GetWorld()->SpawnActor<AProjectileBase>(ArrowActor, Location + LocationOffset, Rotation, Parameter);
 
-		if (Arrow)
-		{
-			Arrow->DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
-			FVector LaunchDirection = Player->GetActorForwardVector();
-			Arrow->FireInDirection(LaunchDirection);
-		}
+	//	if (Arrow)
+	//	{
+	//		Arrow->DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
+	//		FVector LaunchDirection = Player->GetActorForwardVector();
+	//		Arrow->FireInDirection(LaunchDirection);
+	//	}
 
-		// DEBUG
-		//UKismetSystemLibrary::DrawDebugLine(GetWorld(), EnemyBase->GetActorLocation(),
-		//	PlayerLocation, FLinearColor::Blue, 5.0f);
-	}
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	//	// DEBUG
+	//	//UKismetSystemLibrary::DrawDebugLine(GetWorld(), EnemyBase->GetActorLocation(),
+	//	//	PlayerLocation, FLinearColor::Blue, 5.0f);
+	//}
+	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 
 }

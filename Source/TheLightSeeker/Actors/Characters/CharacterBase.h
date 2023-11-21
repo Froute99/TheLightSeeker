@@ -143,8 +143,6 @@ public:
 	void Dodge(const FInputActionValue& Value);
 
 
-
-
 public:
 	// This member is temporary here. Should moved to HUD class or something.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
