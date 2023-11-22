@@ -92,12 +92,16 @@ void AEnemyBase::OnDied()
 	}
 	else
 	{
+		UE_LOG(Enemy, Log, TEXT("Enemy Missing Death Animation Montage!"));
+		DropItem();
 		Destroy();
 	}
 }
 
 void AEnemyBase::DropItem()
 {
+	UE_LOG(Enemy, Log, TEXT("Enemy dropped Item"));
+	
 	FActorSpawnParameters Parameter{};
 	Parameter.Instigator = this;
 	FVector LaunchLocation = GetActorLocation();
@@ -106,6 +110,7 @@ void AEnemyBase::DropItem()
 
 void AEnemyBase::FinishDying()
 {
+	UE_LOG(Enemy, Log, TEXT("Enemy FinishDying"));
 	Destroy();
 }
 
@@ -142,6 +147,7 @@ void AEnemyBase::OnHealthChanged(const FOnAttributeChangeData& Data)
 	// If the minion died, handle death
 	if (!IsAlive())
 	{
+		UE_LOG(Enemy, Log, TEXT("OnHealthChanged - OnDied"));
 		OnDied();
 	}
 }
@@ -171,6 +177,7 @@ void AEnemyBase::SetHealth(float Value)
 		AttributeSet->SetHealth(Value);
 		if (Value <= 0.0f)
 		{
+			UE_LOG(Enemy, Log, TEXT("SetHealth - OnDied"));
 			OnDied();
 		}
 	}
