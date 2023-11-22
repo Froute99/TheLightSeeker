@@ -8,6 +8,7 @@
 
 #include "Actors/Characters/CharacterBase.h"
 
+#include "UI/PlayerHealthBarWidget.h"
 
 
 ALightSeekerPlayerState::ALightSeekerPlayerState()
@@ -68,6 +69,28 @@ void ALightSeekerPlayerState::BeginPlay()
 void ALightSeekerPlayerState::HealthChanged(const FOnAttributeChangeData& Data)
 {
 	UE_LOG(LogTemp, Log, TEXT("%s : Player Health Changed"), *FString(__FUNCTION__));
+
+
+	UPlayerHealthBarWidget* HealthBar = nullptr;
+
+	HealthBar = Cast<ACharacterBase>(GetPlayerController()->GetPawn())->HealthBar;
+
+	if (IsValid(HealthBar))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Health: %f"), Data.NewValue);
+		HealthBar->SetHealth(Data.NewValue);
+		if (FMath::IsNearlyZero(Data.NewValue))
+		{
+			// TODO: Add "Die" functions here
+			UE_LOG(LogTemp, Log, TEXT("Character Dead"));
+
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("HealthBar invalid"));
+	}
+
 }
 
 void ALightSeekerPlayerState::MaxHealthChanged(const FOnAttributeChangeData& Data)

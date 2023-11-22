@@ -25,4 +25,18 @@ public:
 
 	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+		TSubclassOf<UGameplayEffect> DamageGameplayEffect;
+
+
+
+	//UFUNCTION()
+	//	virtual void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	//UFUNCTION()
+	//	virtual void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	virtual void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
+
+
 };

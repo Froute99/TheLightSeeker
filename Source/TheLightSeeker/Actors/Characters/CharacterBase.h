@@ -65,7 +65,9 @@ protected:
  * Game Abilities System
  ************************/
 
+public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Abilities")
 		TWeakObjectPtr<class UCharacterAbilitySystemComponent> ASC;
@@ -82,7 +84,8 @@ protected:
 
 
 	void SetCharacterLevel(float Value);
-	void SetHealth(float Value);
+	UFUNCTION(BlueprintCallable, Category = "Abilities")
+		void SetHealth(float Value);
 	void SetMaxHealth(float Value);
 
 	UFUNCTION(BlueprintCallable, Category = "Abilities")
@@ -98,7 +101,7 @@ protected:
 
 
 	UFUNCTION(BlueprintCallable, Category = "Abilities")
-		virtual void AddCharacterAbilities(TSubclassOf<UGameplayAbility>& Ability);
+		virtual void AddCharacterAbilities(/*TSubclassOf<UGameplayAbility>& Ability*/);
 	virtual void InitializeAttributes();
 	virtual void AddStartupEffects();
 
@@ -138,6 +141,12 @@ protected:
 
 	void Attack(const FInputActionValue& Value);
 	void Dodge(const FInputActionValue& Value);
+
+
+public:
+	// This member is temporary here. Should moved to HUD class or something.
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+		class UPlayerHealthBarWidget* HealthBar;
 
 
 };

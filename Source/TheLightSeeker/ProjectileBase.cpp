@@ -10,6 +10,8 @@
 
 #include "GameAbilitySystem/CharacterAbilitySystemComponent.h"
 
+#include "GameAbilitySystem/CharacterDefaultDamageEffect.h"
+
 // Sets default values
 AProjectileBase::AProjectileBase()
 {
@@ -43,7 +45,7 @@ AProjectileBase::AProjectileBase()
 void AProjectileBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
@@ -62,22 +64,51 @@ void AProjectileBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 {
 	if (OtherActor && (OtherActor != this))
 	{
+		UE_LOG(LogTemp, Log, TEXT("Overlap"));
 		AEnemyBase* Overlapped = Cast<AEnemyBase>(OtherActor);
 
-		if (Overlapped == nullptr) return;
+		if (!IsValid(Overlapped)) return;
 
-		if (Overlapped->StaticClass() == AEnemyBase::StaticClass())
+		if (!DamageEffectSpecHandle.IsValid())
 		{
-			UE_LOG(LogTemp, Log, TEXT("Overlapped with enemy"));
-			UCharacterAbilitySystemComponent* ASC = Cast<UCharacterAbilitySystemComponent>(Overlapped->GetAbilitySystemComponent());
-
-			if (!ASC)
-			{
-				UE_LOG(LogTemp, Log, TEXT("ASC was null"));
-				return;
-			}
-			//ASC->ReceiveDamage()
+			UE_LOG(LogTemp, Error, TEXT("%s() DamageEffectSpecHandle not created: %s."), *FString(__FUNCTION__), *GetName());
+			return;
 		}
+
+
+		//if (Overlapped->StaticClass() == AEnemyBase::StaticClass())		// redundant check
+		UCharacterAbilitySystemComponent* EnemyASC = Cast<UCharacterAbilitySystemComponent>(Overlapped->GetAbilitySystemComponent());
+
+		if (!EnemyASC)
+		{
+			UE_LOG(LogTemp, Log, TEXT("Enemy ASC was null"));
+			return;
+		}
+
+		UCharacterAbilitySystemComponent* PlayerASC = Cast<UCharacterAbilitySystemComponent>(Cast<ACharacterBase>(GetInstigator())->GetAbilitySystemComponent());
+		if (!PlayerASC)
+		{
+			UE_LOG(LogTemp, Log, TEXT("Player ASC was null"));
+			return;
+		}
+
+		//PlayerASC->ApplyGameplayEffectSpecToTarget(*DamageEffectSpecHandle.Data.Get(), EnemyASC);
+		//EnemyASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+		
+
+		//EnemyASC->ReceiveDamage()
+
+		//if (!IsValid(ProjectileEffect))
+		//{
+		//	UE_LOG(LogTemp, Error, TEXT("%s() Missing Projectile Effect for %s."), *FString(__FUNCTION__), *GetName());
+		//	return;
+		//}
+
+
+
+
+		//ACharacterBase* Player = Cast<ACharacterBase>(GetInstigator());
+		//Player->GetAbilitySystemComponent()->ApplyGameplayEffectToTarget(ProjectileEffect, Overlapped->GetAbilitySystemComponent());
 	}
 
 }

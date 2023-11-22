@@ -24,8 +24,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
-	FGameplayEffectSpecHandle DamageEffectSpecHandle;
+	//UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
+	//FGameplayEffectSpecHandle DamageEffectSpecHandle;
 
 	UFUNCTION()
 	void OnBeginOverlap_EnemyAttack(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,

@@ -37,7 +37,6 @@ UDamageEffectExecutionCalculation::UDamageEffectExecutionCalculation()
 
 void UDamageEffectExecutionCalculation::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
-	UE_LOG(LogTemp, Error, TEXT("ExecTest"));
 	UAbilitySystemComponent* TargetABSC = ExecutionParams.GetTargetAbilitySystemComponent();
 	AActor* TargetActor = TargetABSC ? TargetABSC->GetAvatarActor() : nullptr;
 
@@ -61,12 +60,9 @@ void UDamageEffectExecutionCalculation::Execute_Implementation(const FGameplayEf
 
 	//float BaseDamage = FMath::Max<float>(Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Damage")), false, -1.0f), 0.0f);
 	float BaseDamage = 0.f;
-	if (ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DefaultDamageDef, EvaluationParameters, BaseDamage))
-	{
-		UE_LOG(LogTemp, Log, TEXT("Base damage: %f"), BaseDamage);
-	}
-
-	UE_LOG(LogTemp, Warning, TEXT("BaseDamage: %f"), BaseDamage);
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DefaultDamageDef, EvaluationParameters, BaseDamage);
+	
+	UE_LOG(LogTemp, Log, TEXT("BaseDamage: %f"), BaseDamage);
 	float DamageDone = BaseDamage;
 
 	float DamagePercent = 0.f;
@@ -74,18 +70,16 @@ void UDamageEffectExecutionCalculation::Execute_Implementation(const FGameplayEf
 	{
 		if (DamagePercent <= 0.f)
 		{
-			UE_LOG(LogTemp, Log, TEXT("%s: Damage rate was 0 or below"), *FString(__FUNCTION__));
+			UE_LOG(LogTemp, Log, TEXT("%s: Damage Percentage was 0 or below"), *FString(__FUNCTION__));
 		}
 		else
 		{
-			UE_LOG(LogTemp, Log, TEXT("Damage rate: %f"), DamagePercent);
+			UE_LOG(LogTemp, Log, TEXT("Damage Percentage: %f"), DamagePercent);
 			DamageDone *= (DamagePercent / 100.f);
 		}
 	}
 
-
-	UE_LOG(LogTemp, Log, TEXT("DamageDone: %f"), DamageDone);
-	if (DamageDone < 0.0f)		DamageDone = 0.0f;
+	if (DamageDone < 0.0f) DamageDone = 0.0f;
 
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics().HealthProperty, EGameplayModOp::Additive, -DamageDone));
 
