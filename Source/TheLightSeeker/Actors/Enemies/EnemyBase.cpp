@@ -7,6 +7,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Actors/Characters/LightSeekerPlayerState.h"
 #include "Components/CapsuleComponent.h"
+#include "Actors/Item.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -59,40 +60,53 @@ float AEnemyBase::GetAttackRange() const
 	return AttackRange;
 }
 
-void AEnemyBase::OnDeath()
+void AEnemyBase::OnDied()
 {
-	UE_LOG(Enemy, Log, TEXT("Enemy OnDeath Called"));
-	Destroy();
-
-	/*
-	// Only runs on Server
+	UE_LOG(Enemy, Log, TEXT("OnDied Called"));
 	RemoveCharacterAbilities();
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCharacterMovement()->GravityScale = 0;
 	GetCharacterMovement()->Velocity = FVector(0);
 
-	OnCharacterDied.Broadcast(this);
+	//OnCharacterDied.Broadcast(this);
 
-	if (AbilitySystemComponent.IsValid())
+	if (ASC)
 	{
-		AbilitySystemComponent->CancelAllAbilities();
+		ASC->CancelAllAbilities();
 
-		FGameplayTagContainer EffectTagsToRemove;
-		EffectTagsToRemove.AddTag(EffectRemoveOnDeathTag);
-		int32 NumEffectsRemoved = AbilitySystemComponent->RemoveActiveEffectsWithTags(EffectTagsToRemove);
-
-		AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
+		//FGameplayTagContainer EffectTagsToRemove;
+		//EffectTagsToRemove.AddTag(EffectRemoveOnDeathTag);
+		//int32 NumEffectsRemoved = AbilitySystemComponent->RemoveActiveEffectsWithTags(EffectTagsToRemove);
+		//
+		//AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
 	}
 
-	if (DeathMontage)
+	if (DeathAnimMontage)
 	{
-		PlayAnimMontage(DeathMontage);
+		PlayAnimMontage(DeathAnimMontage);
+		if (WeaponDeathAnimMontage)
+		{
+			WeaponMesh->GetAnimInstance()->Montage_Play(WeaponDeathAnimMontage);
+		}
 	}
 	else
 	{
-		FinishDying();
-	} */
+		Destroy();
+	}
+}
+
+void AEnemyBase::DropItem()
+{
+	FActorSpawnParameters Parameter{};
+	Parameter.Instigator = this;
+	FVector LaunchLocation = GetActorLocation();
+	AItem* SpawnedItem = GetWorld()->SpawnActor<AItem>(Item, LaunchLocation, FRotator(), Parameter);
+}
+
+void AEnemyBase::FinishDying()
+{
+	Destroy();
 }
 
 TWeakObjectPtr<USkeletalMeshComponent> AEnemyBase::GetWeaponMesh() const
@@ -128,7 +142,7 @@ void AEnemyBase::OnHealthChanged(const FOnAttributeChangeData& Data)
 	// If the minion died, handle death
 	if (!IsAlive())
 	{
-		OnDeath();
+		OnDied();
 	}
 }
 
@@ -157,7 +171,7 @@ void AEnemyBase::SetHealth(float Value)
 		AttributeSet->SetHealth(Value);
 		if (Value <= 0.0f)
 		{
-			OnDeath();
+			OnDied();
 		}
 	}
 }
@@ -243,4 +257,31 @@ void AEnemyBase::AddStartupEffects()
 bool AEnemyBase::IsAlive() const
 {
 	return GetHealth() > 0.0f;
+}
+
+
+void AEnemyBase::RemoveCharacterAbilities()
+{
+	if (GetLocalRole() != ROLE_Authority || !ASC || !ASC->CharacterAbilitiesGiven)
+	{
+		return;
+	}
+
+	// Remove any abilities added from a previous call. This checks to make sure the ability is in the startup 'CharacterAbilities' array.
+	TArray<FGameplayAbilitySpecHandle> AbilitiesToRemove;
+	for (const FGameplayAbilitySpec& Spec : ASC->GetActivatableAbilities())
+	{
+		if (Spec.SourceObject == this)
+		{
+			AbilitiesToRemove.Add(Spec.Handle);
+		}
+	}
+
+	// Do in two passes so the removal happens after we have the full list
+	for (int32 i = 0; i < AbilitiesToRemove.Num(); i++)
+	{
+		ASC->ClearAbility(AbilitiesToRemove[i]);
+	}
+
+	ASC->CharacterAbilitiesGiven = false;
 }

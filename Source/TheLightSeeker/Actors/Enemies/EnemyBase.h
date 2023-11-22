@@ -28,7 +28,13 @@ public:
 	float GetAttackRange() const;
 
 	UFUNCTION(BlueprintCallable)
-	void OnDeath();
+	void OnDied();
+
+	UFUNCTION(BlueprintCallable)
+	void DropItem();
+
+	UFUNCTION(BlueprintCallable)
+	void FinishDying();
 
 	UFUNCTION()
 	TWeakObjectPtr<USkeletalMeshComponent> GetWeaponMesh() const;
@@ -47,6 +53,15 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Mesh")
 	TObjectPtr<USkeletalMeshComponent> WeaponMesh;
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite, Category = "Enemy")
+	TObjectPtr<UAnimMontage> DeathAnimMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy")
+	TObjectPtr<UAnimMontage> WeaponDeathAnimMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
+	TSubclassOf<class AItem> Item;
 
 /************************
  * Game Abilities System
@@ -94,4 +109,6 @@ public:
 	bool IsAlive() const;
 
 	FDelegateHandle HealthChangedDelegateHandle;
+
+	void RemoveCharacterAbilities();
 };
