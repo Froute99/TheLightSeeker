@@ -42,7 +42,7 @@ public:
 			bool bFromSweep, const FHitResult& SweepResult);
 
 
-	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true), Category = "Effect")
+	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
 		FGameplayEffectSpecHandle DamageEffectSpecHandle;
 
 };

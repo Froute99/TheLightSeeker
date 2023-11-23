@@ -76,7 +76,7 @@ public:
 
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Abilities")
-		TArray<TSubclassOf<class UGameplayAbility>> CharacterAbilities;
+		TArray<TSubclassOf<class UCharacterGameplayAbility>> CharacterAbilities;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Abilities")
 		TSubclassOf<class UGameplayEffect> DefaultAttributes;
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Abilities")
@@ -147,6 +147,5 @@ public:
 	// This member is temporary here. Should moved to HUD class or something.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		class UPlayerHealthBarWidget* HealthBar;
-
 
 };

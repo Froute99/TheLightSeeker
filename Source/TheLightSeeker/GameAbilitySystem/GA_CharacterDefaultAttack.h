@@ -15,15 +15,23 @@ class THELIGHTSEEKER_API UGA_CharacterDefaultAttack : public UCharacterGameplayA
 	GENERATED_BODY()
 
 public:
+	UGA_CharacterDefaultAttack();
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = MontageAbility)
 		TObjectPtr<UAnimMontage> MontageToPlay;
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
 	UFUNCTION()
+		void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	UFUNCTION()
+		void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	UFUNCTION()
 		void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-		TSubclassOf<AActor> ArrowActor;
+		TSubclassOf<AActor> ArrowClass;
 
 };

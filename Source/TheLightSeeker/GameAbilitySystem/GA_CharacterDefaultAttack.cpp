@@ -7,58 +7,52 @@
 #include "Actors/Enemies/Abilities/AT_PlayMontageAndWaitForEvent.h"
 #include "Characters/CharacterBase.h"
 #include "ProjectileBase.h"
+#include "Kismet/KismetMathLibrary.h"
+
+UGA_CharacterDefaultAttack::UGA_CharacterDefaultAttack()
+{
+	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+
+}
 
 void UGA_CharacterDefaultAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	//UE_LOG(LogTemp, Log, TEXT("ActivateAbility"));
-	//if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
-	//{
-	//	return;
-	//}
-
-	////Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);]
-
-	//if (MontageToPlay.IsNull())
-	//{
-	//	UE_LOG(LogTemp, Error, TEXT("%s() MontageToPlay not set in %s."), *FString(__FUNCTION__), *GetName());
-	//	return;
-	//}
-
-	//UAT_PlayMontageAndWaitForEvent* Task = UAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, MontageToPlay, nullptr, FGameplayTagContainer(), 1.0f, NAME_None, false, 1.0f);
-	//Task->EventReceived.AddDynamic(this, &UGA_CharacterDefaultAttack::EventReceived);
-	//Task->ReadyForActivation();
-
-
-	ACharacterBase* Player = Cast<ACharacterBase>(Cast<ALightSeekerPlayerState>(GetActorInfo().OwnerActor.Get())->GetPawn());
-	FActorSpawnParameters Parameter{};
-	Parameter.Instigator = Player;
-
-
-	Player->GetMesh()->PlayAnimation(MontageToPlay, false);
-
-	FVector Location = Player->GetActorLocation();
-	FVector LocationOffset{ 0,0,30.f };
-
-	FRotator Rotation = Player->GetActorRotation();
-	FRotator RotationOffset{ 0,90.f,0 };
-
-	AProjectileBase* Arrow = GetWorld()->SpawnActor<AProjectileBase>(ArrowActor, Location + LocationOffset, Rotation, Parameter);
-
-	if (Arrow)
+	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
-		Arrow->DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
-		FVector LaunchDirection = Player->GetActorForwardVector();
-		Arrow->FireInDirection(LaunchDirection);
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
 
-	// DEBUG
-	//UKismetSystemLibrary::DrawDebugLine(GetWorld(), EnemyBase->GetActorLocation(),
-	//	PlayerLocation, FLinearColor::Blue, 5.0f);
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+	//UAnimMontage* MontageToPlay = FireHipMontage;
 
+	//if (GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.AimDownSights"))) &&
+	//	!GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.AimDownSights.Removal"))))
+	//{
+	//	MontageToPlay = FireIronsightsMontage;
+	//}
+
+
+	UAT_PlayMontageAndWaitForEvent* Task = UAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, MontageToPlay, nullptr, FGameplayTagContainer(), 1.0f, NAME_None, false, 1.0f);
+	Task->OnBlendOut.AddDynamic(this, &UGA_CharacterDefaultAttack::OnCompleted);
+	Task->OnCompleted.AddDynamic(this, &UGA_CharacterDefaultAttack::OnCompleted);
+	Task->OnInterrupted.AddDynamic(this, &UGA_CharacterDefaultAttack::OnCancelled);
+	Task->OnCancelled.AddDynamic(this, &UGA_CharacterDefaultAttack::OnCancelled);
+	Task->EventReceived.AddDynamic(this, &UGA_CharacterDefaultAttack::EventReceived);
+	// ReadyForActivation() is how you activate the AbilityTask in C++. Blueprint has magic from K2Node_LatentGameplayTaskCall that will automatically call ReadyForActivation().
+	Task->ReadyForActivation();
 
 
 }
+
+void UGA_CharacterDefaultAttack::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+}
+
+void UGA_CharacterDefaultAttack::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+}
+
 
 void UGA_CharacterDefaultAttack::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
@@ -73,54 +67,49 @@ void UGA_CharacterDefaultAttack::EventReceived(FGameplayTag EventTag, FGameplayE
 		return;
 	}
 
-	if (!IsValid(DamageGameplayEffect))
-	{
-		UE_LOG(LogTemp, Error, TEXT("%s() DamageGameplayEffect not set in %s."), *FString(__FUNCTION__), *GetName());
-		return;
-	}
-
-	//ACharacterBase* Player = Cast<ACharacterBase>(Cast<ALightSeekerPlayerState>(GetActorInfo().OwnerActor.Get())->GetPawn());
-	////ACharacterBase* Player = Cast<ACharacterBase>(GetActorInfo().OwnerActor.Get());
-	////ACharacterBase* Player = Cast<ACharacterBase>(GetOwningActorFromActorInfo());
-	//if (!Player)
+	//if (!IsValid(DamageGameplayEffect))
 	//{
-	//	UE_LOG(LogTemp, Log, TEXT("No player"));
+	//	UE_LOG(LogTemp, Error, TEXT("%s() DamageGameplayEffect not set in %s."), *FString(__FUNCTION__), *GetName());
 	//	return;
 	//}
 
-	//// Only spawn projectiles on the Server.
-	//// Predicting projectiles is an advanced topic not covered in this example.
-	//if (GetOwningActorFromActorInfo()->GetLocalRole() == ROLE_Authority
-	//	&& EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.Player.DefaultAttack")))
-	//{
-	//	//AEnemyBase* EnemyBase = Cast<AEnemyBase>(GetActorInfo().OwnerActor.Get());
-	//	UE_LOG(LogTemp, Log, TEXT("Event Received"));
+	ACharacterBase* Player = Cast<ACharacterBase>(Cast<ALightSeekerPlayerState>(GetActorInfo().OwnerActor.Get())->GetPawn());
 
-	//	FActorSpawnParameters Parameter{};
-	//	Parameter.Instigator = Player;
+	// Only spawn projectiles on the Server.
+	// Predicting projectiles is an advanced topic not covered in this example.
+	if (GetOwningActorFromActorInfo()->GetLocalRole() == ROLE_Authority
+		&& EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.Player.DefaultAttack")))
+	{
+		UE_LOG(LogTemp, Log, TEXT("Event Received"));
+
+		FActorSpawnParameters Parameter{};
+		Parameter.Instigator = Player;
+
+		FVector Location = Player->GetActorLocation();
+		FVector LocationOffset{ 0,0,30.f };
+
+		FRotator Rotation = Player->GetActorRotation();
+		FRotator RotationOffset{ 0,90.f,0 };
 
 
-	//	//GetMesh()->PlayAnimation(AttackMontage, false);
+		//FVector Start = Player->GetGunComponent()->GetSocketLocation(FName("Muzzle"));
+		//FVector End = Player->GetCameraBoom()->GetComponentLocation() + Player->GetFollowCamera()->GetForwardVector() * 1000.0f;
+		//FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(Start, End);
 
-	//	FVector Location = Player->GetActorLocation();
-	//	FVector LocationOffset{ 0,0,30.f };
+		FTransform Transform;
+		Transform.SetLocation(Location);
+		Transform.SetRotation(Rotation.Quaternion());
+		Transform.SetScale3D(FVector(1.0f));
 
-	//	FRotator Rotation = Player->GetActorRotation();
-	//	FRotator RotationOffset{ 0,90.f,0 };
+		//AProjectileBase* Arrow = GetWorld()->SpawnActor<AProjectileBase>(ArrowClass, Location + LocationOffset, Rotation, Parameter);
+		AProjectileBase* Projectile = GetWorld()->SpawnActorDeferred<AProjectileBase>(ArrowClass, Transform, Player,
+			Player, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
-	//	AProjectileBase* Arrow = GetWorld()->SpawnActor<AProjectileBase>(ArrowActor, Location + LocationOffset, Rotation, Parameter);
+		FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect);
 
-	//	if (Arrow)
-	//	{
-	//		Arrow->DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
-	//		FVector LaunchDirection = Player->GetActorForwardVector();
-	//		Arrow->FireInDirection(LaunchDirection);
-	//	}
-
-	//	// DEBUG
-	//	//UKismetSystemLibrary::DrawDebugLine(GetWorld(), EnemyBase->GetActorLocation(),
-	//	//	PlayerLocation, FLinearColor::Blue, 5.0f);
-	//}
-	//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		Projectile->DamageEffectSpecHandle = DamageEffectSpecHandle;
+		//Projectile->Range = Range;
+		Projectile->FinishSpawning(Transform);
+	}
 
 }

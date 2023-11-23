@@ -2,6 +2,7 @@
 
 
 #include "GameAbilitySystem/CharacterGameplayAbility.h"
+#include "AbilitySystemComponent.h"
 
 UCharacterGameplayAbility::UCharacterGameplayAbility()
 {
@@ -11,10 +12,9 @@ UCharacterGameplayAbility::UCharacterGameplayAbility()
 void UCharacterGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
 	Super::OnAvatarSet(ActorInfo, Spec);
-}
 
-void UCharacterGameplayAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
-{
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	if (ActivateAbilityOnGranted)
+	{
+		ActorInfo->AbilitySystemComponent->TryActivateAbility(Spec.Handle, false);
+	}
 }
-
