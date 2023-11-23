@@ -15,7 +15,7 @@ struct FDamageStatics
 
 	FDamageStatics()
 	{
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UCharacterAttributeSet, DefaultDamage, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UCharacterAttributeSet, DefaultDamage, Source, true);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UCharacterAttributeSet, DamageRate, Source, false);
 
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UCharacterAttributeSet, Health, Target, false);
@@ -58,10 +58,10 @@ void UDamageEffectExecutionCalculation::Execute_Implementation(const FGameplayEf
 		UE_LOG(LogTemp, Warning, TEXT("Tag: %s"), tag.GetTagName());
 	}
 
-	//float BaseDamage = FMath::Max<float>(Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Damage")), false, -1.0f), 0.0f);
-	float BaseDamage = 0.f;
+	float BaseDamage = 0.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DefaultDamageDef, EvaluationParameters, BaseDamage);
-	
+	//BaseDamage += FMath::Max<float>(Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Damage")), false, -1.0f), 0.0f);
+
 	UE_LOG(LogTemp, Log, TEXT("BaseDamage: %f"), BaseDamage);
 	float DamageDone = BaseDamage;
 

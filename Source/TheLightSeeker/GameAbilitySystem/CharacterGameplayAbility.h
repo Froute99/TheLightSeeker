@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
+#include "TheLightSeeker.h"
 #include "CharacterGameplayAbility.generated.h"
 
 /**
@@ -17,12 +18,6 @@ class THELIGHTSEEKER_API UCharacterGameplayAbility : public UGameplayAbility
 public:
 	UCharacterGameplayAbility();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ability")
-		float Cooldown;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ability")
-		float Damage;
-
 	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
@@ -30,13 +25,18 @@ public:
 
 
 
-	//UFUNCTION()
-	//	virtual void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
+	// Abilities with this set will automatically activate when the input is pressed
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+		ELSAbilityInputID AbilityInputID = ELSAbilityInputID::None;
 
-	//UFUNCTION()
-	//	virtual void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
+	// Value to associate an ability with an slot without tying it to an automatically activated input.
+	// Passive abilities won't be tied to an input so we need a way to generically associate abilities with slots.
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+		ELSAbilityInputID AbilityID = ELSAbilityInputID::None;
 
-	virtual void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
+	// Tells an ability to activate immediately when its granted. Used for passive abilities and abilities forced on others.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
+		bool ActivateAbilityOnGranted = false;
 
 
 };

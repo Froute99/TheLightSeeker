@@ -19,6 +19,10 @@
 
 #include "GameFramework/CharacterMovementComponent.h"
 
+#include "TheLightSeeker.h"
+
+#include "GameAbilitySystem/CharacterGameplayAbility.h"
+
 // Sets default values
 ACharacterBase::ACharacterBase()
 {
@@ -113,7 +117,6 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	check(Subsystem);
 	Subsystem->ClearAllMappings();
 	Subsystem->AddMappingContext(MappingContext, 0);
-
 }
 
 void ACharacterBase::EnhancedMove(const FInputActionValue& Value)
@@ -208,7 +211,6 @@ void ACharacterBase::OnRep_PlayerState()
 	if (PS)
 	{
 		InitializeStartingValues(PS);
-		//BindASCInput();
 	}
 }
 
@@ -230,7 +232,6 @@ void ACharacterBase::InitializeStartingValues(ALightSeekerPlayerState* PS)
 
 void ACharacterBase::AddCharacterAbilities(/*TSubclassOf<UGameplayAbility>& Ability*/)
 {
-	//// TODO: Search about InputID
 	//ASC->GiveAbility(FGameplayAbilitySpec(Ability, 1, -1, this));
 
 	if (GetLocalRole() != ROLE_Authority || !ASC.IsValid() || ASC->CharacterAbilitiesGiven)
@@ -238,7 +239,7 @@ void ACharacterBase::AddCharacterAbilities(/*TSubclassOf<UGameplayAbility>& Abil
 		return;
 	}
 
-	for (TSubclassOf<UGameplayAbility>& StartupAbility : CharacterAbilities)
+	for (TSubclassOf<UCharacterGameplayAbility>& StartupAbility : CharacterAbilities)
 	{
 		ASC->GiveAbility(FGameplayAbilitySpec(StartupAbility, 1, -1, this));
 	}
@@ -278,6 +279,7 @@ void ACharacterBase::AddStartupEffects()
 
 void ACharacterBase::Attack(const FInputActionValue& Value)
 {
+	//GetMesh()->PlayAnimation(AttackMontage, false);
 	bool Succeed = ASC->TryActivateAbilitiesByTag(FGameplayTag::RequestGameplayTag(FName("Ability.Player.DefaultAttack")).GetSingleTagContainer());
 	if (Succeed)
 	{
@@ -288,7 +290,6 @@ void ACharacterBase::Attack(const FInputActionValue& Value)
 		UE_LOG(LogTemp, Log, TEXT("Can't activate Default Attack"));
 	}
 
-	//GetMesh()->PlayAnimation(AttackMontage, false);
 
 	//FVector Location = GetActorLocation();
 	//FVector LocationOffset{ 0,0,30.f };
@@ -298,7 +299,7 @@ void ACharacterBase::Attack(const FInputActionValue& Value)
 
 	//FActorSpawnParameters Parameter{};
 	//Parameter.Instigator = this;
-	//AProjectileBase* Arrow = GetWorld()->SpawnActor<AProjectileBase>(ArrowActor, Location + LocationOffset, Rotation, Parameter);
+	//AProjectileBase* Arrow = GetWorld()->SpawnActor<AProjectileBase>(ArrowClass, Location + LocationOffset, Rotation, Parameter);
 	//
 	//if (Arrow)
 	//{
@@ -315,16 +316,4 @@ void ACharacterBase::Dodge(const FInputActionValue& Value)
 	GetMesh()->PlayAnimation(DodgeMontage, false);
 
 }
-
-
-//void ACharacterBase::BindASCInput()
-//{
-//	if (!ASCInputBound && AbilitySystemComponent.IsValid() && IsValid(InputComponent))
-//	{
-//		AbilitySystemComponent->BindAbilityActivationToInputComponent(InputComponent, FGameplayAbilityInputBinds(FString("ConfirmTarget"), FString("CancelTarget"), FString("DemoAbilityID"), static_cast<int32>(KidKingAbilityID::Confirm), static_cast<int32>(KidKingAbilityID::Cancel)));
-//	}
-//
-//	ASCInputBound = true;
-//
-//}
 

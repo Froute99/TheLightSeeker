@@ -29,7 +29,7 @@ void UAT_PlayMontageAndWaitForEvent::Activate()
 	{
 		const FGameplayAbilityActorInfo* ActorInfo = Ability->GetCurrentActorInfo();
 		UAnimInstance* AnimInstance = ActorInfo->GetAnimInstance();
-		if (AnimInstance != nullptr)
+		if (IsValid(AnimInstance))
 		{
 			// Bind to event callback
 			EventHandle = AbilitySystemComponent->AddGameplayEventTagContainerDelegate(EventTags, FGameplayEventTagMulticastDelegate::FDelegate::CreateUObject(this, &UAT_PlayMontageAndWaitForEvent::OnGameplayEvent));
