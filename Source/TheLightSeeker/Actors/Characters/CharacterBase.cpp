@@ -26,7 +26,7 @@
 // Sets default values
 ACharacterBase::ACharacterBase()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 
@@ -109,6 +109,7 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	EIC->BindAction(ZoomAction, ETriggerEvent::Triggered, this, &ACharacterBase::CameraZoom);
 	EIC->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ACharacterBase::Attack);
 	EIC->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &ACharacterBase::Dodge);
+	EIC->BindAction(Skill1Action, ETriggerEvent::Triggered, this, &ACharacterBase::Ability1);
 
 
 	ULocalPlayer* LocalPlayer = PC->GetLocalPlayer();
@@ -251,7 +252,7 @@ void ACharacterBase::AddCharacterAbilities(/*TSubclassOf<UGameplayAbility>& Abil
 void ACharacterBase::InitializeAttributes()
 {
 	if (!ASC.IsValid()) return;
-	
+
 
 	if (!DefaultAttributes)
 	{
@@ -314,6 +315,22 @@ void ACharacterBase::Dodge(const FInputActionValue& Value)
 	UE_LOG(LogTemp, Log, TEXT("Dodge"));
 
 	GetMesh()->PlayAnimation(DodgeMontage, false);
+
+}
+
+void ACharacterBase::Ability1()
+{
+	//if (IsValid(GameplayAbility1->Get()))
+	//{
+	//	if (ASC->TryActivateAbilityByClass(GameplayAbility1->Get()))
+	//	{
+	//		UE_LOG(LogTemp, Log, TEXT("Ability1 Activated"));
+	//	}
+	//}
+
+	ASC->TryActivateAbility(GameplayAbility1);
+
+	//ASC->GetActivatableAbilities().Find()
 
 }
 

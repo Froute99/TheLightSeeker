@@ -8,6 +8,8 @@
 #include "AbilitySystemInterface.h"
 #include "InputAction.h"
 
+#include "GameplayAbilitySpec.h"
+
 #include "CharacterBase.generated.h"
 
 UCLASS()
@@ -141,6 +143,10 @@ public:
 
 	void Attack(const FInputActionValue& Value);
 	void Dodge(const FInputActionValue& Value);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+		FGameplayAbilitySpecHandle GameplayAbility1;
+	void Ability1();
 
 
 public:
