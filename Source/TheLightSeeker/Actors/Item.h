@@ -24,11 +24,19 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnPickup(class ALightSeekerPlayerState* PS);
 
+	UFUNCTION()
+	void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+		bool bFromSweep, const FHitResult& SweepResult);
+
 protected:
 	void Movement(float DeltaTime);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	TObjectPtr<class UGameplayAbility> ItemAbility;
+	TSubclassOf<class UGameplayAbility> ItemAbility;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class UBoxComponent* BoxComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* Mesh;
@@ -39,20 +47,20 @@ protected:
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	//class USphereComponent* PickupCollision;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
-	float Height;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
-	float PickupRange;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
-	float FloatingRange;
-
-	/* Floating Rate per second */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
-	float FloatingSpeed;
-
-	/* Rotation Rate per second in degree */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
-	float RotationRate;
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
+	//float Height;
+	//
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
+	//float PickupRange;
+	//
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
+	//float FloatingRange;
+	//
+	///* Floating Rate per second */
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
+	//float FloatingSpeed;
+	//
+	///* Rotation Rate per second in degree */
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
+	//float RotationRate;
 };
