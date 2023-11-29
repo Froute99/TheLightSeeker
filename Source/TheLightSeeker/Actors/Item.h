@@ -22,7 +22,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	void OnPickup(class ALightSeekerPlayerState* PS);
+	void OnPickup(ACharacterBase* Player);
 
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
@@ -33,7 +33,7 @@ protected:
 	void Movement(float DeltaTime);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	TSubclassOf<class UGameplayAbility> ItemAbility;
+	TSubclassOf<class UCharacterGameplayAbility> ItemAbility;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	class UBoxComponent* BoxComponent;

@@ -5,7 +5,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/SphereComponent.h"
 #include "Actors/Characters/CharacterBase.h"
-#include "Actors/Characters/LightSeekerPlayerState.h"
+#include "GameAbilitySystem/CharacterGameplayAbility.h"
 
 // Sets default values
 AItem::AItem()
@@ -16,9 +16,9 @@ AItem::AItem()
 	if (BoxComponent)
 	{
 		SetRootComponent(BoxComponent);
+		Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
+		Mesh->SetupAttachment(BoxComponent);
 	}
-
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 }
 
 void AItem::BeginPlay()
@@ -39,9 +39,10 @@ void AItem::Tick(float DeltaTime)
 	Movement(DeltaTime);
 }
 
-void AItem::OnPickup(ALightSeekerPlayerState* PS)
+void AItem::OnPickup(ACharacterBase* Player)
 {
-	PS->GetAbilitySystemComponent()->GiveAbility(FGameplayAbilitySpec(ItemAbility, 1, -1, this));
+	Player->OnPickupItem(ItemAbility);
+	//PS->GetAbilitySystemComponent()->GiveAbility(FGameplayAbilitySpec(ItemAbility, 1, -1, this));
 }
 
 void AItem::Movement(float DeltaTime)
@@ -50,12 +51,15 @@ void AItem::Movement(float DeltaTime)
 
 void AItem::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	UE_LOG(LogTemp, Log, TEXT("Item Picked 1"));
 	if (GetLocalRole() != ROLE_Authority) return;
 
-	ALightSeekerPlayerState* PS = Cast<ALightSeekerPlayerState>(Cast<ACharacterBase>(OtherActor)->GetPlayerState());
-	if (PS && ItemAbility)
+	ACharacterBase* Player = Cast<ACharacterBase>(OtherActor);
+	if (Player && ItemAbility)
 	{
-		OnPickup(PS);
+		UE_LOG(LogTemp, Log, TEXT("Item Picked Up"));
+		OnPickup(Player);
+		Destroy();
 	}
 }
 
