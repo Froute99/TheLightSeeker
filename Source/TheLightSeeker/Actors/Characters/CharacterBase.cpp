@@ -23,6 +23,8 @@
 
 #include "GameAbilitySystem/CharacterGameplayAbility.h"
 
+#include "UI/ItemWidget.h"
+
 // Sets default values
 ACharacterBase::ACharacterBase()
 {
@@ -70,14 +72,13 @@ void ACharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-
 	if (!ArrowActor)
 	{
 		FString Msg = FString::Printf(TEXT("Missing Arrow Blueprint %s. Please fill in the character's Blueprint."), *GetName());
 		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, *Msg);
 		return;
 	}
-
+	HasItem = false;
 }
 
 UAbilitySystemComponent* ACharacterBase::GetAbilitySystemComponent() const
@@ -109,6 +110,8 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	EIC->BindAction(ZoomAction, ETriggerEvent::Triggered, this, &ACharacterBase::CameraZoom);
 	EIC->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ACharacterBase::Attack);
 	EIC->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &ACharacterBase::Dodge);
+	EIC->BindAction(ItemAction, ETriggerEvent::Triggered, this, &ACharacterBase::UseItem);
+	
 	EIC->BindAction(Skill1Action, ETriggerEvent::Triggered, this, &ACharacterBase::Ability1);
 
 
@@ -318,6 +321,56 @@ void ACharacterBase::Dodge(const FInputActionValue& Value)
 
 }
 
+void ACharacterBase::OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> ItemAbility, UTexture2D* Icon)
+{
+	UCharacterGameplayAbility* Ability = ItemAbility.GetDefaultObject();
+
+	if (!Ability)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed to Cast Item Ability"));
+		return;
+	}
+
+	FGameplayAbilitySpecHandle Handle = ASC->GiveAbility(FGameplayAbilitySpec(ItemAbility, 1, -1, this));
+	
+	if (!Handle.IsValid()) UE_LOG(LogTemp, Warning, TEXT("Failed to Grant ItemAbility"));
+
+	// if Ability is used on granting, remove it immediately
+	if (!Ability->ActivateAbilityOnGranted)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Got Item"));
+		HasItem = true;
+
+		// Set Image
+		if (ItemWidget)
+			ItemWidget->SetIcon(Icon);
+		else
+			UE_LOG(LogTemp, Error, TEXT("ItemWidget not found"));
+	}
+	else
+	{
+		// for potion - clear ability so that ability cannot be used by player
+		UE_LOG(LogTemp, Log, TEXT("Clear Item successfully"));
+		ASC->ClearAbility(Handle);
+	}
+}
+
+void ACharacterBase::UseItem()
+{
+	if (!HasItem || GetLocalRole() != ROLE_Authority) return;
+
+	bool Succeed = ASC->TryActivateAbilitiesByTag(FGameplayTag::RequestGameplayTag(FName("Ability.Player.Item")).GetSingleTagContainer());
+	if (Succeed)
+	{
+		HasItem = false;
+		ItemWidget->ClearIcon();
+		UE_LOG(LogTemp, Log, TEXT("Activated Item"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("Could not activate Item"));
+	}
+}
 void ACharacterBase::Ability1()
 {
 	//if (IsValid(GameplayAbility1->Get()))

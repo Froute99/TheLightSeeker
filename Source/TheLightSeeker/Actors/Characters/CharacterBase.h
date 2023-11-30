@@ -32,7 +32,6 @@ public:
 	void EnhancedLook(const FInputActionValue& Value);
 	void CameraZoom(const FInputActionValue& Value);
 
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -62,6 +61,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Default")
 		TSubclassOf<AActor> ArrowActor;
 
+	bool HasItem;
 
 /************************
  * Game Abilities System
@@ -131,6 +131,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 		class UInputAction* Skill4Action;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+		class UInputAction* ItemAction;
+
 
 /************************
  * Animations
@@ -149,9 +152,20 @@ public:
 	void Ability1();
 
 
+/************************
+* Item
+************************/
+
+	void OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> ItemAbility, UTexture2D* Icon);
+
+	void UseItem();
+
 public:
 	// This member is temporary here. Should moved to HUD class or something.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		class UPlayerHealthBarWidget* HealthBar;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+		class UItemWidget* ItemWidget;
 
 };

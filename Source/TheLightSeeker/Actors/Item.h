@@ -22,13 +22,24 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	void OnPickup(class ALightSeekerPlayerState* PS);
+	void OnPickup(ACharacterBase* Player);
+
+	UFUNCTION()
+	void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+		bool bFromSweep, const FHitResult& SweepResult);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item")
+	class UTexture2D* Icon;
 
 protected:
 	void Movement(float DeltaTime);
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item")
+	TSubclassOf<class UCharacterGameplayAbility> ItemAbility;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	TObjectPtr<class UGameplayAbility> ItemAbility;
+	class UBoxComponent* BoxComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* Mesh;
@@ -39,20 +50,20 @@ protected:
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	//class USphereComponent* PickupCollision;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
-	float Height;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
-	float PickupRange;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
-	float FloatingRange;
-
-	/* Floating Rate per second */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
-	float FloatingSpeed;
-
-	/* Rotation Rate per second in degree */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
-	float RotationRate;
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
+	//float Height;
+	//
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
+	//float PickupRange;
+	//
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
+	//float FloatingRange;
+	//
+	///* Floating Rate per second */
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
+	//float FloatingSpeed;
+	//
+	///* Rotation Rate per second in degree */
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
+	//float RotationRate;
 };
