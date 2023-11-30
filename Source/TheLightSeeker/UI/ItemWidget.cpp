@@ -6,10 +6,17 @@
 
 void UItemWidget::SetIcon(UTexture2D* Texture)
 {
-	Icon->SetBrushFromTexture(Texture);
+	if (Texture)
+	{
+		Icon->SetBrushFromTexture(Texture);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("UI Could not find texture"));
+	}
 }
 
 void UItemWidget::ClearIcon()
 {
-	Icon->SetBrushFromTexture(ClearTexture);
+	Icon->SetBrushFromTexture(nullptr);
 }

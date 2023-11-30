@@ -26,6 +26,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	class UImage* Icon;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UTexture2D* ClearTexture;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//class UTexture2D* ClearTexture;
 };

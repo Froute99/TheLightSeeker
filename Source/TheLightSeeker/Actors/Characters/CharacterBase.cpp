@@ -340,7 +340,10 @@ void ACharacterBase::OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> I
 		HasItem = true;
 
 		// Set Image
-		ItemWidget->SetIcon(Icon);
+		if (ItemWidget)
+			ItemWidget->SetIcon(Icon);
+		else
+			UE_LOG(LogTemp, Error, TEXT("ItemWidget not found"));
 	}
 	else
 	{
