@@ -150,7 +150,7 @@ public:
 * Item
 ************************/
 
-	void OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> ItemAbility);
+	void OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> ItemAbility, UTexture2D* Icon);
 
 	void UseItem();
 
@@ -158,5 +158,8 @@ public:
 	// This member is temporary here. Should moved to HUD class or something.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		class UPlayerHealthBarWidget* HealthBar;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+		class UItemWidget* ItemWidget;
 
 };

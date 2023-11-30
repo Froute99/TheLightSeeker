@@ -41,7 +41,7 @@ void AItem::Tick(float DeltaTime)
 
 void AItem::OnPickup(ACharacterBase* Player)
 {
-	Player->OnPickupItem(ItemAbility);
+	Player->OnPickupItem(ItemAbility, Icon);
 	//PS->GetAbilitySystemComponent()->GiveAbility(FGameplayAbilitySpec(ItemAbility, 1, -1, this));
 }
 

@@ -23,6 +23,8 @@
 
 #include "GameAbilitySystem/CharacterGameplayAbility.h"
 
+#include "UI/ItemWidget.h"
+
 // Sets default values
 ACharacterBase::ACharacterBase()
 {
@@ -317,7 +319,7 @@ void ACharacterBase::Dodge(const FInputActionValue& Value)
 
 }
 
-void ACharacterBase::OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> ItemAbility)
+void ACharacterBase::OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> ItemAbility, UTexture2D* Icon)
 {
 	UCharacterGameplayAbility* Ability = ItemAbility.GetDefaultObject();
 
@@ -336,6 +338,9 @@ void ACharacterBase::OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> I
 	{
 		UE_LOG(LogTemp, Log, TEXT("Got Item"));
 		HasItem = true;
+
+		// Set Image
+		ItemWidget->SetIcon(Icon);
 	}
 	else
 	{
@@ -353,6 +358,7 @@ void ACharacterBase::UseItem()
 	if (Succeed)
 	{
 		HasItem = false;
+		ItemWidget->ClearIcon();
 		UE_LOG(LogTemp, Log, TEXT("Activated Item"));
 	}
 	else

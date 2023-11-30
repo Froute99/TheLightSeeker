@@ -29,10 +29,13 @@ public:
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 		bool bFromSweep, const FHitResult& SweepResult);
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item")
+	class UTexture2D* Icon;
+
 protected:
 	void Movement(float DeltaTime);
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item")
 	TSubclassOf<class UCharacterGameplayAbility> ItemAbility;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
