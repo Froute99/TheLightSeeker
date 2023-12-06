@@ -84,6 +84,7 @@ public:
 	void HandleHealthChanged(float Value, const FGameplayTagContainer& SourceTags);
 
 	virtual void OnHealthChanged(const FOnAttributeChangeData& Data);
+	virtual void OnMoveSpeedChanged(const FOnAttributeChangeData& Data);
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Enemy|Abilities")
 	TArray<TSubclassOf<class UGameplayAbility>> EnemyAbilities;
@@ -109,6 +110,7 @@ public:
 	bool IsAlive() const;
 
 	FDelegateHandle HealthChangedDelegateHandle;
+	FDelegateHandle MoveSpeedChangedDelegateHandle;
 
 	void RemoveCharacterAbilities();
 };

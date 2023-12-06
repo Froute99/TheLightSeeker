@@ -51,6 +51,7 @@ protected:
 	FDelegateHandle HealthChangedDelegateHandle;
 	FDelegateHandle MaxHealthChangedDelegateHandle;
 	FDelegateHandle LevelChangedDelegateHandle;
+	FDelegateHandle MoveSpeedChangedDelegateHandle;
 
 
 	virtual void BeginPlay() override;
@@ -58,6 +59,7 @@ protected:
 	virtual void HealthChanged(const FOnAttributeChangeData& Data);
 	virtual void MaxHealthChanged(const FOnAttributeChangeData& Data);
 	virtual void LevelChanged(const FOnAttributeChangeData& Data);
+	virtual void MoveSpeedChanged(const FOnAttributeChangeData& Data);
 
 	//virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 

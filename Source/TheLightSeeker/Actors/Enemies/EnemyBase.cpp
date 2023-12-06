@@ -40,14 +40,11 @@ void AEnemyBase::BeginPlay()
 		AddStartupEffects();
 		AddCharacterAbilities();
 
-		// health change handle (for future interface)
+		// attribute change handles
 		HealthChangedDelegateHandle = ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this, &AEnemyBase::OnHealthChanged);
+		MoveSpeedChangedDelegateHandle = ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMovementSpeedAttribute()).AddUObject(this, &AEnemyBase::OnMoveSpeedChanged);
 		// tag change callbacks
 
-
-		UE_LOG(Enemy, Log, TEXT("After init - Health: %f"), GetHealth());
-		UE_LOG(Enemy, Log, TEXT("After init - MaxHealth: %f"), GetMaxHealth());
-		UE_LOG(Enemy, Log, TEXT("After init - Speed: %f"), AttributeSet->GetMovementSpeed());
 	}
 	else
 	{
@@ -150,6 +147,12 @@ void AEnemyBase::OnHealthChanged(const FOnAttributeChangeData& Data)
 		UE_LOG(Enemy, Log, TEXT("OnHealthChanged - OnDied"));
 		OnDied();
 	}
+}
+
+void AEnemyBase::OnMoveSpeedChanged(const FOnAttributeChangeData& Data)
+{
+	float NewSpeed = Data.NewValue;
+	GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
 }
 
 float AEnemyBase::GetHealth() const

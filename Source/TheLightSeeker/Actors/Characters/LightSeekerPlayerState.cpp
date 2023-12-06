@@ -7,6 +7,7 @@
 #include "GameAbilitySystem/CharacterAbilitySystemComponent.h"
 
 #include "Actors/Characters/CharacterBase.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 #include "UI/PlayerHealthBarWidget.h"
 
@@ -63,6 +64,7 @@ void ALightSeekerPlayerState::BeginPlay()
 		HealthChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this, &ALightSeekerPlayerState::HealthChanged);
 		MaxHealthChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxHealthAttribute()).AddUObject(this, &ALightSeekerPlayerState::MaxHealthChanged);
 		LevelChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetLevelAttribute()).AddUObject(this, &ALightSeekerPlayerState::LevelChanged);
+		MoveSpeedChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMovementSpeedAttribute()).AddUObject(this, &ALightSeekerPlayerState::MoveSpeedChanged);
 	}
 }
 
@@ -101,5 +103,16 @@ void ALightSeekerPlayerState::MaxHealthChanged(const FOnAttributeChangeData& Dat
 void ALightSeekerPlayerState::LevelChanged(const FOnAttributeChangeData& Data)
 {
 	UE_LOG(LogTemp, Warning, TEXT("%s : Player Level Changed!"), *FString(__FUNCTION__));
+}
+
+void ALightSeekerPlayerState::MoveSpeedChanged(const FOnAttributeChangeData& Data)
+{
+	UE_LOG(LogTemp, Warning, TEXT("%s : Player MoveSpeed Changed!"), *FString(__FUNCTION__))
+
+	ACharacterBase* Character = Cast<ACharacterBase>(GetPlayerController()->GetPawn());
+	if (Character)
+	{
+		Character->GetCharacterMovement()->MaxWalkSpeed = AttributeSet->GetMovementSpeed();
+	}
 }
 
