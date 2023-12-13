@@ -23,20 +23,21 @@ public:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
 	UFUNCTION()
-		void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
+		virtual void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
 
 	UFUNCTION()
-		void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
+		virtual void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
 
 	UFUNCTION()
-		void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
+		virtual void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		TSubclassOf<AActor> ArrowClass;
 
+
+	class UAT_PlayMontageAndWaitForEvent* TaskHandle;
 	UFUNCTION(BlueprintCallable)
 		void PlayAnim();
-	class UAT_PlayMontageAndWaitForEvent* TaskHandle;
 
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "EventTags")
