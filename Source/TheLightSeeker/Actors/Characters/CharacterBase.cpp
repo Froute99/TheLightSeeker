@@ -111,8 +111,12 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	EIC->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ACharacterBase::Attack);
 	EIC->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &ACharacterBase::Dodge);
 	EIC->BindAction(ItemAction, ETriggerEvent::Triggered, this, &ACharacterBase::UseItem);
-	
+
 	EIC->BindAction(Skill1Action, ETriggerEvent::Triggered, this, &ACharacterBase::Ability1);
+	EIC->BindAction(Skill2Action, ETriggerEvent::Triggered, this, &ACharacterBase::Ability2);
+
+	EIC->BindAction(ConfirmAction, ETriggerEvent::Triggered, ASC.Get(), &UCharacterAbilitySystemComponent::LocalInputConfirm);
+	EIC->BindAction(CancelAction, ETriggerEvent::Triggered, ASC.Get(), &UCharacterAbilitySystemComponent::LocalInputCancel);
 
 
 	ULocalPlayer* LocalPlayer = PC->GetLocalPlayer();
@@ -371,6 +375,7 @@ void ACharacterBase::UseItem()
 		UE_LOG(LogTemp, Log, TEXT("Could not activate Item"));
 	}
 }
+
 void ACharacterBase::Ability1()
 {
 	//if (IsValid(GameplayAbility1->Get()))
@@ -384,6 +389,12 @@ void ACharacterBase::Ability1()
 	ASC->TryActivateAbility(GameplayAbility1);
 
 	//ASC->GetActivatableAbilities().Find()
+
+}
+
+void ACharacterBase::Ability2()
+{
+	ASC->TryActivateAbility(GameplayAbility2);
 
 }
 

@@ -39,4 +39,5 @@ public:
 		bool ActivateAbilityOnGranted = false;
 
 
+
 };

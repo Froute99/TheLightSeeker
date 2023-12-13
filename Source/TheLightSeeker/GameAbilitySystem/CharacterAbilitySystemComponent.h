@@ -29,4 +29,8 @@ public:
 
 	virtual void ReceiveDamage(UCharacterAbilitySystemComponent* SourceASC, float UnmitigatedDamage, float MitigatedDamage);
 
+
+	void LocalInputConfirm() override;
+	void LocalInputCancel() override;
+
 };

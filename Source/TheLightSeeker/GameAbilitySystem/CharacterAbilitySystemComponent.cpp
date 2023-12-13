@@ -11,3 +11,17 @@ void UCharacterAbilitySystemComponent::ReceiveDamage(UCharacterAbilitySystemComp
 	UE_LOG(LogTemp, Log, TEXT("Received Damage"));
 }
 
+void UCharacterAbilitySystemComponent::LocalInputConfirm()
+{
+	Super::LocalInputConfirm();
+	UE_LOG(LogTemp, Log, TEXT("Input Confirmed"));
+
+}
+
+void UCharacterAbilitySystemComponent::LocalInputCancel()
+{
+	Super::LocalInputCancel();
+	UE_LOG(LogTemp, Log, TEXT("Input Cancelled"));
+
+}
+

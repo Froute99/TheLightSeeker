@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GameAbilitySystem/GA_CharacterDefaultAttack.h"
+#include "GameAbilitySystem/CharacterAnimAbility.h"
 #include "Actors/Characters/LightSeekerPlayerState.h"
 
 #include "Actors/Enemies/Abilities/AT_PlayMontageAndWaitForEvent.h"
@@ -9,13 +9,13 @@
 #include "ProjectileBase.h"
 #include "Kismet/KismetMathLibrary.h"
 
-UGA_CharacterDefaultAttack::UGA_CharacterDefaultAttack()
+UCharacterAnimAbility::UCharacterAnimAbility()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
 }
 
-void UGA_CharacterDefaultAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
+void UCharacterAnimAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
@@ -32,36 +32,35 @@ void UGA_CharacterDefaultAttack::ActivateAbility(const FGameplayAbilitySpecHandl
 
 
 	UAT_PlayMontageAndWaitForEvent* Task = UAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, MontageToPlay, nullptr, FGameplayTagContainer(), 1.0f, NAME_None, false, 1.0f);
-	Task->OnBlendOut.AddDynamic(this, &UGA_CharacterDefaultAttack::OnCompleted);
-	Task->OnCompleted.AddDynamic(this, &UGA_CharacterDefaultAttack::OnCompleted);
-	Task->OnInterrupted.AddDynamic(this, &UGA_CharacterDefaultAttack::OnCancelled);
-	Task->OnCancelled.AddDynamic(this, &UGA_CharacterDefaultAttack::OnCancelled);
-	Task->EventReceived.AddDynamic(this, &UGA_CharacterDefaultAttack::EventReceived);
+	Task->OnBlendOut.AddDynamic(this, &UCharacterAnimAbility::OnCompleted);
+	Task->OnCompleted.AddDynamic(this, &UCharacterAnimAbility::OnCompleted);
+	Task->OnInterrupted.AddDynamic(this, &UCharacterAnimAbility::OnCancelled);
+	Task->OnCancelled.AddDynamic(this, &UCharacterAnimAbility::OnCancelled);
+	Task->EventReceived.AddDynamic(this, &UCharacterAnimAbility::EventReceived);
 	// ReadyForActivation() is how you activate the AbilityTask in C++. Blueprint has magic from K2Node_LatentGameplayTaskCall that will automatically call ReadyForActivation().
-	Task->ReadyForActivation();
+	TaskHandle = Task;
+
+	//Task->ReadyForActivation();
 
 
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
-void UGA_CharacterDefaultAttack::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
+void UCharacterAnimAbility::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
-void UGA_CharacterDefaultAttack::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
+void UCharacterAnimAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
-
-void UGA_CharacterDefaultAttack::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
+void UCharacterAnimAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	//UE_LOG(Enemy, Log, TEXT("EventReceived called: %s"), EventTag.GetTagName());
-
 	// Montage told us to end the ability before the montage finished playing.
 	// Montage was set to continue playing animation even after ability ends so this is okay.
-	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.Player.EndAbility")))
+	if (EventTag == AnimDoneTag)
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		//SetAbilityDoneDelegateHandle.Broadcast();
@@ -79,7 +78,7 @@ void UGA_CharacterDefaultAttack::EventReceived(FGameplayTag EventTag, FGameplayE
 	// Only spawn projectiles on the Server.
 	// Predicting projectiles is an advanced topic not covered in this example.
 	if (GetOwningActorFromActorInfo()->GetLocalRole() == ROLE_Authority
-		&& EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.Player.DefaultAttack")))
+		&& EventTag == AnimTriggerTag)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Event Received"));
 
@@ -112,5 +111,11 @@ void UGA_CharacterDefaultAttack::EventReceived(FGameplayTag EventTag, FGameplayE
 		//Projectile->Range = Range;
 		Projectile->FinishSpawning(Transform);
 	}
+
+}
+
+void UCharacterAnimAbility::PlayAnim()
+{
+	TaskHandle->ReadyForActivation();
 
 }

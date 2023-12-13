@@ -134,6 +134,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 		class UInputAction* ItemAction;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+		class UInputAction* ConfirmAction;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+		class UInputAction* CancelAction;
+
 
 /************************
  * Animations
@@ -149,7 +154,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		FGameplayAbilitySpecHandle GameplayAbility1;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+		FGameplayAbilitySpecHandle GameplayAbility2;
 	void Ability1();
+	void Ability2();
 
 
 /************************
