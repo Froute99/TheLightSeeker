@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Actors/Item.h"
+#include "Actors/Items/Item.h"
 #include "Components/BoxComponent.h"
 #include "Components/SphereComponent.h"
 #include "Actors/Characters/CharacterBase.h"

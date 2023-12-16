@@ -45,4 +45,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
 		FGameplayEffectSpecHandle DamageEffectSpecHandle;
 
+	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
+		FGameplayEffectSpecHandle AdditionalEffectSpecHandle;
+
 };

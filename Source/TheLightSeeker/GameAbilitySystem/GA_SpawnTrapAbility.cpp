@@ -4,7 +4,7 @@
 #include "GameAbilitySystem/GA_SpawnTrapAbility.h"
 #include "Actors/Characters/CharacterBase.h"
 #include "Actors/Characters/LightSeekerPlayerState.h"
-#include "Actors/Trap.h"
+#include "Actors/Items/Trap.h"
 
 void UGA_SpawnTrapAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {

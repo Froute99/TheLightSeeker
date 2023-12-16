@@ -109,6 +109,14 @@ void UGA_CharacterDefaultAttack::EventReceived(FGameplayTag EventTag, FGameplayE
 
 		Projectile->DamageEffectSpecHandle = DamageEffectSpecHandle;
 		//Projectile->Range = Range;
+
+		/* Additional Effect for elemental enchant */
+		FGameplayEffectSpecHandle AdditionalEffectHandle = Cast<ALightSeekerPlayerState>(GetActorInfo().OwnerActor.Get())->ElementalEffectHandle;
+		if (AdditionalEffectHandle.IsValid())
+		{
+			Projectile->AdditionalEffectSpecHandle = AdditionalEffectHandle;
+		}
+
 		Projectile->FinishSpawning(Transform);
 	}
 

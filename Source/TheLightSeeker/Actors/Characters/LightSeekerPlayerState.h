@@ -63,4 +63,9 @@ protected:
 
 	//virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
+public:
+	// Elemental Enchant gameplay effect handle
+	UPROPERTY(BlueprintReadWrite)
+	FGameplayEffectSpecHandle ElementalEffectHandle;
+
 };

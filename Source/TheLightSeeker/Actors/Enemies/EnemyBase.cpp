@@ -5,9 +5,8 @@
 #include "GameAbilitySystem/CharacterAttributeSet.h"
 #include "GameAbilitySystem/CharacterAbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Actors/Characters/LightSeekerPlayerState.h"
 #include "Components/CapsuleComponent.h"
-#include "Actors/Item.h"
+#include "Actors/Items/Item.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -45,6 +44,8 @@ void AEnemyBase::BeginPlay()
 		MoveSpeedChangedDelegateHandle = ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMovementSpeedAttribute()).AddUObject(this, &AEnemyBase::OnMoveSpeedChanged);
 		// tag change callbacks
 
+		IsDying = false;
+
 	}
 	else
 	{
@@ -65,6 +66,17 @@ void AEnemyBase::OnDied()
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCharacterMovement()->GravityScale = 0;
 	GetCharacterMovement()->Velocity = FVector(0);
+
+	IsDying = true;
+	
+	auto& Effects = ASC->GetActiveGameplayEffects();
+
+	for (auto it = Effects.CreateConstIterator(); it; ++it)
+	{
+		ASC->RemoveActiveGameplayEffect(it->Handle);
+	}
+
+	ASC->RemoveAllGameplayCues();
 
 	//OnCharacterDied.Broadcast(this);
 
@@ -142,7 +154,7 @@ void AEnemyBase::OnHealthChanged(const FOnAttributeChangeData& Data)
 	float Health = Data.NewValue;
 
 	// If the minion died, handle death
-	if (!IsAlive())
+	if (!IsAlive() && !IsDying)
 	{
 		UE_LOG(Enemy, Log, TEXT("OnHealthChanged - OnDied"));
 		OnDied();

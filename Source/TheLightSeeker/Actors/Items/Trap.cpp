@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Actors/Trap.h"
+#include "Actors/Items/Trap.h"
 #include "Components/BoxComponent.h"	
 #include "Actors/Enemies/EnemyBase.h"
 

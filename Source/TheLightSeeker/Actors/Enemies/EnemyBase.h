@@ -107,6 +107,7 @@ public:
 	virtual void InitializeAttributes();
 	virtual void AddStartupEffects();
 
+	bool IsDying;
 	bool IsAlive() const;
 
 	FDelegateHandle HealthChangedDelegateHandle;
