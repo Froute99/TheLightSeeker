@@ -38,5 +38,5 @@ void UGA_SpawnTrapAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData
 
 void UGA_SpawnTrapAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	// todo : combine with animation montage
+	// TODO: combine with animation montage
 }

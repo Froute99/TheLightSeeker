@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameAbilitySystem/CharacterGameplayAbility.h"
-#include "GA_SpawnTrapAbility.generated.h"
+#include "GA_SpawnBombAbility.generated.h"
 
 /**
- *	A GameAbility class to spawn a trap item
+ * A GameAbility class to spawn a bomb item
  */
 UCLASS()
-class THELIGHTSEEKER_API UGA_SpawnTrapAbility : public UCharacterGameplayAbility
+class THELIGHTSEEKER_API UGA_SpawnBombAbility : public UCharacterGameplayAbility
 {
 	GENERATED_BODY()
 
@@ -29,9 +29,9 @@ public:
 	UFUNCTION()
 	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Trap")
-	TSubclassOf<AActor> TrapActor;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Bomb")
+	TSubclassOf<AActor> BombActor;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Trap")
-	TSubclassOf<class UGameplayEffect> TrapGameplayEffect;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Bomb")
+	TSubclassOf<class UGameplayEffect> BombGameplayEffect;
 };
