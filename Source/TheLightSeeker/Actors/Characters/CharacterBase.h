@@ -77,6 +77,10 @@ public:
 		TWeakObjectPtr<class UCharacterAttributeSet> AttributeSet;
 
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Abilities")
+		class USkillTreeComponent* SkillTreeComponent;
+
+
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Abilities")
 		TArray<TSubclassOf<class UCharacterGameplayAbility>> CharacterAbilities;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Abilities")
@@ -134,6 +138,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 		class UInputAction* ItemAction;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+		class UInputAction* ConfirmAction;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+		class UInputAction* CancelAction;
+
 
 /************************
  * Animations
@@ -149,7 +158,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		FGameplayAbilitySpecHandle GameplayAbility1;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+		FGameplayAbilitySpecHandle GameplayAbility2;
 	void Ability1();
+	void Ability2();
 
 
 /************************
