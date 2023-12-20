@@ -5,6 +5,9 @@
 #include "Engine/TriggerBase.h"
 #include "Components/ShapeComponent.h"
 #include "Actors/Characters/CharacterBase.h"
+#include "Actors/Enemies/EnemyBase.h"
+#include "AIController.h"
+#include "BrainComponent.h"
 
 // Sets default values
 AEnemySpawnManager::AEnemySpawnManager()
@@ -35,6 +38,8 @@ void AEnemySpawnManager::ActivateActors(TArray<TObjectPtr<AActor>>& ActorHolder)
 		Actor->SetActorEnableCollision(true);
 		Actor->SetActorTickEnabled(true);
 		Actor->SetActorHiddenInGame(false);
+		//AAIController* Controller = Cast<AAIController>(Cast<AEnemyBase>(Actor)->GetController());
+		//Controller->GetBrainComponent()->RestartLogic();
 	}
 }
 
@@ -46,6 +51,8 @@ void AEnemySpawnManager::DeactivateActors(TArray<TObjectPtr<AActor>>& ActorHolde
 		Actor->SetActorEnableCollision(false);
 		Actor->SetActorTickEnabled(false);
 		Actor->SetActorHiddenInGame(true);
+		//AAIController* Controller = Cast<AAIController>(Cast<AEnemyBase>(Actor)->GetController());
+		//Controller->GetBrainComponent()->StopLogic(FString(TEXT("Waiting for activation..")));
 	}
 }
 
