@@ -6,8 +6,8 @@
 #include "GameplayEffect.h"
 #include "GameplayEffectExtension.h"
 
-#include "Actors/Characters/CharacterBase.h"
-#include "Actors/Enemies/EnemyBase.h"
+#include "CharacterBase.h"
+#include "EnemyBase.h"
 
 
 void UCharacterAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)

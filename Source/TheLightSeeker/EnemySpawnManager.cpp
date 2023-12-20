@@ -4,8 +4,8 @@
 #include "EnemySpawnManager.h"	
 #include "Engine/TriggerBase.h"
 #include "Components/ShapeComponent.h"
-#include "Actors/Characters/CharacterBase.h"
-#include "Actors/Enemies/EnemyBase.h"
+#include "Characters/CharacterBase.h"
+#include "Enemies/EnemyBase.h"
 #include "AIController.h"
 #include "BrainComponent.h"
 

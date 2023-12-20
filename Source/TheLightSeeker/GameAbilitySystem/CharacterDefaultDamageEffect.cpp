@@ -1,10 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GameAbilitySystem/CharacterDefaultDamageEffect.h"
-
+#include "CharacterDefaultDamageEffect.h"
+#include "CharacterAttributeSet.h"
 #include "GameplayTagsManager.h"
-#include "GameAbilitySystem/CharacterAttributeSet.h"
 
 UCharacterDefaultDamageEffect::UCharacterDefaultDamageEffect()
 {
