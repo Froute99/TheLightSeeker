@@ -38,8 +38,10 @@ void AEnemySpawnManager::ActivateActors(TArray<TObjectPtr<AActor>>& ActorHolder)
 		Actor->SetActorEnableCollision(true);
 		Actor->SetActorTickEnabled(true);
 		Actor->SetActorHiddenInGame(false);
-		//AAIController* Controller = Cast<AAIController>(Cast<AEnemyBase>(Actor)->GetController());
-		//Controller->GetBrainComponent()->RestartLogic();
+		if (AAIController* Controller = Cast<AAIController>(Cast<AEnemyBase>(Actor)->GetController()))
+		{
+			Controller->GetBrainComponent()->RestartLogic();
+		}
 	}
 }
 
@@ -51,8 +53,11 @@ void AEnemySpawnManager::DeactivateActors(TArray<TObjectPtr<AActor>>& ActorHolde
 		Actor->SetActorEnableCollision(false);
 		Actor->SetActorTickEnabled(false);
 		Actor->SetActorHiddenInGame(true);
-		//AAIController* Controller = Cast<AAIController>(Cast<AEnemyBase>(Actor)->GetController());
-		//Controller->GetBrainComponent()->StopLogic(FString(TEXT("Waiting for activation..")));
+
+		if (AAIController* Controller = Cast<AAIController>(Cast<AEnemyBase>(Actor)->GetController()))
+		{
+			Controller->GetBrainComponent()->StopLogic(FString(TEXT("Waiting for activation..")));
+		}
 	}
 }
 
