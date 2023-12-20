@@ -25,6 +25,8 @@
 
 #include "UI/ItemWidget.h"
 
+#include "Actors/Characters/SkillTreeComponent.h"
+
 // Sets default values
 ACharacterBase::ACharacterBase()
 {
@@ -47,6 +49,8 @@ ACharacterBase::ACharacterBase()
 	GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetMesh()->SetCollisionProfileName(FName("NoCollision"));
+
+	SkillTreeComponent = CreateDefaultSubobject<USkillTreeComponent>(TEXT("SkillTree"));
 
 }
 
@@ -385,8 +389,13 @@ void ACharacterBase::Ability1()
 	//		UE_LOG(LogTemp, Log, TEXT("Ability1 Activated"));
 	//	}
 	//}
+	
 
-	ASC->TryActivateAbility(GameplayAbility1);
+
+
+	ASC->TryActivateAbilityByClass(SkillTreeComponent->AbilityList[0]);
+
+	//ASC->TryActivateAbility(GameplayAbility1);
 
 	//ASC->GetActivatableAbilities().Find()
 
@@ -394,7 +403,8 @@ void ACharacterBase::Ability1()
 
 void ACharacterBase::Ability2()
 {
-	ASC->TryActivateAbility(GameplayAbility2);
+	//ASC->TryActivateAbility(GameplayAbility2);
+	ASC->TryActivateAbilityByClass(SkillTreeComponent->AbilityList[1]);
 
 }
 

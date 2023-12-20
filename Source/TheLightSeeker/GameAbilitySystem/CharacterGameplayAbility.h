@@ -38,6 +38,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
 		bool ActivateAbilityOnGranted = false;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Default")
+		FString AbilityName;
 
 
 };
