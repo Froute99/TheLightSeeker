@@ -39,6 +39,9 @@ public:
 	UFUNCTION()
 	TWeakObjectPtr<USkeletalMeshComponent> GetWeaponMesh() const;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
+	TSubclassOf<class AItem> Item;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -59,9 +62,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy")
 	TObjectPtr<UAnimMontage> WeaponDeathAnimMontage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
-	TSubclassOf<class AItem> Item;
 
 /************************
  * Game Abilities System

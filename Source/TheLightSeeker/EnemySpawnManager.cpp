@@ -8,6 +8,7 @@
 #include "Actors/Enemies/EnemyBase.h"
 #include "AIController.h"
 #include "BrainComponent.h"
+#include "Math/UnrealMathUtility.h"
 
 // Sets default values
 AEnemySpawnManager::AEnemySpawnManager()
@@ -24,37 +25,67 @@ void AEnemySpawnManager::BeginPlay()
 	{
 		if (Info.Trigger)
 		{
-			DeactivateActors(Info.Actors);
+			DeactivateActors(Info.Enemies);
 			Info.Trigger->GetCollisionComponent()->OnComponentBeginOverlap.AddDynamic(this, &AEnemySpawnManager::OnBeginOverlap);
 		}
 	}
-}
 
-void AEnemySpawnManager::ActivateActors(TArray<TObjectPtr<AActor>>& ActorHolder)
-{
-	for (AActor* Actor : ActorHolder)
+	if (!ItemDropTable.IsEmpty())
 	{
-		UE_LOG(LogTemp, Log, TEXT("Child Activated"));
-		Actor->SetActorEnableCollision(true);
-		Actor->SetActorTickEnabled(true);
-		Actor->SetActorHiddenInGame(false);
-		if (AAIController* Controller = Cast<AAIController>(Cast<AEnemyBase>(Actor)->GetController()))
+		TotalWeight = ItemDropTable[0].Weight;
+
+		for (int i = 1; i < ItemDropTable.Num(); ++i)
 		{
-			Controller->GetBrainComponent()->RestartLogic();
+			TotalWeight += ItemDropTable[i].Weight;
+			ItemDropTable[i].Weight += ItemDropTable[i - 1].Weight;
 		}
 	}
 }
 
-void AEnemySpawnManager::DeactivateActors(TArray<TObjectPtr<AActor>>& ActorHolder)
+void AEnemySpawnManager::GiveItem(TObjectPtr<AEnemyBase> EnemyToSpawn)
 {
-	for (AActor* Actor : ActorHolder)
-	{
-		UE_LOG(LogTemp, Log, TEXT("Child Deactivated"));
-		Actor->SetActorEnableCollision(false);
-		Actor->SetActorTickEnabled(false);
-		Actor->SetActorHiddenInGame(true);
+	int32 RandomValue = FMath::RandRange(0, (int32)(TotalWeight / ItemDropRate));
 
-		if (AAIController* Controller = Cast<AAIController>(Cast<AEnemyBase>(Actor)->GetController()))
+	if (RandomValue < ItemDropTable.Last().Weight) // can drop item. otherwise - do not drop item
+	{
+		for (FItemDropInfo& DropInfo : ItemDropTable)
+		{
+			if (RandomValue < DropInfo.Weight)
+			{
+				EnemyToSpawn->Item = DropInfo.Item;
+				break;
+			}
+		}
+	}
+}
+
+void AEnemySpawnManager::ActivateActors(TArray<TObjectPtr<AEnemyBase>>& Enemies)
+{
+	for (TObjectPtr<AEnemyBase>& EnemyToSpawn : Enemies)
+	{
+		EnemyToSpawn->SetActorEnableCollision(true);
+		EnemyToSpawn->SetActorTickEnabled(true);
+		EnemyToSpawn->SetActorHiddenInGame(false);
+
+		if (AAIController* Controller = Cast<AAIController>(EnemyToSpawn->GetController()))
+		{
+			Controller->GetBrainComponent()->RestartLogic();
+		}
+
+		// Temp: give item based on the droptable
+		GiveItem(EnemyToSpawn);
+	}
+}
+
+void AEnemySpawnManager::DeactivateActors(TArray<TObjectPtr<AEnemyBase>>& Enemies)
+{
+	for (TObjectPtr<AEnemyBase>& EnemyToSpawn : Enemies)
+	{
+		EnemyToSpawn->SetActorEnableCollision(false);
+		EnemyToSpawn->SetActorTickEnabled(false);
+		EnemyToSpawn->SetActorHiddenInGame(true);
+
+		if (AAIController* Controller = Cast<AAIController>(EnemyToSpawn->GetController()))
 		{
 			Controller->GetBrainComponent()->StopLogic(FString(TEXT("Waiting for activation..")));
 		}
@@ -71,7 +102,7 @@ void AEnemySpawnManager::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AAc
 		{
 			if (Info.Trigger == Trigger)
 			{
-				ActivateActors(Info.Actors);
+				ActivateActors(Info.Enemies);
 				Info.Trigger->GetCollisionComponent()->OnComponentBeginOverlap.Clear();
 			}
 		}

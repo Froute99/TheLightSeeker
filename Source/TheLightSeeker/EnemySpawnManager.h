@@ -15,7 +15,19 @@ struct FSpawnInfo
 	TObjectPtr<class ATriggerBase> Trigger;
 
 	UPROPERTY(EditAnywhere)
-	TArray<TObjectPtr<AActor>> Actors;
+	TArray<TObjectPtr<class AEnemyBase>> Enemies;
+};
+
+USTRUCT(BlueprintType)
+struct FItemDropInfo
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class AItem> Item;
+
+	UPROPERTY(EditAnywhere)
+	int Weight;
 };
 
 UCLASS()
@@ -31,13 +43,23 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void GiveItem(TObjectPtr<AEnemyBase> EnemyToSpawn);
+
 public:	
-	void ActivateActors(TArray<TObjectPtr<AActor>>& ActorHolder);
-	void DeactivateActors(TArray<TObjectPtr<AActor>>& ActorHolder);
+	void ActivateActors(TArray<TObjectPtr<AEnemyBase>>& Enemies);
+	void DeactivateActors(TArray<TObjectPtr<AEnemyBase>>& Enemies);
 
 	UPROPERTY(EditAnywhere)
 	TArray<FSpawnInfo> TriggerActorPairs;
 
+	UPROPERTY(EditAnywhere, Category = "Item")
+	float ItemDropRate;
+
+	UPROPERTY(EditAnywhere, Category = "Item")
+	TArray<FItemDropInfo> ItemDropTable;
+
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	int32 TotalWeight;
 };
