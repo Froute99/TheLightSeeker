@@ -65,6 +65,8 @@ void AEnemySpawnManager::ActivateActors(TArray<TObjectPtr<AEnemyBase>>& Enemies)
 {
 	for (TObjectPtr<AEnemyBase>& EnemyToSpawn : Enemies)
 	{
+		if (!EnemyToSpawn) continue;
+
 		EnemyToSpawn->SetActorEnableCollision(true);
 		EnemyToSpawn->SetActorTickEnabled(true);
 		EnemyToSpawn->SetActorHiddenInGame(false);
@@ -83,6 +85,8 @@ void AEnemySpawnManager::DeactivateActors(TArray<TObjectPtr<AEnemyBase>>& Enemie
 {
 	for (TObjectPtr<AEnemyBase>& EnemyToSpawn : Enemies)
 	{
+		if (!EnemyToSpawn) continue;
+
 		EnemyToSpawn->SetActorEnableCollision(false);
 		EnemyToSpawn->SetActorTickEnabled(false);
 		EnemyToSpawn->SetActorHiddenInGame(true);
