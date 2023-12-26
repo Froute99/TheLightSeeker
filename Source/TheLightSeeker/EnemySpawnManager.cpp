@@ -32,12 +32,12 @@ void AEnemySpawnManager::BeginPlay()
 
 	if (!ItemDropTable.IsEmpty())
 	{
-		TotalWeight = ItemDropTable[0].Weight;
+		TotalWeight = 0;
 
-		for (int i = 1; i < ItemDropTable.Num(); ++i)
+		for (int i = 0; i < ItemDropTable.Num(); ++i)
 		{
 			TotalWeight += ItemDropTable[i].Weight;
-			ItemDropTable[i].Weight += ItemDropTable[i - 1].Weight;
+			ItemDropTable[i].Weight = TotalWeight;
 		}
 	}
 }
@@ -53,10 +53,12 @@ void AEnemySpawnManager::GiveItem(TObjectPtr<AEnemyBase> EnemyToSpawn)
 			if (RandomValue < DropInfo.Weight)
 			{
 				EnemyToSpawn->Item = DropInfo.Item;
-				break;
+				return;
 			}
 		}
 	}
+
+	EnemyToSpawn->Item = nullptr;
 }
 
 void AEnemySpawnManager::ActivateActors(TArray<TObjectPtr<AEnemyBase>>& Enemies)

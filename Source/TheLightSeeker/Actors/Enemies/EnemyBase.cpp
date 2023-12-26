@@ -109,12 +109,15 @@ void AEnemyBase::OnDied()
 
 void AEnemyBase::DropItem()
 {
-	UE_LOG(Enemy, Log, TEXT("Enemy dropped Item"));
-	
-	FActorSpawnParameters Parameter{};
-	Parameter.Instigator = this;
-	FVector LaunchLocation = GetActorLocation();
-	AItem* SpawnedItem = GetWorld()->SpawnActor<AItem>(Item, LaunchLocation, FRotator(), Parameter);
+	if (Item)
+	{
+		UE_LOG(Enemy, Log, TEXT("Enemy dropped Item"));
+
+		FActorSpawnParameters Parameter{};
+		Parameter.Instigator = this;
+		FVector LaunchLocation = GetActorLocation();
+		AItem* SpawnedItem = GetWorld()->SpawnActor<AItem>(Item, LaunchLocation, FRotator(), Parameter);
+	}
 }
 
 void AEnemyBase::FinishDying()
