@@ -15,6 +15,9 @@
 /**
  * 
  */
+
+DECLARE_DELEGATE(FDoneElementalEffect)
+
 UCLASS()
 class THELIGHTSEEKER_API ALightSeekerPlayerState : public APlayerState, public IAbilitySystemInterface
 {
@@ -68,4 +71,8 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	FGameplayEffectSpecHandle ElementalEffectHandle;
 
+	UFUNCTION(BlueprintCallable)
+	void ClearElementalEffect();
+	
+	FDoneElementalEffect ElementalEffectDone;
 };

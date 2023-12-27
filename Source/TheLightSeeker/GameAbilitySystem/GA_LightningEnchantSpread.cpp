@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Actors/Enemies/Abilities/GA_LightningEnchantSpread.h"
+#include "GameAbilitySystem/GA_LightningEnchantSpread.h"
 #include "AbilitySystemComponent.h"
 #include "Actors/Enemies/EnemyBase.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -49,6 +49,7 @@ void UGA_LightningEnchantSpread::ActivateAbility(const FGameplayAbilitySpecHandl
 		for (AActor* Actor : FoundActors)
 		{
 			if (Actor == ActorInfo->AvatarActor.Get()) continue;
+			if (Actor->IsHidden() == true) continue;
 
 			float Distance = Actor->GetDistanceTo(ActorInfo->AvatarActor.Get());
 			if (Distance < SpreadRange)

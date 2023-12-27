@@ -169,8 +169,9 @@ public:
 ************************/
 
 	void OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> ItemAbility, UTexture2D* Icon);
-
 	void UseItem();
+
+	FGameplayAbilitySpecHandle ItemAbilityHandle;
 
 public:
 	// This member is temporary here. Should moved to HUD class or something.

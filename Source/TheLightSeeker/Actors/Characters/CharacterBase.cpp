@@ -339,9 +339,9 @@ void ACharacterBase::OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> I
 		return;
 	}
 
-	FGameplayAbilitySpecHandle Handle = ASC->GiveAbility(FGameplayAbilitySpec(ItemAbility, 1, -1, this));
+	ItemAbilityHandle = ASC->GiveAbility(FGameplayAbilitySpec(ItemAbility, 1, -1, this));
 	
-	if (!Handle.IsValid()) UE_LOG(LogTemp, Warning, TEXT("Failed to Grant ItemAbility"));
+	if (!ItemAbilityHandle.IsValid()) UE_LOG(LogTemp, Warning, TEXT("Failed to Grant ItemAbility"));
 
 	// if Ability is used on granting, remove it immediately
 	if (!Ability->ActivateAbilityOnGranted)
@@ -359,7 +359,7 @@ void ACharacterBase::OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> I
 	{
 		// for potion - clear ability so that ability cannot be used by player
 		UE_LOG(LogTemp, Log, TEXT("Clear Item successfully"));
-		ASC->ClearAbility(Handle);
+		ASC->ClearAbility(ItemAbilityHandle);
 	}
 }
 
@@ -367,11 +367,16 @@ void ACharacterBase::UseItem()
 {
 	if (!HasItem || GetLocalRole() != ROLE_Authority) return;
 
-	bool Succeed = ASC->TryActivateAbilitiesByTag(FGameplayTag::RequestGameplayTag(FName("Ability.Player.Item")).GetSingleTagContainer());
+	bool Succeed = ASC->TryActivateAbility(ItemAbilityHandle);
 	if (Succeed)
 	{
 		HasItem = false;
 		ItemWidget->ClearIcon();
+
+		// remove item ability from player
+		ASC->ClearAbility(ItemAbilityHandle);
+		ItemAbilityHandle = FGameplayAbilitySpecHandle();
+
 		UE_LOG(LogTemp, Log, TEXT("Activated Item"));
 	}
 	else

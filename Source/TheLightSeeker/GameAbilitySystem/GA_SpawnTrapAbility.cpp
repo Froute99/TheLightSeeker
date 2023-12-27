@@ -14,7 +14,7 @@ void UGA_SpawnTrapAbility::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 	Parameter.Instigator = Player;
 
 	FVector Location = Player->GetActorLocation();
-	FVector LocationOffset{ 0.0f, 0.0f, -50.f };
+	FVector LocationOffset{ 0.0f, 0.0f, -80.f };
 
 	FTransform Transform;
 	Transform.SetLocation(Location + LocationOffset);

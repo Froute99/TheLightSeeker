@@ -22,7 +22,7 @@ ALightSeekerPlayerState::ALightSeekerPlayerState()
 
 	NetUpdateFrequency = 100.0f;
 
-
+	ElementalEffectDone.BindUObject(this, &ALightSeekerPlayerState::ClearElementalEffect);
 }
 
 UAbilitySystemComponent* ALightSeekerPlayerState::GetAbilitySystemComponent() const
@@ -80,7 +80,7 @@ void ALightSeekerPlayerState::HealthChanged(const FOnAttributeChangeData& Data)
 	if (IsValid(HealthBar))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Health: %f"), Data.NewValue);
-		HealthBar->SetHealth(Data.NewValue);
+		HealthBar->SetHealth(std::min(Data.NewValue, GetMaxHealth()));
 		if (FMath::IsNearlyZero(Data.NewValue))
 		{
 			// TODO: Add "Die" functions here
@@ -116,3 +116,8 @@ void ALightSeekerPlayerState::MoveSpeedChanged(const FOnAttributeChangeData& Dat
 	}
 }
 
+void ALightSeekerPlayerState::ClearElementalEffect()
+{
+	UE_LOG(LogTemp, Log, TEXT("ClearElemenetalEffect called"));
+	ElementalEffectHandle = nullptr;
+}
