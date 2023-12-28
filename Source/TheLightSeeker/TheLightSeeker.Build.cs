@@ -7,7 +7,7 @@ public class TheLightSeeker : ModuleRules
 	public TheLightSeeker(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-	
+
 		PublicDependencyModuleNames.AddRange(new string[] {
 			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput",
 			"GameplayAbilities", "GameplayTags", "GameplayTasks",
@@ -25,8 +25,11 @@ public class TheLightSeeker : ModuleRules
 
 		PublicIncludePaths.AddRange(new string[] {
 			"TheLightSeeker/",
-			"TheLightSeeker/Actors",
+			"TheLightSeeker/Characters",
+			"TheLightSeeker/Enemies",
 			"TheLightSeeker/GameAbilitySystem",
+			"TheLightSeeker/Items",
+			"TheLightSeeker/Projectiles",
 			"TheLightSeeker/UI",
 		});
 
@@ -35,8 +38,11 @@ public class TheLightSeeker : ModuleRules
 
 		PublicIncludePaths.AddRange(new string[] {
 			"TheLightSeeker/",
-			"TheLightSeeker/Actors",
+			"TheLightSeeker/Characters",
+			"TheLightSeeker/Enemies",
 			"TheLightSeeker/GameAbilitySystem",
+			"TheLightSeeker/Items",
+			"TheLightSeeker/Projectiles",
 			"TheLightSeeker/UI",
 		});
 
