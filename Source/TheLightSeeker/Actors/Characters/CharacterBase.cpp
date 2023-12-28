@@ -339,6 +339,10 @@ void ACharacterBase::OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> I
 		return;
 	}
 
+	// Remove original item ability
+	ASC->ClearAbility(ItemAbilityHandle);
+
+	// grant current item's ability
 	ItemAbilityHandle = ASC->GiveAbility(FGameplayAbilitySpec(ItemAbility, 1, -1, this));
 	
 	if (!ItemAbilityHandle.IsValid()) UE_LOG(LogTemp, Warning, TEXT("Failed to Grant ItemAbility"));

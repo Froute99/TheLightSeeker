@@ -38,9 +38,13 @@ bool UBTDecorator_IsInAttackRange::CalculateRawConditionValue(UBehaviorTreeCompo
 		return bResult;
 	}
 
+	FVector ToTarget = (Target->GetActorLocation() - ControllingPawn->GetActorLocation());
+	ToTarget.Z = 0.0f;
+	ToTarget.Normalize();
+	
+
 	float AngleInRadians = FMath::DegreesToRadians(AllowableFaceAngleDiff);
-	float DotProductResult = FVector::DotProduct(ControllingPawn->GetActorForwardVector(),
-		(Target->GetActorLocation() - ControllingPawn->GetActorLocation()).GetSafeNormal());
+	float DotProductResult = FVector::DotProduct(ControllingPawn->GetActorForwardVector(), ToTarget);
 
 	bResult = (DotProductResult > 0.0f) && (cos(AngleInRadians) < DotProductResult);
 	return bResult;
