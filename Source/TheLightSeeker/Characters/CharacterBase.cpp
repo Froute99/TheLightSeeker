@@ -21,6 +21,8 @@
 
 #include "TheLightSeeker.h"
 
+#include "Kismet/KismetSystemLibrary.h"
+
 // Sets default values
 ACharacterBase::ACharacterBase()
 {
@@ -101,7 +103,6 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	check(EIC && PC);
 
-
 	EIC->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACharacterBase::EnhancedMove);
 	EIC->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACharacterBase::EnhancedLook);
 	EIC->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacterBase::Jump);
@@ -116,12 +117,12 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	EIC->BindAction(ConfirmAction, ETriggerEvent::Triggered, ASC.Get(), &UCharacterAbilitySystemComponent::LocalInputConfirm);
 	EIC->BindAction(CancelAction, ETriggerEvent::Triggered, ASC.Get(), &UCharacterAbilitySystemComponent::LocalInputCancel);
 
-
 	ULocalPlayer* LocalPlayer = PC->GetLocalPlayer();
 
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
 	check(Subsystem);
 	Subsystem->ClearAllMappings();
+	Subsystem->AddMappingContext(SkillActivationContext, 1);
 	Subsystem->AddMappingContext(MappingContext, 0);
 }
 
@@ -320,7 +321,7 @@ void ACharacterBase::OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> I
 
 	// grant current item's ability
 	ItemAbilityHandle = ASC->GiveAbility(FGameplayAbilitySpec(ItemAbility, 1, -1, this));
-	
+
 	if (!ItemAbilityHandle.IsValid()) UE_LOG(LogTemp, Warning, TEXT("Failed to Grant ItemAbility"));
 
 	// if Ability is used on granting, remove it immediately
@@ -367,13 +368,23 @@ void ACharacterBase::UseItem()
 
 void ACharacterBase::Ability1()
 {
-	ASC->TryActivateAbilityByClass(SkillTreeComponent->AbilityList[0]);
+	if (SkillTreeComponent->AbilityList.Num() < 1)
+	{
+		UKismetSystemLibrary::PrintString(GetWorld(), FString("You didn't granted Ability1"), true, false, FColor::Red);
+		return;
+	}
 
+	ASC->TryActivateAbilityByClass(SkillTreeComponent->AbilityList[0]);
 }
 
 void ACharacterBase::Ability2()
 {
-	ASC->TryActivateAbilityByClass(SkillTreeComponent->AbilityList[1]);
+	if (SkillTreeComponent->AbilityList.Num() < 2)
+	{
+		UKismetSystemLibrary::PrintString(GetWorld(), FString("You didn't granted Ability2"), true, false, FColor::Red);
+		return;
+	}
 
+	ASC->TryActivateAbilityByClass(SkillTreeComponent->AbilityList[1]);
 }
 
