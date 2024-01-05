@@ -40,9 +40,9 @@ public:
 		void PlayAnim();
 
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "EventTags")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Tags")
 		FGameplayTag AnimDoneTag;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "EventTags")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Tags")
 		FGameplayTag AnimTriggerTag;
 
 };

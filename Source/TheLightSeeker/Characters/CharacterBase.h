@@ -154,14 +154,11 @@ public:
 		UAnimMontage* DodgeMontage;
 
 	void Attack(const FInputActionValue& Value);
-	void Dodge(const FInputActionValue& Value);
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-		FGameplayAbilitySpecHandle GameplayAbility1;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-		FGameplayAbilitySpecHandle GameplayAbility2;
+
 	void Ability1();
 	void Ability2();
+	void Dodge();
 
 
 /************************
@@ -180,5 +177,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		class UItemWidget* ItemWidget;
+
+
+	bool IsDoingTargeting = false;
 
 };

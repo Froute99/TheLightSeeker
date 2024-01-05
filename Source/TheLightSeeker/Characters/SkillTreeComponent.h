@@ -27,6 +27,11 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<TSubclassOf<class UCharacterGameplayAbility>> AbilityList;
 
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		TSubclassOf<class UCharacterGameplayAbility> DodgeAbility;
+
+
 	UFUNCTION(BlueprintCallable)
 		bool IsAbilityAcquired(const FString& AbilityName);
 

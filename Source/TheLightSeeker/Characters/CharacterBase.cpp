@@ -122,7 +122,7 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
 	check(Subsystem);
 	Subsystem->ClearAllMappings();
-	Subsystem->AddMappingContext(SkillActivationContext, 1);
+	//Subsystem->AddMappingContext(SkillActivationContext, 1);
 	Subsystem->AddMappingContext(MappingContext, 0);
 }
 
@@ -286,24 +286,18 @@ void ACharacterBase::AddStartupEffects()
 
 void ACharacterBase::Attack(const FInputActionValue& Value)
 {
-	//GetMesh()->PlayAnimation(AttackMontage, false);
+	if (IsDoingTargeting)
+	{
+		ASC->LocalInputConfirm();
+		return;
+	}
+
+
 	bool Succeed = ASC->TryActivateAbilitiesByTag(FGameplayTag::RequestGameplayTag(FName("Ability.Player.DefaultAttack")).GetSingleTagContainer());
 	if (Succeed)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Activate Default Attack"));
 	}
-	else
-	{
-		UE_LOG(LogTemp, Log, TEXT("Can't activate Default Attack"));
-	}
-
-}
-
-void ACharacterBase::Dodge(const FInputActionValue& Value)
-{
-	UE_LOG(LogTemp, Log, TEXT("Dodge"));
-
-	GetMesh()->PlayAnimation(DodgeMontage, false);
 
 }
 
@@ -386,5 +380,10 @@ void ACharacterBase::Ability2()
 	}
 
 	ASC->TryActivateAbilityByClass(SkillTreeComponent->AbilityList[1]);
+}
+
+void ACharacterBase::Dodge()
+{
+	ASC->TryActivateAbilityByClass(SkillTreeComponent->DodgeAbility);
 }
 
