@@ -113,6 +113,8 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	EIC->BindAction(Skill1Action, ETriggerEvent::Triggered, this, &ACharacterBase::Ability1);
 	EIC->BindAction(Skill2Action, ETriggerEvent::Triggered, this, &ACharacterBase::Ability2);
+	EIC->BindAction(Skill3Action, ETriggerEvent::Triggered, this, &ACharacterBase::Ability3);
+	EIC->BindAction(Skill4Action, ETriggerEvent::Triggered, this, &ACharacterBase::Ability4);
 
 	EIC->BindAction(ConfirmAction, ETriggerEvent::Triggered, ASC.Get(), &UCharacterAbilitySystemComponent::LocalInputConfirm);
 	EIC->BindAction(CancelAction, ETriggerEvent::Triggered, ASC.Get(), &UCharacterAbilitySystemComponent::LocalInputCancel);
@@ -380,6 +382,28 @@ void ACharacterBase::Ability2()
 	}
 
 	ASC->TryActivateAbilityByClass(SkillTreeComponent->AbilityList[1]);
+}
+
+void ACharacterBase::Ability3()
+{
+	if (SkillTreeComponent->AbilityList.Num() < 3)
+	{
+		UKismetSystemLibrary::PrintString(GetWorld(), FString("You didn't granted Ability3"), true, false, FColor::Red);
+		return;
+	}
+
+	ASC->TryActivateAbilityByClass(SkillTreeComponent->AbilityList[2]);
+}
+
+void ACharacterBase::Ability4()
+{
+	if (SkillTreeComponent->AbilityList.Num() < 4)
+	{
+		UKismetSystemLibrary::PrintString(GetWorld(), FString("You didn't granted Ability4"), true, false, FColor::Red);
+		return;
+	}
+
+	ASC->TryActivateAbilityByClass(SkillTreeComponent->AbilityList[3]);
 }
 
 void ACharacterBase::Dodge()

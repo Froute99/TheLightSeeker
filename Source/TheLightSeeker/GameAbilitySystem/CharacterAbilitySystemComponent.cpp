@@ -27,7 +27,7 @@ void UCharacterAbilitySystemComponent::LocalInputCancel()
 	Super::LocalInputCancel();
 	UE_LOG(LogTemp, Log, TEXT("Input Cancelled"));
 
-	ACharacterBase* Character = Cast<ACharacterBase>(GetOwner());
+	ACharacterBase* Character = Cast<ACharacterBase>(GetAvatarActor());
 	Character->IsDoingTargeting = false;
 
 }
