@@ -1,11 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-<<<<<<<< HEAD:Source/TheLightSeeker/GameAbilitySystem/GA_LightningEnchantSpread.cpp
 #include "GameAbilitySystem/GA_LightningEnchantSpread.h"
-========
 #include "GA_LightningEnchantSpread.h"
->>>>>>>> main:Source/TheLightSeeker/Enemies/Abilities/GA_LightningEnchantSpread.cpp
 #include "AbilitySystemComponent.h"
 #include "EnemyBase.h"
 #include "Kismet/KismetSystemLibrary.h"

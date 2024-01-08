@@ -2,6 +2,7 @@
 
 
 #include "GameAbilitySystem/CharacterAbilitySystemComponent.h"
+#include "CharacterBase.h"
 
 
 void UCharacterAbilitySystemComponent::ReceiveDamage(UCharacterAbilitySystemComponent* SourceASC, float UnmitigatedDamage, float MitigatedDamage)
@@ -16,12 +17,18 @@ void UCharacterAbilitySystemComponent::LocalInputConfirm()
 	Super::LocalInputConfirm();
 	UE_LOG(LogTemp, Log, TEXT("Input Confirmed"));
 
+	ACharacterBase* Character = Cast<ACharacterBase>(GetAvatarActor());
+	Character->IsDoingTargeting = false;
+
 }
 
 void UCharacterAbilitySystemComponent::LocalInputCancel()
 {
 	Super::LocalInputCancel();
 	UE_LOG(LogTemp, Log, TEXT("Input Cancelled"));
+
+	ACharacterBase* Character = Cast<ACharacterBase>(GetAvatarActor());
+	Character->IsDoingTargeting = false;
 
 }
 

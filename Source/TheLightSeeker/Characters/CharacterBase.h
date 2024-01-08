@@ -110,6 +110,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 		class UInputMappingContext* MappingContext;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 		class UInputAction* MoveAction;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
@@ -136,6 +137,8 @@ public:
 		class UInputAction* ItemAction;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+		class UInputMappingContext* SkillActivationContext;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 		class UInputAction* ConfirmAction;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 		class UInputAction* CancelAction;
@@ -151,14 +154,13 @@ public:
 		UAnimMontage* DodgeMontage;
 
 	void Attack(const FInputActionValue& Value);
-	void Dodge(const FInputActionValue& Value);
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-		FGameplayAbilitySpecHandle GameplayAbility1;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-		FGameplayAbilitySpecHandle GameplayAbility2;
+
 	void Ability1();
 	void Ability2();
+	void Ability3();
+	void Ability4();
+	void Dodge();
 
 
 /************************
@@ -177,5 +179,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		class UItemWidget* ItemWidget;
+
+
+	bool IsDoingTargeting = false;
 
 };

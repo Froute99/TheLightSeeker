@@ -24,22 +24,24 @@ public:
 		TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Default")
+		FString AbilityName;
 
-	// Abilities with this set will automatically activate when the input is pressed
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
-		ELSAbilityInputID AbilityInputID = ELSAbilityInputID::None;
 
-	// Value to associate an ability with an slot without tying it to an automatically activated input.
-	// Passive abilities won't be tied to an input so we need a way to generically associate abilities with slots.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
-		ELSAbilityInputID AbilityID = ELSAbilityInputID::None;
-
-	// Tells an ability to activate immediately when its granted. Used for passive abilities and abilities forced on others.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
 		bool ActivateAbilityOnGranted = false;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Default")
-		FString AbilityName;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Cooldowns")
+		FScalableFloat CooldownDuration;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Cooldowns")
+		FGameplayTagContainer CooldownTags;
+	UPROPERTY(Transient)
+		FGameplayTagContainer TempCooldownTags;
+
+	virtual const FGameplayTagContainer* GetCooldownTags() const;
+	virtual void ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const;
+
 
 
 };

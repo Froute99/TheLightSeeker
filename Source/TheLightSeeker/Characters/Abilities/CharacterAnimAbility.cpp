@@ -39,8 +39,10 @@ void UCharacterAnimAbility::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	// ReadyForActivation() is how you activate the AbilityTask in C++. Blueprint has magic from K2Node_LatentGameplayTaskCall that will automatically call ReadyForActivation().
 	TaskHandle = Task;
 
-	//Task->ReadyForActivation();
+	ACharacterBase* Character = Cast<ACharacterBase>(GetAvatarActorFromActorInfo());
+	Character->IsDoingTargeting = true;
 
+	//Task->ReadyForActivation();
 
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
