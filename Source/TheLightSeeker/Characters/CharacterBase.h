@@ -137,8 +137,6 @@ public:
 		class UInputAction* ItemAction;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
-		class UInputMappingContext* SkillActivationContext;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 		class UInputAction* ConfirmAction;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 		class UInputAction* CancelAction;
