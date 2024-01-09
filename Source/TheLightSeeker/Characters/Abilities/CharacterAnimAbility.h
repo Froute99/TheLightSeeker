@@ -34,6 +34,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		TSubclassOf<AActor> ArrowClass;
 
+	void SpawnProjectile();
+	
+	UFUNCTION(BlueprintCallable)
+		virtual void AdditionalSpawnEvent() {}
+
 
 	class UAT_PlayMontageAndWaitForEvent* TaskHandle;
 	UFUNCTION(BlueprintCallable)

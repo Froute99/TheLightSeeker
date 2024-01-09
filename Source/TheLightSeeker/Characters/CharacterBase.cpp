@@ -124,7 +124,6 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
 	check(Subsystem);
 	Subsystem->ClearAllMappings();
-	//Subsystem->AddMappingContext(SkillActivationContext, 1);
 	Subsystem->AddMappingContext(MappingContext, 0);
 }
 
