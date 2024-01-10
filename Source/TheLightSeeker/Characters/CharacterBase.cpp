@@ -294,7 +294,7 @@ void ACharacterBase::Attack(const FInputActionValue& Value)
 	}
 
 
-	bool Succeed = ASC->TryActivateAbilitiesByTag(FGameplayTag::RequestGameplayTag(FName("Ability.Player.DefaultAttack")).GetSingleTagContainer());
+	bool Succeed = ASC->TryActivateAbilitiesByTag(FGameplayTag::RequestGameplayTag(FName("Ability.Player.BasicAttack")).GetSingleTagContainer());
 	if (Succeed)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Activate Default Attack"));

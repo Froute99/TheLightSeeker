@@ -15,96 +15,96 @@ void UCharacterAttributeSet::PostGameplayEffectExecute(const struct FGameplayEff
 	Super::PostGameplayEffectExecute(Data);
 
 
-	FGameplayEffectContextHandle Context = Data.EffectSpec.GetContext();
-	UAbilitySystemComponent* Source = Context.GetOriginalInstigatorAbilitySystemComponent();
-	const FGameplayTagContainer& SourceTags = *Data.EffectSpec.CapturedSourceTags.GetAggregatedTags();
+	//FGameplayEffectContextHandle Context = Data.EffectSpec.GetContext();
+	//UAbilitySystemComponent* Source = Context.GetOriginalInstigatorAbilitySystemComponent();
+	//const FGameplayTagContainer& SourceTags = *Data.EffectSpec.CapturedSourceTags.GetAggregatedTags();
 
 
-	float DeltaValue{ 0.f };
+	//float DeltaValue{ 0.f };
 
-	if (Data.EvaluatedData.ModifierOp == EGameplayModOp::Type::Additive)
-	{
-		DeltaValue = Data.EvaluatedData.Magnitude;
-	}
-
-
-	AEnemyBase* TargetEnemy{ nullptr };
-	if (Data.Target.AbilityActorInfo.IsValid() && Data.Target.AbilityActorInfo->AvatarActor.IsValid())
-	{
-		AActor* TargetActor{ nullptr };
-		TargetActor = Data.Target.AbilityActorInfo->AvatarActor.Get();
-		TargetEnemy = Cast<AEnemyBase>(TargetActor);
-
-	}
+	//if (Data.EvaluatedData.ModifierOp == EGameplayModOp::Type::Additive)
+	//{
+	//	DeltaValue = Data.EvaluatedData.Magnitude;
+	//}
 
 
-	if (Data.EvaluatedData.Attribute == GetDefaultDamageAttribute())
-	{
-		AActor* SourceActor{ nullptr };
-		ACharacterBase* SourceCharacter{ nullptr };
-		if (Source && Source->AbilityActorInfo.IsValid() && Source->AbilityActorInfo->AvatarActor.IsValid())
-		{
-			// Try to get Actor & Controller & Character
-			AController* SourceController{ nullptr };
-			SourceActor = Source->AbilityActorInfo->AvatarActor.Get();
-			SourceController = Source->AbilityActorInfo->PlayerController.Get();
+	//AEnemyBase* TargetEnemy{ nullptr };
+	//if (Data.Target.AbilityActorInfo.IsValid() && Data.Target.AbilityActorInfo->AvatarActor.IsValid())
+	//{
+	//	AActor* TargetActor{ nullptr };
+	//	TargetActor = Data.Target.AbilityActorInfo->AvatarActor.Get();
+	//	TargetEnemy = Cast<AEnemyBase>(TargetActor);
 
-			// If failed to get Actor & Controller from ActorInfo, then get them from others
-			if (!SourceController && !SourceActor)
-			{
-				if (const APawn* Pawn{ Cast<APawn>(SourceActor) })
-				{
-					SourceController = Pawn->GetController();
-				}
-			}
-
-			if (SourceController)
-			{
-				SourceCharacter = Cast<ACharacterBase>(SourceController->GetPawn());
-			}
-			else
-			{
-				SourceCharacter = Cast<ACharacterBase>(SourceActor);
-			}
-
-			if (Context.GetEffectCauser())
-			{
-				SourceActor = Context.GetEffectCauser();
-			}
-		}
-
-		FHitResult HitResult;
-		if (Context.GetHitResult())
-		{
-			HitResult = *Context.GetHitResult();
-		}
+	//}
 
 
-		float LocalDamageDone{ GetDefaultDamage() };
-		LocalDamageDone *= DamageRate.GetCurrentValue();
+	//if (Data.EvaluatedData.Attribute == GetDefaultDamageAttribute())
+	//{
+	//	AActor* SourceActor{ nullptr };
+	//	ACharacterBase* SourceCharacter{ nullptr };
+	//	if (Source && Source->AbilityActorInfo.IsValid() && Source->AbilityActorInfo->AvatarActor.IsValid())
+	//	{
+	//		// Try to get Actor & Controller & Character
+	//		AController* SourceController{ nullptr };
+	//		SourceActor = Source->AbilityActorInfo->AvatarActor.Get();
+	//		SourceController = Source->AbilityActorInfo->PlayerController.Get();
 
-		if (LocalDamageDone > 0.f)
-		{
-			const float OldHealth{ GetHealth() };
-			SetHealth(FMath::Clamp(OldHealth - LocalDamageDone, 0.f, GetMaxHealth()));
+	//		// If failed to get Actor & Controller from ActorInfo, then get them from others
+	//		if (!SourceController && !SourceActor)
+	//		{
+	//			if (const APawn* Pawn{ Cast<APawn>(SourceActor) })
+	//			{
+	//				SourceController = Pawn->GetController();
+	//			}
+	//		}
 
-			if (TargetEnemy)
-			{
-				TargetEnemy->HandleDamage(LocalDamageDone, HitResult, SourceTags, SourceCharacter, SourceActor);
+	//		if (SourceController)
+	//		{
+	//			SourceCharacter = Cast<ACharacterBase>(SourceController->GetPawn());
+	//		}
+	//		else
+	//		{
+	//			SourceCharacter = Cast<ACharacterBase>(SourceActor);
+	//		}
 
-				TargetEnemy->HandleHealthChanged(-LocalDamageDone, SourceTags);
-			}
-		}
-	}
-	else if (Data.EvaluatedData.Attribute == GetHealthAttribute())
-	{
-		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
+	//		if (Context.GetEffectCauser())
+	//		{
+	//			SourceActor = Context.GetEffectCauser();
+	//		}
+	//	}
 
-		if (TargetEnemy)
-		{
-			TargetEnemy->HandleHealthChanged(DeltaValue, SourceTags);
-		}
-	}
+	//	FHitResult HitResult;
+	//	if (Context.GetHitResult())
+	//	{
+	//		HitResult = *Context.GetHitResult();
+	//	}
+
+
+	//	float LocalDamageDone{ GetDefaultDamage() };
+	//	LocalDamageDone *= DamageRate.GetCurrentValue();
+
+	//	if (LocalDamageDone > 0.f)
+	//	{
+	//		const float OldHealth{ GetHealth() };
+	//		SetHealth(FMath::Clamp(OldHealth - LocalDamageDone, 0.f, GetMaxHealth()));
+
+	//		if (TargetEnemy)
+	//		{
+	//			TargetEnemy->HandleDamage(LocalDamageDone, HitResult, SourceTags, SourceCharacter, SourceActor);
+
+	//			TargetEnemy->HandleHealthChanged(-LocalDamageDone, SourceTags);
+	//		}
+	//	}
+	//}
+	//else if (Data.EvaluatedData.Attribute == GetHealthAttribute())
+	//{
+	//	SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
+
+	//	if (TargetEnemy)
+	//	{
+	//		TargetEnemy->HandleHealthChanged(DeltaValue, SourceTags);
+	//	}
+	//}
 
 }
 
