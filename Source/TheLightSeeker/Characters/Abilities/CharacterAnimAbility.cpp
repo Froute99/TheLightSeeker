@@ -21,14 +21,6 @@ void UCharacterAnimAbility::ActivateAbility(const FGameplayAbilitySpecHandle Han
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
 
-	//UAnimMontage* MontageToPlay = FireHipMontage;
-
-	//if (GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.AimDownSights"))) &&
-	//	!GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.AimDownSights.Removal"))))
-	//{
-	//	MontageToPlay = FireIronsightsMontage;
-	//}
-
 
 	UAT_PlayMontageAndWaitForEvent* Task = UAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, MontageToPlay, nullptr, FGameplayTagContainer(), 1.0f, NAME_None, false, 1.0f);
 	Task->OnBlendOut.AddDynamic(this, &UCharacterAnimAbility::OnCompleted);
@@ -76,7 +68,6 @@ void UCharacterAnimAbility::EventReceived(FGameplayTag EventTag, FGameplayEventD
 	{
 		SpawnProjectile();
 		AdditionalSpawnEvent();
-
 	}
 
 }
@@ -103,7 +94,6 @@ void UCharacterAnimAbility::SpawnProjectile()
 	Transform.SetRotation(Rotation.Quaternion());
 	Transform.SetScale3D(FVector(1.0f));
 
-	//AProjectileBase* Arrow = GetWorld()->SpawnActor<AProjectileBase>(ArrowClass, Location + LocationOffset, Rotation, Parameter);
 	AProjectileBase* Projectile = GetWorld()->SpawnActorDeferred<AProjectileBase>(ArrowClass, Transform, Player,
 		Player, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 

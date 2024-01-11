@@ -7,20 +7,20 @@
 #include "BTDecorator_IsInAttackRange.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class THELIGHTSEEKER_API UBTDecorator_IsInAttackRange : public UBTDecorator_Blackboard
 {
 	GENERATED_BODY()
-	
+
 public:
 	UBTDecorator_IsInAttackRange(const FObjectInitializer& ObjectInitializer);
 	bool CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const override;
 
 	/*
-	*   Angle to check against face vector in Degree.
-	*/
+	 *   Angle to check against face vector in Degree.
+	 */
 	UPROPERTY(EditAnywhere, Category = Node)
 	float AllowableFaceAngleDiff;
 };

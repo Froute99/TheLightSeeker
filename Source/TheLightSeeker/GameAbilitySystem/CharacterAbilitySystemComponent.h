@@ -8,19 +8,17 @@
 #include "CharacterAbilitySystemComponent.generated.h"
 
 /**
- * 
+ *
  */
-
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FReceivedDamageDelegate,
 	UCharacterAbilitySystemComponent*, SourceASC, float, UnmitigatedDamage, float, MitigatedDamage);
-
 
 UCLASS()
 class THELIGHTSEEKER_API UCharacterAbilitySystemComponent : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
-	
+
 public:
 	bool CharacterAbilitiesGiven = false;
 	bool StartupEffectApplied = false;
@@ -29,8 +27,6 @@ public:
 
 	virtual void ReceiveDamage(UCharacterAbilitySystemComponent* SourceASC, float UnmitigatedDamage, float MitigatedDamage);
 
-
 	void LocalInputConfirm() override;
 	void LocalInputCancel() override;
-
 };

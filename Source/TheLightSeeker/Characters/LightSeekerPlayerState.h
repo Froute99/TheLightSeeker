@@ -13,7 +13,7 @@
 #include "LightSeekerPlayerState.generated.h"
 
 /**
- * 
+ *
  */
 
 DECLARE_DELEGATE(FDoneElementalEffect)
@@ -31,23 +31,23 @@ public:
 	class UCharacterAttributeSet* GetAttributeSet() const;
 
 	UFUNCTION(BlueprintCallable, Category = "PlayerState")
-		bool IsAlive() const;
+	bool IsAlive() const;
 
-	//UFUNCTION(BlueprintCallable, Category = "PlayerState|Attributes")
-	//	void ShowAbilityConfirmCancelText(bool ShowText);
+	// UFUNCTION(BlueprintCallable, Category = "PlayerState|Attributes")
+	// void ShowAbilityConfirmCancelText(bool ShowText);
 
 	UFUNCTION(BlueprintCallable, Category = "PlayerState|Attributes")
-		float GetHealth() const;
+	float GetHealth() const;
 	UFUNCTION(BlueprintCallable, Category = "PlayerState|Attributes")
-		float GetMaxHealth() const;
+	float GetMaxHealth() const;
 	UFUNCTION(BlueprintCallable, Category = "PlayerState|Attributes")
-		int32 GetCharacterLevel() const;
+	int32 GetCharacterLevel() const;
 
 protected:
 	UPROPERTY()
-		class UCharacterAbilitySystemComponent* AbilitySystemComponent;
+	class UCharacterAbilitySystemComponent* AbilitySystemComponent;
 	UPROPERTY()
-		class UCharacterAttributeSet* AttributeSet;
+	class UCharacterAttributeSet* AttributeSet;
 
 	FGameplayTag DeadTag;
 
@@ -56,7 +56,6 @@ protected:
 	FDelegateHandle LevelChangedDelegateHandle;
 	FDelegateHandle MoveSpeedChangedDelegateHandle;
 
-
 	virtual void BeginPlay() override;
 
 	virtual void HealthChanged(const FOnAttributeChangeData& Data);
@@ -64,7 +63,7 @@ protected:
 	virtual void LevelChanged(const FOnAttributeChangeData& Data);
 	virtual void MoveSpeedChanged(const FOnAttributeChangeData& Data);
 
-	//virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+	// virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
 public:
 	// Elemental Enchant gameplay effect handle
@@ -73,6 +72,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ClearElementalEffect();
-	
+
 	FDoneElementalEffect ElementalEffectDone;
 };

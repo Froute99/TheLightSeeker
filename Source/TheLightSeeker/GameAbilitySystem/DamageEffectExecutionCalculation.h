@@ -7,7 +7,7 @@
 #include "DamageEffectExecutionCalculation.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class THELIGHTSEEKER_API UDamageEffectExecutionCalculation : public UGameplayEffectExecutionCalculation
@@ -17,5 +17,4 @@ class THELIGHTSEEKER_API UDamageEffectExecutionCalculation : public UGameplayEff
 public:
 	UDamageEffectExecutionCalculation();
 	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
-
 };

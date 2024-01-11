@@ -60,7 +60,6 @@ void UDamageEffectExecutionCalculation::Execute_Implementation(const FGameplayEf
 
 	float BaseDamage = 0.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DefaultDamageDef, EvaluationParameters, BaseDamage);
-	//BaseDamage += FMath::Max<float>(Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Damage")), false, -1.0f), 0.0f);
 
 	UE_LOG(LogTemp, Log, TEXT("BaseDamage: %f"), BaseDamage);
 	float DamageDone = BaseDamage;

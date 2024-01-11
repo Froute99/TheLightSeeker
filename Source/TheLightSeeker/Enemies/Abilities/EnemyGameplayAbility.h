@@ -7,7 +7,7 @@
 #include "EnemyGameplayAbility.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class THELIGHTSEEKER_API UEnemyGameplayAbility : public UGameplayAbility
@@ -28,14 +28,12 @@ public:
 
 	FDelegate_SetAbilityEnd SetAbilityDoneDelegateHandle;
 
-
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Cooldowns")
 	FScalableFloat CooldownDuration;
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Cooldowns")
 	FGameplayTagContainer CooldownTags;
 	UPROPERTY(Transient)
 	FGameplayTagContainer TempCooldownTags;
-
 
 public:
 	UFUNCTION()
@@ -46,8 +44,6 @@ public:
 
 	virtual void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 
-
 	virtual const FGameplayTagContainer* GetCooldownTags() const;
-	virtual void ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const;
-
+	virtual void						 ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const;
 };

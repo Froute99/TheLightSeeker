@@ -72,12 +72,6 @@ void ACharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (!ArrowActor)
-	{
-		FString Msg = FString::Printf(TEXT("Missing Arrow Blueprint %s. Please fill in the character's Blueprint."), *GetName());
-		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, *Msg);
-		return;
-	}
 	HasItem = false;
 }
 
@@ -229,19 +223,11 @@ void ACharacterBase::InitializeStartingValues(ALightSeekerPlayerState* PS)
 
 	AttributeSet = PS->GetAttributeSet();
 
-	//AbilitySystemComponent->SetTagMapCount(DeadTag, 0);
-
-	//SetHealth(GetMaxHealth());
-	//SetCharacterLevel(GetCharacterLevel());
-
-
 	InitializeAttributes();
 }
 
-void ACharacterBase::AddCharacterAbilities(/*TSubclassOf<UGameplayAbility>& Ability*/)
+void ACharacterBase::AddCharacterAbilities()
 {
-	//ASC->GiveAbility(FGameplayAbilitySpec(Ability, 1, -1, this));
-
 	if (GetLocalRole() != ROLE_Authority || !ASC.IsValid() || ASC->CharacterAbilitiesGiven)
 	{
 		return;
@@ -285,7 +271,7 @@ void ACharacterBase::AddStartupEffects()
 
 }
 
-void ACharacterBase::Attack(const FInputActionValue& Value)
+void ACharacterBase::Attack()
 {
 	if (IsDoingTargeting)
 	{

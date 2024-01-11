@@ -8,7 +8,7 @@
 void UCharacterAbilitySystemComponent::ReceiveDamage(UCharacterAbilitySystemComponent* SourceASC, float UnmitigatedDamage, float MitigatedDamage)
 {
 	ReceivedDamage.Broadcast(SourceASC, UnmitigatedDamage, MitigatedDamage);
-	
+
 	UE_LOG(LogTemp, Log, TEXT("Received Damage"));
 }
 

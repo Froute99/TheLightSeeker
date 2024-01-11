@@ -7,7 +7,7 @@
 #include "BTTask_MeleeEnemyAttack.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class THELIGHTSEEKER_API UBTTask_MeleeEnemyAttack : public UBTTaskNode
@@ -16,5 +16,4 @@ class THELIGHTSEEKER_API UBTTask_MeleeEnemyAttack : public UBTTaskNode
 
 public:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory);
-	
 };

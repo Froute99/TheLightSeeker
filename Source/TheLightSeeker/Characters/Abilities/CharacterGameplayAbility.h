@@ -8,7 +8,7 @@
 #include "CharacterGameplayAbility.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class THELIGHTSEEKER_API UCharacterGameplayAbility : public UGameplayAbility
@@ -21,25 +21,21 @@ public:
 	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-		TSubclassOf<UGameplayEffect> DamageGameplayEffect;
-
+	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Default")
-		FString AbilityName;
-
+	FString AbilityName;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
-		bool ActivateAbilityOnGranted = false;
-
+	bool ActivateAbilityOnGranted = false;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Cooldowns")
-		FScalableFloat CooldownDuration;
+	FScalableFloat CooldownDuration;
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Cooldowns")
-		FGameplayTagContainer CooldownTags;
+	FGameplayTagContainer CooldownTags;
 	UPROPERTY(Transient)
-		FGameplayTagContainer TempCooldownTags;
+	FGameplayTagContainer TempCooldownTags;
 
 	virtual const FGameplayTagContainer* GetCooldownTags() const;
-	virtual void ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const;
-
+	virtual void						 ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const;
 };

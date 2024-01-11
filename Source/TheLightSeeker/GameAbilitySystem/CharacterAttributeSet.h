@@ -11,13 +11,11 @@
  * Character Base Attribute Set
  */
 
-
-#define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
+#define ATTRIBUTE_ACCESSORS(ClassName, PropertyName)           \
 	GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
-	GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
-	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
+	GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName)               \
+	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName)               \
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
-
 
 UCLASS()
 class THELIGHTSEEKER_API UCharacterAttributeSet : public UAttributeSet
@@ -27,71 +25,56 @@ class THELIGHTSEEKER_API UCharacterAttributeSet : public UAttributeSet
 public:
 	void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 
-
-
 	UPROPERTY(BlueprintReadOnly, Category = "Level", ReplicatedUsing = OnRep_Level)
-		FGameplayAttributeData Level;
+	FGameplayAttributeData Level;
 	ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, Level);
 
 	UPROPERTY(BlueprintReadOnly, Category = "Health", ReplicatedUsing = OnRep_Health)
-		FGameplayAttributeData Health;
+	FGameplayAttributeData Health;
 	ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, Health);
 
 	UPROPERTY(BlueprintReadOnly, Category = "Health", ReplicatedUsing = OnRep_MaxHealth)
-		FGameplayAttributeData MaxHealth;
+	FGameplayAttributeData MaxHealth;
 	ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, MaxHealth);
 
-
 	UPROPERTY(BlueprintReadOnly, Category = "Damage", ReplicatedUsing = OnRep_DefaultDamage)
-		FGameplayAttributeData DefaultDamage;
+	FGameplayAttributeData DefaultDamage;
 	ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, DefaultDamage);
 
-
 	UPROPERTY(BlueprintReadOnly, Category = "DamageRate", ReplicatedUsing = OnRep_DamageRate)
-		FGameplayAttributeData DamageRate;
+	FGameplayAttributeData DamageRate;
 	ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, DamageRate);
 
 	UPROPERTY(BlueprintReadOnly, Category = "MovementSpeed", ReplicatedUsing = OnRep_MovementSpeed)
-		FGameplayAttributeData MovementSpeed;
+	FGameplayAttributeData MovementSpeed;
 	ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, MovementSpeed);
 
 	UPROPERTY(BlueprintReadOnly, Category = "AttackSpeed", ReplicatedUsing = OnRep_AttackSpeed)
-		FGameplayAttributeData AttackSpeed;
+	FGameplayAttributeData AttackSpeed;
 	ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, AttackSpeed);
 
 	UPROPERTY(BlueprintReadOnly, Category = "AdditionalProjectiles", ReplicatedUsing = OnRep_AdditionalProjectiles)
-		FGameplayAttributeData AdditionalProjectiles;
+	FGameplayAttributeData AdditionalProjectiles;
 	ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, AdditionalProjectiles);
 
-	// Need Enum
-	//UPROPERTY(BlueprintReadOnly, Category = "ElementalEnforced", ReplicatedUsing = OnRep_ElementalEnforced)
-	//	FGameplayAttributeData ElementalEnforced;
-	//ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, ElementalEnforced);
-
-
-
 	UFUNCTION()
-		virtual void OnRep_Level(const FGameplayAttributeData& OldLevel);
+	virtual void OnRep_Level(const FGameplayAttributeData& OldLevel);
 	UFUNCTION()
-		virtual void OnRep_Health(const FGameplayAttributeData& OldHealth);
+	virtual void OnRep_Health(const FGameplayAttributeData& OldHealth);
 	UFUNCTION()
-		virtual void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth);
+	virtual void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth);
 
 	UFUNCTION()
-		virtual void OnRep_DefaultDamage(const FGameplayAttributeData& OldDamage);
+	virtual void OnRep_DefaultDamage(const FGameplayAttributeData& OldDamage);
 
 	UFUNCTION()
-		virtual void OnRep_DamageRate(const FGameplayAttributeData& OldValue);
+	virtual void OnRep_DamageRate(const FGameplayAttributeData& OldValue);
 	UFUNCTION()
-		virtual void OnRep_MovementSpeed(const FGameplayAttributeData& OldValue);
+	virtual void OnRep_MovementSpeed(const FGameplayAttributeData& OldValue);
 	UFUNCTION()
-		virtual void OnRep_AttackSpeed(const FGameplayAttributeData& OldValue);
+	virtual void OnRep_AttackSpeed(const FGameplayAttributeData& OldValue);
 	UFUNCTION()
-		virtual void OnRep_AdditionalProjectiles(const FGameplayAttributeData& OldValue);
-
+	virtual void OnRep_AdditionalProjectiles(const FGameplayAttributeData& OldValue);
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
-
 };
-

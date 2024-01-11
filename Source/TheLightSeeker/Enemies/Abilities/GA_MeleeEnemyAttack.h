@@ -14,7 +14,7 @@ UCLASS()
 class THELIGHTSEEKER_API UGA_MeleeEnemyAttack : public UEnemyGameplayAbility
 {
 	GENERATED_BODY()
-	
+
 public:
 	/** Actually activate ability, do not call this directly. We'll call it from APAHeroCharacter::ActivateAbilitiesWithTags(). */
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;

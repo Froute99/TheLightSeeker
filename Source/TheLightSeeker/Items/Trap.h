@@ -11,8 +11,8 @@ UCLASS()
 class THELIGHTSEEKER_API ATrap : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ATrap();
 
@@ -22,7 +22,7 @@ protected:
 
 	void DestroySelf();
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

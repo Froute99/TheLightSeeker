@@ -25,134 +25,74 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	void EnhancedMove(const FInputActionValue& Value);
-	void EnhancedLook(const FInputActionValue& Value);
-	void CameraZoom(const FInputActionValue& Value);
+	void		 EnhancedMove(const FInputActionValue& Value);
+	void		 EnhancedLook(const FInputActionValue& Value);
+	void		 CameraZoom(const FInputActionValue& Value);
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Mesh")
-		TObjectPtr<USkeletalMeshComponent> SkeletalMesh;
-
+	TObjectPtr<USkeletalMeshComponent> SkeletalMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "View")
-		class USpringArmComponent* SpringArm;
+	class USpringArmComponent* SpringArm;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "View")
-		class UCameraComponent* Camera;
+	class UCameraComponent* Camera;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "View")
-		float MinZoomLength = 100.f;
+	float MinZoomLength = 100.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "View")
-		float MaxZoomLength = 1000.f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "View")
-		float DefaultArmLength = 400.f;
+	float MaxZoomLength = 1000.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "View")
-		float ZoomStep = 40.f;
+	float DefaultArmLength = 400.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "View")
+	float ZoomStep = 40.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Default")
-		TSubclassOf<AActor> ArrowActor;
-
-	bool HasItem;
-
-/************************
- * Game Abilities System
- ************************/
-
+	/************************
+	 * Game Abilities System
+	 ************************/
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Abilities")
+	TWeakObjectPtr<class UCharacterAbilitySystemComponent> ASC;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Abilities")
+	TWeakObjectPtr<class UCharacterAttributeSet> AttributeSet;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Abilities")
-		TWeakObjectPtr<class UCharacterAbilitySystemComponent> ASC;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Abilities")
-		TWeakObjectPtr<class UCharacterAttributeSet> AttributeSet;
-
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Abilities")
-		class USkillTreeComponent* SkillTreeComponent;
-
+	class USkillTreeComponent* SkillTreeComponent;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Abilities")
-		TArray<TSubclassOf<class UCharacterGameplayAbility>> CharacterAbilities;
+	TArray<TSubclassOf<class UCharacterGameplayAbility>> CharacterAbilities;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Abilities")
-		TSubclassOf<class UGameplayEffect> DefaultAttributes;
+	TSubclassOf<class UGameplayEffect> DefaultAttributes;
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Abilities")
-		TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
-
+	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
 
 	void SetCharacterLevel(float Value);
 	UFUNCTION(BlueprintCallable, Category = "Abilities")
-		void SetHealth(float Value);
+	void SetHealth(float Value);
 	void SetMaxHealth(float Value);
 
 	UFUNCTION(BlueprintCallable, Category = "Abilities")
-		int32 GetCharacterLevel() const;
+	int32 GetCharacterLevel() const;
 	UFUNCTION(BlueprintCallable, Category = "Abilities")
-		float GetHealth() const;
+	float GetHealth() const;
 	UFUNCTION(BlueprintCallable, Category = "Abilities")
-		float GetMaxHealth() const;
-
+	float GetMaxHealth() const;
 
 	virtual void OnRep_PlayerState() override;
-	void InitializeStartingValues(class ALightSeekerPlayerState* PS);
-
+	void		 InitializeStartingValues(class ALightSeekerPlayerState* PS);
 
 	UFUNCTION(BlueprintCallable, Category = "Abilities")
-		virtual void AddCharacterAbilities(/*TSubclassOf<UGameplayAbility>& Ability*/);
+	virtual void AddCharacterAbilities();
 	virtual void InitializeAttributes();
 	virtual void AddStartupEffects();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
-		class UInputMappingContext* MappingContext;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
-		class UInputAction* MoveAction;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
-		class UInputAction* LookAction;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
-		class UInputAction* JumpAction;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
-		class UInputAction* ZoomAction;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
-		class UInputAction* AttackAction;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
-		class UInputAction* DodgeAction;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
-		class UInputAction* Skill1Action;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
-		class UInputAction* Skill2Action;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
-		class UInputAction* Skill3Action;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
-		class UInputAction* Skill4Action;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
-		class UInputAction* ItemAction;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
-		class UInputAction* ConfirmAction;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
-		class UInputAction* CancelAction;
-
-
-/************************
- * Animations
- ************************/
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation|Montages")
-		UAnimMontage* AttackMontage;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation|Montages")
-		UAnimMontage* DodgeMontage;
-
-	void Attack(const FInputActionValue& Value);
-
+	void Attack();
 
 	void Ability1();
 	void Ability2();
@@ -160,25 +100,65 @@ public:
 	void Ability4();
 	void Dodge();
 
+	bool IsDoingTargeting = false;
 
-/************************
-* Item
-************************/
+	/************************
+	 * Input
+	 ************************/
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	class UInputMappingContext* MappingContext;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	class UInputAction* MoveAction;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	class UInputAction* LookAction;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	class UInputAction* JumpAction;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	class UInputAction* ZoomAction;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	class UInputAction* AttackAction;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	class UInputAction* DodgeAction;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	class UInputAction* Skill1Action;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	class UInputAction* Skill2Action;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	class UInputAction* Skill3Action;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	class UInputAction* Skill4Action;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	class UInputAction* ItemAction;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	class UInputAction* ConfirmAction;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	class UInputAction* CancelAction;
+
+	/************************
+	 * Item
+	 ************************/
+public:
 	void OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> ItemAbility, UTexture2D* Icon);
 	void UseItem();
 
 	FGameplayAbilitySpecHandle ItemAbilityHandle;
 
+protected:
+	bool HasItem;
+
+	/************************
+	 * UI
+	 ************************/
 public:
 	// This member is temporary here. Should moved to HUD class or something.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-		class UPlayerHealthBarWidget* HealthBar;
+	class UPlayerHealthBarWidget* HealthBar;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-		class UItemWidget* ItemWidget;
-
-
-	bool IsDoingTargeting = false;
-
+	class UItemWidget* ItemWidget;
 };

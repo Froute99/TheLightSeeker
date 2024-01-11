@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class TheLightSeekerEditorTarget : TargetRules
 {
-	public TheLightSeekerEditorTarget( TargetInfo Target) : base(Target)
+	public TheLightSeekerEditorTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V4;
