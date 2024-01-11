@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Enemies/Abilities/BTTask_TriggerAbilityByClass.h"
+#include "Enemies/BTNodes/BTTask_TriggerAbilityByClass.h"
 #include "CharacterAbilitySystemComponent.h"
 #include "AIController.h"
 #include "Enemies/EnemyBase.h"

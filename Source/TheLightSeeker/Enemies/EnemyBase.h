@@ -45,9 +45,6 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Mesh")
-	//TObjectPtr<USkeletalMeshComponent> SkeletalMesh;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
 	class UBehaviorTree* BTAsset;
 
