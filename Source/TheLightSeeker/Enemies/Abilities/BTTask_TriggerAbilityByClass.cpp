@@ -36,7 +36,7 @@ EBTNodeResult::Type UBTTask_TriggerAbilityByClass::ExecuteTask(UBehaviorTreeComp
 	if (!ASC->TryActivateAbilityByClass(AbilityToActivate))
 	{
 		UE_LOG(Enemy, Log, TEXT("Could not activate ability"));
-		return AbortTask(OwnerComp, NodeMemory);
+		return EBTNodeResult::Type::Failed; //AbortTask(OwnerComp, NodeMemory); fix for cooldown
 	}
 	else
 	{

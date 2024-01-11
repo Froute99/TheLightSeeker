@@ -2,12 +2,12 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "TheLightSeeker.h"
 #include "BehaviorTree/BTDecorator.h"
 #include "BTDecorator_IsCooldownDone.generated.h"
 
 /**
- *	Node to check if cooldown is done and can activate ability.
+ *	Node to check if cooldown is done and can activate ability AND STOP CURRENT BEHAVIOR
  */
 UCLASS()
 class THELIGHTSEEKER_API UBTDecorator_IsCooldownDone : public UBTDecorator
@@ -19,12 +19,5 @@ public:
 	bool CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const override;
 
 	UPROPERTY(EditAnywhere)
-	float Cooldown;
-
-	UPROPERTY(EditAnywhere)
-	float RandomOffset;
-
-public:
-	float PreviousActivationTime;
-	float TimeOffset;
+	FGameplayTag CooldownTag;
 };

@@ -20,9 +20,8 @@ public:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	UFUNCTION(BlueprintCallable)
-	void OnPickup(ACharacterBase* Player);
+	
+	virtual void OnPickup(class ACharacterBase* Player);
 
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,

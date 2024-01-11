@@ -60,8 +60,6 @@ void ATrap::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherAct
 
 	if (UAbilitySystemComponent* EnemyASC = EnemyBase->GetAbilitySystemComponent())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Trap Activated"));
-
 		if (TrapGameplayEffectSpecHandle.IsValid())
 		{			
 			FActiveGameplayEffectHandle ActiveGameplayEffectHandle = EnemyASC->ApplyGameplayEffectSpecToSelf(*TrapGameplayEffectSpecHandle.Data.Get());

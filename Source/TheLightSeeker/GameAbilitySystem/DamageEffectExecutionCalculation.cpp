@@ -16,7 +16,7 @@ struct FDamageStatics
 	FDamageStatics()
 	{
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UCharacterAttributeSet, DefaultDamage, Source, true);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UCharacterAttributeSet, DamageRate, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UCharacterAttributeSet, DamageRate, Source, true);
 
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UCharacterAttributeSet, Health, Target, false);
 	}
