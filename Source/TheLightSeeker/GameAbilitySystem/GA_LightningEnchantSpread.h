@@ -15,7 +15,6 @@ class THELIGHTSEEKER_API UGA_LightningEnchantSpread : public UGameplayAbility
 	GENERATED_BODY()
 
 public:
-
 	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;

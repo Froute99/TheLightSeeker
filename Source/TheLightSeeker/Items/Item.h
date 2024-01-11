@@ -10,8 +10,8 @@ UCLASS()
 class THELIGHTSEEKER_API AItem : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AItem();
 
@@ -43,26 +43,26 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* Mesh;
 
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	//class UBoxComponent* BaseHeight;
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	// class UBoxComponent* BaseHeight;
 	//
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	//class USphereComponent* PickupCollision;
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	// class USphereComponent* PickupCollision;
 
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
-	//float Height;
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
+	// float Height;
 	//
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
-	//float PickupRange;
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
+	// float PickupRange;
 	//
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
-	//float FloatingRange;
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
+	// float FloatingRange;
 	//
 	///* Floating Rate per second */
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
-	//float FloatingSpeed;
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
+	// float FloatingSpeed;
 	//
 	///* Rotation Rate per second in degree */
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
-	//float RotationRate;
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
+	// float RotationRate;
 };

@@ -89,23 +89,8 @@ void AProjectileBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 			return;
 		}
 
-		//PlayerASC->ApplyGameplayEffectSpecToTarget(*DamageEffectSpecHandle.Data.Get(), EnemyASC);
-		//EnemyASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
-		
-
 		//EnemyASC->ReceiveDamage()
 
-		//if (!IsValid(ProjectileEffect))
-		//{
-		//	UE_LOG(LogTemp, Error, TEXT("%s() Missing Projectile Effect for %s."), *FString(__FUNCTION__), *GetName());
-		//	return;
-		//}
-
-
-
-
-		//ACharacterBase* Player = Cast<ACharacterBase>(GetInstigator());
-		//Player->GetAbilitySystemComponent()->ApplyGameplayEffectToTarget(ProjectileEffect, Overlapped->GetAbilitySystemComponent());
 	}
 
 }

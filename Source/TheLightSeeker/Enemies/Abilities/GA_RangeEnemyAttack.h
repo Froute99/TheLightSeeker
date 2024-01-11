@@ -6,7 +6,6 @@
 #include "EnemyGameplayAbility.h"
 #include "GA_RangeEnemyAttack.generated.h"
 
-
 /**
  *  Basic Attack Ability of Range type enemy
  */
@@ -23,7 +22,6 @@ public:
 	void SetPlayerReference(AActor* Player);
 
 protected:
-
 	UFUNCTION()
 	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 

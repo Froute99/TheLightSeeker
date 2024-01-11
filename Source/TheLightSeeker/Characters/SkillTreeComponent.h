@@ -6,8 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "SkillTreeComponent.generated.h"
 
-
-UCLASS(Blueprintable, BlueprintType, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(Blueprintable, BlueprintType, ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class THELIGHTSEEKER_API USkillTreeComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -27,7 +26,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<TSubclassOf<class UCharacterGameplayAbility>> AbilityList;
 
-	UFUNCTION(BlueprintCallable)
-		bool IsAbilityAcquired(const FString& AbilityName);
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TSubclassOf<class UCharacterGameplayAbility> DodgeAbility;
 
+	UFUNCTION(BlueprintCallable)
+	bool IsAbilityAcquired(const FString& AbilityName);
 };

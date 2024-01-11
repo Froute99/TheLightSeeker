@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "GA_LightningEnchantSpread.h"
 #include "Enemies/EnemyBase.h"
+#include "GameAbilitySystem/GA_LightningEnchantSpread.h"
 #include "AbilitySystemComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"

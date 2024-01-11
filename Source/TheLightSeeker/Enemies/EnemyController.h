@@ -7,13 +7,13 @@
 #include "EnemyController.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
-class THELIGHTSEEKER_API AEnemyController : public AAIController 
+class THELIGHTSEEKER_API AEnemyController : public AAIController
 {
 	GENERATED_BODY()
-	
+
 public:
 	AEnemyController(const FObjectInitializer& ObjectInitializer);
 

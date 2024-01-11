@@ -20,12 +20,11 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Component")
+	class UBoxComponent* BoxComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Component")
-		class UBoxComponent* BoxComponent;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Component")
-		class UProjectileMovementComponent* ProjectileMovementComponent;
+	class UProjectileMovementComponent* ProjectileMovementComponent;
 
 public:
 	// Called every frame
@@ -34,18 +33,16 @@ public:
 	void FireInDirection(const FVector& ShootDirection);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Component")
-		class UStaticMeshComponent* Mesh;
+	class UStaticMeshComponent* Mesh;
 
 	UFUNCTION()
-		void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
-			bool bFromSweep, const FHitResult& SweepResult);
-
-
-	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
-		FGameplayEffectSpecHandle DamageEffectSpecHandle;
+	void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+		bool bFromSweep, const FHitResult& SweepResult);
 
 	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
-		FGameplayEffectSpecHandle AdditionalEffectSpecHandle;
+	FGameplayEffectSpecHandle DamageEffectSpecHandle;
 
+	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
+	FGameplayEffectSpecHandle AdditionalEffectSpecHandle;
 };

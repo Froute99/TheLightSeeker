@@ -18,7 +18,7 @@ UCLASS()
 class THELIGHTSEEKER_API AEnemyBase : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
-	
+
 public:
 	AEnemyBase();
 
@@ -54,15 +54,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Mesh")
 	TObjectPtr<USkeletalMeshComponent> WeaponMesh;
 
-	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite, Category = "Enemy")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy")
 	TObjectPtr<UAnimMontage> DeathAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy")
 	TObjectPtr<UAnimMontage> WeaponDeathAnimMontage;
 
-/************************
- * Game Abilities System
- ************************/
+	/************************
+	 * Game Abilities System
+	 ************************/
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Abilities")

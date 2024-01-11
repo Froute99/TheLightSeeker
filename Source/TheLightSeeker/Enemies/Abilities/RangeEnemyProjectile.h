@@ -8,7 +8,7 @@
 #include "RangeEnemyProjectile.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class THELIGHTSEEKER_API ARangeEnemyProjectile : public AProjectileBase
@@ -18,14 +18,12 @@ class THELIGHTSEEKER_API ARangeEnemyProjectile : public AProjectileBase
 	ARangeEnemyProjectile();
 
 protected:
-	
-
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	//UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
-	//FGameplayEffectSpecHandle DamageEffectSpecHandle;
+	// UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
+	// FGameplayEffectSpecHandle DamageEffectSpecHandle;
 
 	UFUNCTION()
 	void OnBeginOverlap_EnemyAttack(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,

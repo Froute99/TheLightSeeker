@@ -34,8 +34,8 @@ UCLASS()
 class THELIGHTSEEKER_API AEnemySpawnManager : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AEnemySpawnManager();
 
@@ -45,7 +45,7 @@ protected:
 
 	void GiveItem(TObjectPtr<AEnemyBase> EnemyToSpawn);
 
-public:	
+public:
 	void ActivateActors(TArray<TObjectPtr<AEnemyBase>>& Enemies);
 	void DeactivateActors(TArray<TObjectPtr<AEnemyBase>>& Enemies);
 

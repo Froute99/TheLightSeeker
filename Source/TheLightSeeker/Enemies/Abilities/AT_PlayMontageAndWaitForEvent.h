@@ -20,30 +20,30 @@ public:
 	UAT_PlayMontageAndWaitForEvent(const FObjectInitializer& ObjectInitializer);
 
 	/**
-	* The Blueprint node for this task, PlayMontageAndWaitForEvent, has some black magic from the plugin that automagically calls Activate()
-	* inside of K2Node_LatentAbilityCall as stated in the AbilityTask.h. Ability logic written in C++ probably needs to call Activate() itself manually.
-	*/
-	virtual void Activate() override;
-	virtual void ExternalCancel() override;
+	 * The Blueprint node for this task, PlayMontageAndWaitForEvent, has some black magic from the plugin that automagically calls Activate()
+	 * inside of K2Node_LatentAbilityCall as stated in the AbilityTask.h. Ability logic written in C++ probably needs to call Activate() itself manually.
+	 */
+	virtual void	Activate() override;
+	virtual void	ExternalCancel() override;
 	virtual FString GetDebugString() const override;
-	virtual void OnDestroy(bool AbilityEnded) override;
+	virtual void	OnDestroy(bool AbilityEnded) override;
 
 	/* The montage completely finished playing */
 	UPROPERTY(BlueprintAssignable)
 	FPlayMontageAndWaitForEventDelegate OnCompleted;
-	
+
 	/** The montage started blending out */
 	UPROPERTY(BlueprintAssignable)
 	FPlayMontageAndWaitForEventDelegate OnBlendOut;
-	
+
 	/** The montage was interrupted */
 	UPROPERTY(BlueprintAssignable)
 	FPlayMontageAndWaitForEventDelegate OnInterrupted;
-	
+
 	/** The ability task was explicitly cancelled by another ability */
 	UPROPERTY(BlueprintAssignable)
 	FPlayMontageAndWaitForEventDelegate OnCancelled;
-	
+
 	/** One of the triggering gameplay events happened */
 	UPROPERTY(BlueprintAssignable)
 	FPlayMontageAndWaitForEventDelegate EventReceived;
@@ -63,15 +63,15 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Ability|Tasks", meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "TRUE"))
 	static UAT_PlayMontageAndWaitForEvent* PlayMontageAndWaitForEvent(
-		UGameplayAbility* OwningAbility,
-		FName TaskInstanceName,
-		UAnimMontage* MontageToPlay,
-		UAnimMontage* WeaponMontageToPlay,
+		UGameplayAbility*	  OwningAbility,
+		FName				  TaskInstanceName,
+		UAnimMontage*		  MontageToPlay,
+		UAnimMontage*		  WeaponMontageToPlay,
 		FGameplayTagContainer EventTags,
-		float Rate = 1.f,
-		FName StartSection = NAME_None,
-		bool bStopWhenAbilityEnds = true,
-		float AnimRootMotionTranslationScale = 1.f);
+		float				  Rate = 1.f,
+		FName				  StartSection = NAME_None,
+		bool				  bStopWhenAbilityEnds = true,
+		float				  AnimRootMotionTranslationScale = 1.f);
 
 private:
 	/** Montage that is playing */
@@ -111,8 +111,7 @@ private:
 	void OnGameplayEvent(FGameplayTag EventTag, const FGameplayEventData* Payload);
 
 	FOnMontageBlendingOutStarted BlendingOutDelegate;
-	FOnMontageEnded MontageEndedDelegate;
-	FDelegateHandle CancelledHandle;
-	FDelegateHandle EventHandle;
-
+	FOnMontageEnded				 MontageEndedDelegate;
+	FDelegateHandle				 CancelledHandle;
+	FDelegateHandle				 EventHandle;
 };

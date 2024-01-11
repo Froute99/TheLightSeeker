@@ -13,8 +13,6 @@
 void UCharacterAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
-
-
 }
 
 void UCharacterAttributeSet::OnRep_Level(const FGameplayAttributeData& OldLevel)

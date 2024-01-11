@@ -7,7 +7,7 @@
 #include "CharacterDefaultDamageEffect.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class THELIGHTSEEKER_API UCharacterDefaultDamageEffect : public UGameplayEffect
@@ -16,5 +16,4 @@ class THELIGHTSEEKER_API UCharacterDefaultDamageEffect : public UGameplayEffect
 
 public:
 	UCharacterDefaultDamageEffect();
-
 };

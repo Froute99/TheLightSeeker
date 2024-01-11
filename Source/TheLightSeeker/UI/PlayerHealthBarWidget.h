@@ -7,7 +7,7 @@
 #include "PlayerHealthBarWidget.generated.h"
 
 /**
- * 
+ *
  */
 
 UCLASS()
@@ -18,10 +18,8 @@ class THELIGHTSEEKER_API UPlayerHealthBarWidget : public UUserWidget
 public:
 	void SetHealth(float Value);
 
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float MaxHealth;
+	float MaxHealth;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-		class UProgressBar* HealthBar;
-
+	class UProgressBar* HealthBar;
 };

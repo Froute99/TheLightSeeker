@@ -7,7 +7,7 @@
 #include "GA_AssassinEnemyAttack.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class THELIGHTSEEKER_API UGA_AssassinEnemyAttack : public UEnemyGameplayAbility

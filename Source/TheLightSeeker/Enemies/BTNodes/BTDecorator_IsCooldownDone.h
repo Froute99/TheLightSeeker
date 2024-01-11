@@ -13,7 +13,7 @@ UCLASS()
 class THELIGHTSEEKER_API UBTDecorator_IsCooldownDone : public UBTDecorator
 {
 	GENERATED_BODY()
-	
+
 public:
 	UBTDecorator_IsCooldownDone(const FObjectInitializer& ObjectInitializer);
 	bool CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const override;
