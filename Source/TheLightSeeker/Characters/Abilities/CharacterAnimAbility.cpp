@@ -100,6 +100,7 @@ void UCharacterAnimAbility::SpawnProjectile()
 	FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect);
 
 	Projectile->DamageEffectSpecHandle = DamageEffectSpecHandle;
+	Projectile->DamageEffect = DamageGameplayEffect;
 	//Projectile->Range = Range;
 	Projectile->FinishSpawning(Transform);
 

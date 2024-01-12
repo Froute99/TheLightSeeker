@@ -38,12 +38,12 @@ public:
 	ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, MaxHealth);
 
 	UPROPERTY(BlueprintReadOnly, Category = "Damage", ReplicatedUsing = OnRep_DefaultDamage)
-	FGameplayAttributeData DefaultDamage;
-	ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, DefaultDamage);
+	FGameplayAttributeData BasicDamage;
+	ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, BasicDamage);
 
-	UPROPERTY(BlueprintReadOnly, Category = "DamageRate", ReplicatedUsing = OnRep_DamageRate)
-	FGameplayAttributeData DamageRate;
-	ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, DamageRate);
+	UPROPERTY(BlueprintReadOnly, Category = "DamageMultiplier", ReplicatedUsing = OnRep_DamageRate)
+	FGameplayAttributeData DamageMultiplier;
+	ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, DamageMultiplier);
 
 	UPROPERTY(BlueprintReadOnly, Category = "MovementSpeed", ReplicatedUsing = OnRep_MovementSpeed)
 	FGameplayAttributeData MovementSpeed;

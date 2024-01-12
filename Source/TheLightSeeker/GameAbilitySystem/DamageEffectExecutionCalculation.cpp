@@ -9,14 +9,14 @@
 struct FDamageStatics
 {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Health);
-	DECLARE_ATTRIBUTE_CAPTUREDEF(DefaultDamage);
-	DECLARE_ATTRIBUTE_CAPTUREDEF(DamageRate);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(BasicDamage);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(DamageMultiplier);
 
 
 	FDamageStatics()
 	{
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UCharacterAttributeSet, DefaultDamage, Source, true);
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UCharacterAttributeSet, DamageRate, Source, true);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UCharacterAttributeSet, BasicDamage, Source, true);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UCharacterAttributeSet, DamageMultiplier, Source, true);
 
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UCharacterAttributeSet, Health, Target, false);
 	}
@@ -31,8 +31,8 @@ static const FDamageStatics& DamageStatics()
 UDamageEffectExecutionCalculation::UDamageEffectExecutionCalculation()
 {
 	RelevantAttributesToCapture.Add(DamageStatics().HealthDef);
-	RelevantAttributesToCapture.Add(DamageStatics().DefaultDamageDef);
-	RelevantAttributesToCapture.Add(DamageStatics().DamageRateDef);
+	RelevantAttributesToCapture.Add(DamageStatics().BasicDamageDef);
+	RelevantAttributesToCapture.Add(DamageStatics().DamageMultiplierDef);
 }
 
 void UDamageEffectExecutionCalculation::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
@@ -59,22 +59,21 @@ void UDamageEffectExecutionCalculation::Execute_Implementation(const FGameplayEf
 	}
 
 	float BaseDamage = 0.0f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DefaultDamageDef, EvaluationParameters, BaseDamage);
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().BasicDamageDef, EvaluationParameters, BaseDamage);
 
 	UE_LOG(LogTemp, Log, TEXT("BaseDamage: %f"), BaseDamage);
 	float DamageDone = BaseDamage;
 
-	float DamagePercent = 0.f;
-	if (ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DamageRateDef, EvaluationParameters, DamagePercent))
+	float DamageRate = 0.f;
+	if (ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DamageMultiplierDef, EvaluationParameters, DamageRate))
 	{
-		if (DamagePercent <= 0.f)
+		if (DamageRate <= 0.f)
 		{
 			UE_LOG(LogTemp, Log, TEXT("%s: Damage Percentage was 0 or below"), *FString(__FUNCTION__));
 		}
 		else
 		{
-			UE_LOG(LogTemp, Log, TEXT("Damage Percentage: %f"), DamagePercent);
-			DamageDone *= (DamagePercent / 100.f);
+			DamageDone *= DamageRate;
 		}
 	}
 
