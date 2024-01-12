@@ -32,12 +32,12 @@ void UCharacterAttributeSet::OnRep_MaxHealth(const FGameplayAttributeData& OldMa
 
 void UCharacterAttributeSet::OnRep_DefaultDamage(const FGameplayAttributeData& OldValue)
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UCharacterAttributeSet, DefaultDamage, OldValue);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UCharacterAttributeSet, BasicDamage, OldValue);
 }
 
 void UCharacterAttributeSet::OnRep_DamageRate(const FGameplayAttributeData& OldValue)
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UCharacterAttributeSet, DamageRate, OldValue);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UCharacterAttributeSet, DamageMultiplier, OldValue);
 }
 
 void UCharacterAttributeSet::OnRep_MovementSpeed(const FGameplayAttributeData& OldValue)
