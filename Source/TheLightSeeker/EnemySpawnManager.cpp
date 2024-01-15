@@ -9,6 +9,7 @@
 #include "AIController.h"
 #include "BrainComponent.h"
 #include "Math/UnrealMathUtility.h"
+#include "Items/Item.h"
 
 // Sets default values
 AEnemySpawnManager::AEnemySpawnManager()
@@ -76,8 +77,12 @@ void AEnemySpawnManager::ActivateActors(TArray<TObjectPtr<AEnemyBase>>& Enemies)
 			Controller->GetBrainComponent()->RestartLogic();
 		}
 
-		// Temp: give item based on the droptable
-		GiveItem(EnemyToSpawn);
+		// some enemies might have fixed reward
+		
+		if(!EnemyToSpawn->Item)
+		{
+			GiveItem(EnemyToSpawn);
+		}
 	}
 }
 
