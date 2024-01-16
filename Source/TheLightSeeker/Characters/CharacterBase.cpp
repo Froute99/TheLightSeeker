@@ -263,7 +263,7 @@ void ACharacterBase::InitializeAttributes()
 		FActiveGameplayEffectHandle ActiveGEHandle = ASC->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), ASC.Get());
 	}
 
-	GetCharacterMovement()->MaxWalkSpeed = AttributeSet->GetMovementSpeed();
+	//GetCharacterMovement()->MaxWalkSpeed = AttributeSet->GetMovementSpeed();
 }
 
 void ACharacterBase::AddStartupEffects()
