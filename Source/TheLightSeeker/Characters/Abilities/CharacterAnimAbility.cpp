@@ -32,10 +32,13 @@ void UCharacterAnimAbility::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	TaskHandle = Task;
 
 	ACharacterBase* Character = Cast<ACharacterBase>(GetAvatarActorFromActorInfo());
-	Character->IsDoingTargeting = true;
+	if (Character)
+	{
+		Character->IsDoingTargeting = true;
+	}
 
 	//Task->ReadyForActivation();
-
+	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 

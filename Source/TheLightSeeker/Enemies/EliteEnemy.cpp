@@ -19,7 +19,7 @@ void AEliteEnemy::BeginPlay()
 
 	HealthChangedDelegateHandle = ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this, &AEliteEnemy::OnHealthChanged);
 
-	UEnemyHPBarWidget* HPBarWidget = Cast <UEnemyHPBarWidget>(HPBar->GetWidgetClass().GetDefaultObject());
+	UEnemyHPBarWidget* HPBarWidget = Cast<UEnemyHPBarWidget>(HPBar->GetUserWidgetObject());
 	if (HPBarWidget)
 	{
 		UE_LOG(Enemy, Log, TEXT("HPBarWidget set maxhealth"));
@@ -35,7 +35,7 @@ void AEliteEnemy::OnHealthChanged(const FOnAttributeChangeData& Data)
 {
 	Super::OnHealthChanged(Data);
 
-	UEnemyHPBarWidget* HPBarWidget = Cast<UEnemyHPBarWidget>(HPBar->GetWidgetClass().GetDefaultObject());
+	UEnemyHPBarWidget* HPBarWidget = Cast<UEnemyHPBarWidget>(HPBar->GetUserWidgetObject());
 	if (HPBarWidget)
 	{
 		UE_LOG(Enemy, Log, TEXT("HPBarWidget set current health"));
