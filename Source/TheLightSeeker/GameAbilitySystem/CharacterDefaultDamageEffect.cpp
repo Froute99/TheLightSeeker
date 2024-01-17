@@ -9,7 +9,7 @@ UCharacterDefaultDamageEffect::UCharacterDefaultDamageEffect()
 {
 	FGameplayModifierInfo DamageInfo;
 
-	DamageInfo.Attribute = UCharacterAttributeSet::GetDefaultDamageAttribute();
+	DamageInfo.Attribute = UCharacterAttributeSet::GetBasicDamageAttribute();
 	DamageInfo.ModifierOp = EGameplayModOp::Override;
 	DamageInfo.ModifierMagnitude = FGameplayEffectModifierMagnitude(30.0f);
 	Modifiers.Add(DamageInfo);
