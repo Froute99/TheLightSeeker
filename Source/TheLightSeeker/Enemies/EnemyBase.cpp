@@ -131,6 +131,11 @@ TWeakObjectPtr<USkeletalMeshComponent> AEnemyBase::GetWeaponMesh() const
 	return WeaponMesh;
 }
 
+float AEnemyBase::GetScale() const
+{
+	return GetActorScale().X;
+}
+
 UAbilitySystemComponent* AEnemyBase::GetAbilitySystemComponent() const
 {
 	return ASC;

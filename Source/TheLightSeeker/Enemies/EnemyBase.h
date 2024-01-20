@@ -27,6 +27,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Enemy")
 	float GetAttackRange() const;
 
+	UFUNCTION()
+	TWeakObjectPtr<USkeletalMeshComponent> GetWeaponMesh() const;
+
+	UFUNCTION(BlueprintCallable)
+	float GetScale() const;
+
+	/*
+	*	Death & Item Drop 
+	*/
 	UFUNCTION(BlueprintCallable)
 	void OnDied();
 
@@ -35,9 +44,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void FinishDying();
-
-	UFUNCTION()
-	TWeakObjectPtr<USkeletalMeshComponent> GetWeaponMesh() const;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
 	TSubclassOf<class AItem> Item;

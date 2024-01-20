@@ -18,7 +18,7 @@ void AEliteEnemy::BeginPlay()
 	Super::BeginPlay();
 
 	HealthChangedDelegateHandle = ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this, &AEliteEnemy::OnHealthChanged);
-
+	
 	UEnemyHPBarWidget* HPBarWidget = Cast<UEnemyHPBarWidget>(HPBar->GetUserWidgetObject());
 	if (HPBarWidget)
 	{
