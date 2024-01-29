@@ -33,9 +33,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	float GetScale() const;
 
-	/*
-	*	Death & Item Drop 
-	*/
+	virtual void OnActivate();
+	virtual void OnDeactivate();
+
+	/***********************************************
+	 * Death & Item Drop
+	 ***********************************************/
 	UFUNCTION(BlueprintCallable)
 	void OnDied();
 
@@ -47,6 +50,16 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
 	TSubclassOf<class AItem> Item;
+
+	/***********************************************
+	 * Enemy Targeting
+	 ***********************************************/
+
+	void   SetTargetPlayer(APawn* Target);
+	APawn* GetTargetPlayer() const;
+	
+	FTimerHandle TargetResetTimerHandle;
+	APawn* TargetPlayer;
 
 protected:
 	virtual void BeginPlay() override;
@@ -66,9 +79,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy")
 	TObjectPtr<UAnimMontage> WeaponDeathAnimMontage;
 
-	/************************
+	/***********************************************
 	 * Game Abilities System
-	 ************************/
+	 ***********************************************/
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Abilities")

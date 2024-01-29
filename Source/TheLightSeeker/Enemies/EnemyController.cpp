@@ -8,6 +8,7 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "Enemies/EnemyBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/GameState.h"
 
 AEnemyController::AEnemyController(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -21,7 +22,6 @@ void AEnemyController::OnPossess(APawn* InPawn)
 
 	UBlackboardComponent* BlackboardComponent = GetBlackboardComponent();
 
-	UE_LOG(LogTemp, Error, TEXT("Running OnPossess.."));
 	if (UseBlackboard(BBAsset, BlackboardComponent))
 	{
 		UBehaviorTree* BTAsset = CastChecked<AEnemyBase>(InPawn)->GetBTAsset();
@@ -31,20 +31,8 @@ void AEnemyController::OnPossess(APawn* InPawn)
 		}
 		else
 		{
-			if (!BlackboardComponent->GetValueAsObject(FName("Player")))
-			{
-				TArray<AActor*> actors;
-				UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACharacterBase::StaticClass(), actors);
-				
-				check(actors.Num() >= 1);
-
-				BlackboardComponent->SetValueAsObject(FName("Player"), actors[0]);
-				UE_LOG(LogTemp, Log, TEXT("Registered Player into blackboard successfully"));
-			}
-
 			float AttackRange = CastChecked<AEnemyBase>(InPawn)->GetAttackRange();
 			BlackboardComponent->SetValueAsFloat(FName("AttackRange"), AttackRange);
-			UE_LOG(LogTemp, Log, TEXT("Registered Enemy AttackRange successfully as %f"), AttackRange);
 		}
 	}
 	else

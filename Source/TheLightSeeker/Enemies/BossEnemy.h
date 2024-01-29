@@ -21,6 +21,12 @@ public:
 
 	virtual void OnHealthChanged(const FOnAttributeChangeData& Data) override;
 
-	UPROPERTY(EditAnywhere)
-	UEnemyHPBarWidget* HPBar;
+	virtual void OnActivate() override;
+	virtual void OnDeactivate() override;
+
+	UFUNCTION(BlueprintCallable)
+	void InitializeHealthBar();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UEnemyHPBarWidget> HPBar;
 };

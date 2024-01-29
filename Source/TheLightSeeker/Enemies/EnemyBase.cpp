@@ -1,12 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "EnemyBase.h"
 #include "CharacterAttributeSet.h"
 #include "CharacterAbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Items/Item.h"
+#include "AIController.h"
+#include "BrainComponent.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -27,13 +28,25 @@ UBehaviorTree* AEnemyBase::GetBTAsset() const
 	return BTAsset;
 }
 
+void AEnemyBase::SetTargetPlayer(APawn* Target)
+{
+	TargetPlayer = Target;
+
+	GetWorldTimerManager().ClearTimer(TargetResetTimerHandle);
+	GetWorldTimerManager().SetTimer(TargetResetTimerHandle, FTimerDelegate::CreateLambda([this]() { TargetPlayer = nullptr; }), 10.0f, false);
+}
+
+APawn* AEnemyBase::GetTargetPlayer() const
+{
+	return TargetPlayer;
+}
+
 void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
 
 	if (ASC != nullptr)
 	{
-		UE_LOG(Enemy, Log, TEXT("Enemy ASC initialized"));
 		ASC->InitAbilityActorInfo(this, this);
 		InitializeAttributes();
 		AddStartupEffects();
@@ -45,7 +58,6 @@ void AEnemyBase::BeginPlay()
 		// tag change callbacks
 
 		IsDying = false;
-
 	}
 	else
 	{
@@ -134,6 +146,36 @@ TWeakObjectPtr<USkeletalMeshComponent> AEnemyBase::GetWeaponMesh() const
 float AEnemyBase::GetScale() const
 {
 	return GetActorScale().X;
+}
+
+void AEnemyBase::OnActivate()
+{
+	SetActorEnableCollision(true);
+	SetActorTickEnabled(true);
+	SetActorHiddenInGame(false);
+
+	if (AAIController* AIController = Cast<AAIController>(GetController()))
+	{
+		if (UBrainComponent* BrainComponent = AIController->GetBrainComponent())
+		{
+			BrainComponent->RestartLogic();
+		}
+	}
+}
+
+void AEnemyBase::OnDeactivate()
+{
+	SetActorEnableCollision(false);
+	SetActorTickEnabled(false);
+	SetActorHiddenInGame(true);
+
+	if (AAIController* AIController = Cast<AAIController>(GetController()))
+	{
+		if(UBrainComponent* BrainComponent = AIController->GetBrainComponent())
+		{
+			BrainComponent->StopLogic(FString(TEXT("Waiting for activation..")));
+		}
+	}
 }
 
 UAbilitySystemComponent* AEnemyBase::GetAbilitySystemComponent() const

@@ -6,8 +6,6 @@
 #include "Components/ShapeComponent.h"
 #include "Characters/CharacterBase.h"
 #include "Enemies/EnemyBase.h"
-#include "AIController.h"
-#include "BrainComponent.h"
 #include "Math/UnrealMathUtility.h"
 #include "Items/Item.h"
 
@@ -45,6 +43,11 @@ void AEnemySpawnManager::BeginPlay()
 
 void AEnemySpawnManager::GiveItem(TObjectPtr<AEnemyBase> EnemyToSpawn)
 {
+	if (ItemDropTable.Num() == 0)
+	{
+		return;
+	}
+
 	int32 RandomValue = FMath::RandRange(0, (int32)(TotalWeight / ItemDropRate));
 
 	if (RandomValue < ItemDropTable.Last().Weight) // can drop item. otherwise - do not drop item
@@ -64,25 +67,16 @@ void AEnemySpawnManager::GiveItem(TObjectPtr<AEnemyBase> EnemyToSpawn)
 
 void AEnemySpawnManager::ActivateActors(TArray<TObjectPtr<AEnemyBase>>& Enemies)
 {
-	for (TObjectPtr<AEnemyBase>& EnemyToSpawn : Enemies)
+ 	for (TObjectPtr<AEnemyBase>& EnemyToSpawn : Enemies)
 	{
 		if (!EnemyToSpawn) continue;
+		EnemyToSpawn->OnActivate();
 
-		EnemyToSpawn->SetActorEnableCollision(true);
-		EnemyToSpawn->SetActorTickEnabled(true);
-		EnemyToSpawn->SetActorHiddenInGame(false);
-
-		if (AAIController* Controller = Cast<AAIController>(EnemyToSpawn->GetController()))
-		{
-			Controller->GetBrainComponent()->RestartLogic();
-		}
-
-		// some enemies might have fixed reward
-		
-		if(!EnemyToSpawn->Item)
+		// some enemies might have fixed reward..
+		if (!EnemyToSpawn->Item)
 		{
 			GiveItem(EnemyToSpawn);
-		}
+		} 
 	}
 }
 
@@ -91,15 +85,7 @@ void AEnemySpawnManager::DeactivateActors(TArray<TObjectPtr<AEnemyBase>>& Enemie
 	for (TObjectPtr<AEnemyBase>& EnemyToSpawn : Enemies)
 	{
 		if (!EnemyToSpawn) continue;
-
-		EnemyToSpawn->SetActorEnableCollision(false);
-		EnemyToSpawn->SetActorTickEnabled(false);
-		EnemyToSpawn->SetActorHiddenInGame(true);
-
-		if (AAIController* Controller = Cast<AAIController>(EnemyToSpawn->GetController()))
-		{
-			Controller->GetBrainComponent()->StopLogic(FString(TEXT("Waiting for activation..")));
-		}
+		EnemyToSpawn->OnDeactivate();
 	}
 }
 

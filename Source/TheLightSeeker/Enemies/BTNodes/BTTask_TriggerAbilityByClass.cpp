@@ -7,6 +7,7 @@
 #include "Enemies/EnemyBase.h"
 #include "Enemies/Abilities/EnemyGameplayAbility.h"
 #include "Enemies/Abilities/GA_RangeEnemyAttack.h"
+#include "Enemies/Abilities/GA_BossEnemyLeap.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 UBTTask_TriggerAbilityByClass::UBTTask_TriggerAbilityByClass()
@@ -48,6 +49,10 @@ EBTNodeResult::Type UBTTask_TriggerAbilityByClass::ExecuteTask(UBehaviorTreeComp
 		{
 			Ability->SetPlayerReference(Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(FName("Player"))));
 		}
+		if (UGA_BossEnemyLeap* Ability = Cast<UGA_BossEnemyLeap>(RunningAbility))
+		{
+			Ability->SetPlayerReference(Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(FName("Player"))));
+		}
 	}
 
 	return EBTNodeResult::Type::InProgress;
@@ -63,7 +68,6 @@ void UBTTask_TriggerAbilityByClass::TickTask(UBehaviorTreeComponent& OwnerComp, 
 
 void UBTTask_TriggerAbilityByClass::SetTaskDone()
 {
-	UE_LOG(Enemy, Log, TEXT("SetTaskDone"));
 	IsTaskDone = true;
 	RunningAbility->SetAbilityDoneDelegateHandle.Clear();
 }

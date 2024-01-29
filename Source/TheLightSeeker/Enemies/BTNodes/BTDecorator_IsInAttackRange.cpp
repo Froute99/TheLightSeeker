@@ -23,7 +23,7 @@ bool UBTDecorator_IsInAttackRange::CalculateRawConditionValue(UBehaviorTreeCompo
 		return false;
 	}
 
-	auto Target = Cast<ACharacterBase>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(FName("Player")));
+	auto Target = Cast<ACharacterBase>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(FName("Target")));
 	if (nullptr == Target)
 	{
 		return false;
@@ -32,7 +32,12 @@ bool UBTDecorator_IsInAttackRange::CalculateRawConditionValue(UBehaviorTreeCompo
 	float AttackRange = OwnerComp.GetBlackboardComponent()->GetValueAsFloat(FName("AttackRange"));
 	float Distance = Target->GetDistanceTo(ControllingPawn);
 
-	if (Distance > AttackRange)
+	if(UseCustomRange)
+	{
+		bResult = (Distance < CustomRange);
+		return bResult;
+	}
+	else if (Distance > AttackRange)
 	{
 		bResult = false;
 		return bResult;

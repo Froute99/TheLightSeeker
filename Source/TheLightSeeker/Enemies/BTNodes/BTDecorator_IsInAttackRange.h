@@ -23,4 +23,10 @@ public:
 	 */
 	UPROPERTY(EditAnywhere, Category = Node)
 	float AllowableFaceAngleDiff;
+
+	UPROPERTY(EditAnywhere, Category = Node)
+	bool UseCustomRange;
+
+	UPROPERTY(EditAnywhere, Category = Node)
+	float CustomRange;
 };

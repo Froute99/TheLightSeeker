@@ -36,9 +36,7 @@ void ARangeEnemyProjectile::OnBeginOverlap_EnemyAttack(UPrimitiveComponent* Over
 		ALightSeekerPlayerState* PS = Cast<ALightSeekerPlayerState>(Player->GetPlayerState());
 		if (PS)
 		{
-			UE_LOG(Enemy, Warning, TEXT("RangeEnemyProjectile hit player - before: %f"), PS->GetHealth());
 			PS->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*(DamageEffectSpecHandle.Data.Get()));
-			UE_LOG(Enemy, Warning, TEXT("RangeEnemyProjectile hit player - after: %f"), PS->GetHealth());
 		}
 		Destroy();
 	}

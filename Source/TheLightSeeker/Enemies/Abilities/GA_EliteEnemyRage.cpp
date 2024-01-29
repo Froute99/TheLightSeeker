@@ -47,8 +47,6 @@ void UGA_EliteEnemyRage::EventReceived(FGameplayTag EventTag, FGameplayEventData
 	if (GetOwningActorFromActorInfo()->GetLocalRole() == ROLE_Authority
 		&& EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.Enemy.Rage")))
 	{
-		UE_LOG(Enemy, Log, TEXT("Elite Rage Event called"));
-
 		FCollisionShape CollisionShape;
 		CollisionShape.SetSphere(EffectRange);
 

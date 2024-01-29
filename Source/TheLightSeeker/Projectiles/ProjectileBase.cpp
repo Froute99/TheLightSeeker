@@ -61,7 +61,6 @@ void AProjectileBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 {
 	if (OtherActor && (OtherActor != this))
 	{
-		UE_LOG(LogTemp, Log, TEXT("Overlap"));
 		AEnemyBase* Overlapped = Cast<AEnemyBase>(OtherActor);
 
 		if (!IsValid(Overlapped)) return;
@@ -71,7 +70,6 @@ void AProjectileBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 			UE_LOG(LogTemp, Error, TEXT("%s() DamageEffectSpecHandle not created: %s."), *FString(__FUNCTION__), *GetName());
 			return;
 		}
-
 
 		//if (Overlapped->StaticClass() == AEnemyBase::StaticClass())		// redundant check
 		UCharacterAbilitySystemComponent* EnemyASC = Cast<UCharacterAbilitySystemComponent>(Overlapped->GetAbilitySystemComponent());
@@ -89,6 +87,7 @@ void AProjectileBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 			return;
 		}
 
+		Overlapped->SetTargetPlayer(GetInstigator());
 		//EnemyASC->ReceiveDamage()
 
 	}
