@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "CharacterGameplayAbility.h"
 #include "AbilitySystemComponent.h"
 
@@ -35,8 +34,8 @@ const FGameplayTagContainer* UCharacterGameplayAbility::GetCooldownTags() const
 void UCharacterGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
 {
 	UGameplayEffect* CooldownGE = GetCooldownGameplayEffect();
-	int32 Level = GetAbilityLevel();
-	float Cooldown = CooldownDuration.GetValueAtLevel(Level);
+	int32			 Level = GetAbilityLevel();
+	float			 Cooldown = CooldownDuration.GetValueAtLevel(Level);
 
 	if (CooldownGE && (Cooldown > 0.0f))
 	{

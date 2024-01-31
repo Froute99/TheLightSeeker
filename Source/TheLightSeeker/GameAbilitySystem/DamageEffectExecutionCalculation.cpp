@@ -80,7 +80,7 @@ void UDamageEffectExecutionCalculation::Execute_Implementation(const FGameplayEf
 
 	double Randomizer = FMath::FRandRange(0.8, 1.2);
 	DamageDone *= Randomizer;
-	UE_LOG(LogTemp, Log, TEXT("BaseDamage: %f"), DamageDone);
+	UE_LOG(LogTemp, Log, TEXT("Damage: %f"), DamageDone);
 
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics().HealthProperty, EGameplayModOp::Additive, -DamageDone));
 
