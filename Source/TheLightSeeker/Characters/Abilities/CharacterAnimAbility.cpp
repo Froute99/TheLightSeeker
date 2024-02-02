@@ -58,7 +58,7 @@ void UCharacterAnimAbility::EventReceived(FGameplayTag EventTag, FGameplayEventD
 	// Montage was set to continue playing animation even after ability ends so this is okay.
 	if (EventTag == AnimDoneTag)
 	{
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		//SetAbilityDoneDelegateHandle.Broadcast();
 		return;
 	}

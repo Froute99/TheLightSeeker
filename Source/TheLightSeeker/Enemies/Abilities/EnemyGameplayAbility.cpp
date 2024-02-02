@@ -41,7 +41,10 @@ const FGameplayTagContainer* UEnemyGameplayAbility::GetCooldownTags() const
 void UEnemyGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
 {
 	UGameplayEffect* CooldownGE = GetCooldownGameplayEffect();
-	if (CooldownGE)
+	int32			 Level = GetAbilityLevel();
+	float			 Cooldown = CooldownDuration.GetValueAtLevel(Level);
+
+	if (CooldownGE && (Cooldown > 0.0f))
 	{
 		FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(CooldownGE->GetClass(), GetAbilityLevel());
 		SpecHandle.Data.Get()->DynamicGrantedTags.AppendTags(CooldownTags);

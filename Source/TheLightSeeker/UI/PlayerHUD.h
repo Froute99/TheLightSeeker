@@ -18,6 +18,6 @@ public:
 	virtual void BeginPlay();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void SpawnFloatingDamageTextWidget(UCharacterAbilitySystemComponent* SourceASC, float UnmitigatedDamage, float MitigatedDamage);
 
+	void SpawnFloatingDamageTextWidget(UCharacterAbilitySystemComponent* SourceASC, float UnmitigatedDamage, float MitigatedDamage);
 };

@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Characters/CharacterBase.h"
 #include "Characters/LightSeekerPlayerState.h"
 #include "Characters/SkillTreeComponent.h"
@@ -23,19 +22,20 @@
 
 #include "Kismet/KismetSystemLibrary.h"
 
+#include "PlayerHUD.h"
+
 // Sets default values
 ACharacterBase::ACharacterBase()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SPRINGARM"));
 	SpringArm->SetupAttachment(GetCapsuleComponent());
 	SpringArm->TargetArmLength = DefaultArmLength;
 	SpringArm->bUsePawnControlRotation = true;
 	SpringArm->SetRelativeLocation(FVector(0.0f, 0.0f, 100.0f));
-	//SpringArm->SetRelativeRotation(FRotator(-15.0f, 0.0f, 0.0f));
+	// SpringArm->SetRelativeRotation(FRotator(-15.0f, 0.0f, 0.0f));
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("CAMERA"));
 	Camera->SetupAttachment(SpringArm);
@@ -46,14 +46,12 @@ ACharacterBase::ACharacterBase()
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetMesh()->SetCollisionProfileName(FName("NoCollision"));
 
-	//SkillTreeComponent = CreateDefaultSubobject<USkillTreeComponent>(TEXT("SkillTree"));
-
+	// SkillTreeComponent = CreateDefaultSubobject<USkillTreeComponent>(TEXT("SkillTree"));
 }
 
 void ACharacterBase::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-
 
 	ALightSeekerPlayerState* PS = GetPlayerState<ALightSeekerPlayerState>();
 	if (PS)
@@ -63,9 +61,7 @@ void ACharacterBase::PossessedBy(AController* NewController)
 		AddStartupEffects();
 		AddCharacterAbilities();
 	}
-
 }
-
 
 // Called when the game starts or when spawned
 void ACharacterBase::BeginPlay()
@@ -84,7 +80,6 @@ UAbilitySystemComponent* ACharacterBase::GetAbilitySystemComponent() const
 void ACharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -93,7 +88,7 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	UEnhancedInputComponent* EIC = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
-	APlayerController* PC = CastChecked<APlayerController>(Controller);
+	APlayerController*		 PC = CastChecked<APlayerController>(Controller);
 
 	check(EIC && PC);
 
@@ -132,7 +127,6 @@ void ACharacterBase::EnhancedMove(const FInputActionValue& Value)
 	AddMovementInput(ForwardDirection, MovementVector.X);
 	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 	AddMovementInput(RightDirection, MovementVector.Y);
-
 }
 
 void ACharacterBase::EnhancedLook(const FInputActionValue& Value)
@@ -140,13 +134,12 @@ void ACharacterBase::EnhancedLook(const FInputActionValue& Value)
 	const FVector2D LookAxisVector = Value.Get<FVector2D>();
 	AddControllerYawInput(-LookAxisVector.X);
 	AddControllerPitchInput(LookAxisVector.Y);
-
 }
 
 void ACharacterBase::CameraZoom(const FInputActionValue& Value)
 {
-	if (Value.GetMagnitude() == 0.f || !Controller) return;
-
+	if (Value.GetMagnitude() == 0.f || !Controller)
+		return;
 
 	const float NewTargetArmLength = SpringArm->TargetArmLength + Value.GetMagnitude() * ZoomStep;
 	SpringArm->TargetArmLength = FMath::Clamp(NewTargetArmLength, MinZoomLength, MaxZoomLength);
@@ -239,13 +232,12 @@ void ACharacterBase::AddCharacterAbilities()
 	}
 
 	ASC->CharacterAbilitiesGiven = true;
-
 }
 
 void ACharacterBase::InitializeAttributes()
 {
-	if (!ASC.IsValid()) return;
-
+	if (!ASC.IsValid())
+		return;
 
 	if (!DefaultAttributes)
 	{
@@ -263,12 +255,11 @@ void ACharacterBase::InitializeAttributes()
 		FActiveGameplayEffectHandle ActiveGEHandle = ASC->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), ASC.Get());
 	}
 
-	//GetCharacterMovement()->MaxWalkSpeed = AttributeSet->GetMovementSpeed();
+	// GetCharacterMovement()->MaxWalkSpeed = AttributeSet->GetMovementSpeed();
 }
 
 void ACharacterBase::AddStartupEffects()
 {
-
 }
 
 void ACharacterBase::Attack()
@@ -279,13 +270,11 @@ void ACharacterBase::Attack()
 		return;
 	}
 
-
 	bool Succeed = ASC->TryActivateAbilitiesByTag(FGameplayTag::RequestGameplayTag(FName("Ability.Player.BasicAttack")).GetSingleTagContainer());
 	if (Succeed)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Activate Default Attack"));
 	}
-
 }
 
 void ACharacterBase::OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> ItemAbility, UTexture2D* Icon)
@@ -303,7 +292,8 @@ void ACharacterBase::OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> I
 	// grant current item's ability
 	ItemAbilityHandle = ASC->GiveAbility(FGameplayAbilitySpec(ItemAbility, 1, -1, this));
 
-	if (!ItemAbilityHandle.IsValid()) UE_LOG(LogTemp, Warning, TEXT("Failed to Grant ItemAbility"));
+	if (!ItemAbilityHandle.IsValid())
+		UE_LOG(LogTemp, Warning, TEXT("Failed to Grant ItemAbility"));
 
 	// if Ability is used on granting, remove it immediately
 	if (!Ability->ActivateAbilityOnGranted)
@@ -327,7 +317,8 @@ void ACharacterBase::OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> I
 
 void ACharacterBase::UseItem()
 {
-	if (!HasItem || GetLocalRole() != ROLE_Authority) return;
+	if (!HasItem || GetLocalRole() != ROLE_Authority)
+		return;
 
 	bool Succeed = ASC->TryActivateAbility(ItemAbilityHandle);
 	if (Succeed)
@@ -395,4 +386,3 @@ void ACharacterBase::Dodge()
 {
 	ASC->TryActivateAbilityByClass(SkillTreeComponent->DodgeAbility);
 }
-

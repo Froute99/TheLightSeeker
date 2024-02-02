@@ -3,6 +3,8 @@
 
 #include "GameAbilitySystem/DamageEffectExecutionCalculation.h"
 
+#include "CharacterAbilitySystemComponent.h"
+
 #include "GameAbilitySystem/CharacterAttributeSet.h"
 #include "AbilitySystemComponent.h"
 
@@ -11,7 +13,6 @@ struct FDamageStatics
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Health);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(BasicDamage);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(DamageMultiplier);
-
 
 	FDamageStatics()
 	{
@@ -61,7 +62,6 @@ void UDamageEffectExecutionCalculation::Execute_Implementation(const FGameplayEf
 	float BaseDamage = 0.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().BasicDamageDef, EvaluationParameters, BaseDamage);
 
-	UE_LOG(LogTemp, Log, TEXT("BaseDamage: %f"), BaseDamage);
 	float DamageDone = BaseDamage;
 
 	float DamageRate = 0.f;
@@ -77,7 +77,15 @@ void UDamageEffectExecutionCalculation::Execute_Implementation(const FGameplayEf
 		}
 	}
 
+
 	if (DamageDone < 0.0f) DamageDone = 0.0f;
+
+	double Randomizer = FMath::FRandRange(0.8, 1.2);
+	DamageDone *= Randomizer;
+
+	DamageDone = FMath::RoundToFloat(DamageDone);
+	// Broadcast damage given
+	Cast<UCharacterAbilitySystemComponent>(TargetABSC)->ReceiveDamage(DamageDone);
 
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics().HealthProperty, EGameplayModOp::Additive, -DamageDone));
 

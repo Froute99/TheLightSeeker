@@ -36,8 +36,8 @@ public:
 
 	void SpawnProjectile();
 
-	UFUNCTION(BlueprintCallable)
-	virtual void AdditionalSpawnEvent() {}
+	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "AdditionalSpawnSquence"))
+	void AdditionalSpawnEvent();
 
 	class UAT_PlayMontageAndWaitForEvent* TaskHandle;
 	UFUNCTION(BlueprintCallable)
