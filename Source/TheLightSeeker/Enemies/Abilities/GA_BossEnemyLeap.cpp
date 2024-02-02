@@ -26,11 +26,11 @@ void UGA_BossEnemyLeap::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	}
 
 
-	if (PlayerReference)
-	{
-		TargetLocation = PlayerReference->GetActorLocation();
-		TargetLocation.Z = 0.0f;
-	}
+	//if (PlayerReference)
+	//{
+	//	TargetLocation = PlayerReference->GetActorLocation();
+	//	TargetLocation.Z = 0.0f;
+	//}
 
 	UAnimMontage* MontageToPlay = AttackMontage;
 
@@ -43,17 +43,6 @@ void UGA_BossEnemyLeap::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	Task->EventReceived.AddDynamic(this, &UGA_BossEnemyLeap::EventReceived);
 	// ReadyForActivation() is how you activate the AbilityTask in C++. Blueprint has magic from K2Node_LatentGameplayTaskCall that will automatically call ReadyForActivation().
 	Task->ReadyForActivation();
-}
-
-void UGA_BossEnemyLeap::SetPlayerReference(AActor* Player)
-{
-	if (!Cast<ACharacterBase>(Player))
-	{
-		UE_LOG(Enemy, Error, TEXT("SetPlayerReference: given player is not a player actor"));
-		return;
-	}
-	UE_LOG(Enemy, Log, TEXT("UGA_BossEnemyLeap: SetPlayerReference"));
-	PlayerReference = Player;
 }
 
 void UGA_BossEnemyLeap::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)

@@ -45,13 +45,9 @@ EBTNodeResult::Type UBTTask_TriggerAbilityByClass::ExecuteTask(UBehaviorTreeComp
 		RunningAbility = Cast<UEnemyGameplayAbility>(ASC->GetAnimatingAbility());
 		Cast<UEnemyGameplayAbility>(RunningAbility)->SetAbilityDoneDelegateHandle.AddUFunction(this, FName("SetTaskDone"));
 
-		if (UGA_RangeEnemyAttack* Ability = Cast<UGA_RangeEnemyAttack>(RunningAbility))
+		if (RunningAbility->IsRequireTargetReference)
 		{
-			Ability->SetPlayerReference(Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(FName("Player"))));
-		}
-		if (UGA_BossEnemyLeap* Ability = Cast<UGA_BossEnemyLeap>(RunningAbility))
-		{
-			Ability->SetPlayerReference(Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(FName("Player"))));
+			RunningAbility->SetTargetReference(TWeakObjectPtr<AActor>(Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject("Target"))));
 		}
 	}
 
@@ -70,5 +66,6 @@ void UBTTask_TriggerAbilityByClass::SetTaskDone()
 {
 	IsTaskDone = true;
 	RunningAbility->SetAbilityDoneDelegateHandle.Clear();
+	RunningAbility->SetTargetReference(nullptr);
 }
  

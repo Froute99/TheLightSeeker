@@ -46,4 +46,12 @@ public:
 
 	virtual const FGameplayTagContainer* GetCooldownTags() const;
 	virtual void						 ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const;
+
+	UPROPERTY(EditDefaultsOnly)
+	bool IsRequireTargetReference;
+
+	void SetTargetReference(TWeakObjectPtr<AActor> Target);
+
+protected:
+	TWeakObjectPtr<AActor> AbilityTarget;
 };

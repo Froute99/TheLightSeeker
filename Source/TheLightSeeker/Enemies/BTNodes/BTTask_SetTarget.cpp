@@ -29,13 +29,13 @@ EBTNodeResult::Type UBTTask_SetTarget::ExecuteTask(UBehaviorTreeComponent& Owner
 		int								 TotalPlayerNum = GetWorld()->GetGameState()->PlayerArray.Num();
 		for (int i = 0; i < TotalPlayerNum; ++i)
 		{
-			if(GetWorld()->GetGameState()->PlayerArray[i]->GetPlayerController())
+			if (GetWorld()->GetGameState()->PlayerArray[i]->GetPlayerController())
 			{
 				Players.Add(GetWorld()->GetGameState()->PlayerArray[i]);
 			}
 		}
 
-		int								 RandomIndex = FMath::RandRange(0, Players.Num() - 1);
+		int RandomIndex = FMath::RandRange(0, Players.Num() - 1);
 
 		OwnerComp.GetBlackboardComponent()->SetValueAsObject(FName("Target"),
 			Cast<ACharacterBase>(Players[RandomIndex]->GetPawn()));

@@ -17,8 +17,6 @@ class THELIGHTSEEKER_API UGA_BossEnemyLeap : public UEnemyGameplayAbility
 public:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
-	void SetPlayerReference(AActor* Player);
-
 protected:
 	UFUNCTION()
 	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
@@ -26,6 +24,5 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	float LeapDuration;
 
-	AActor* PlayerReference;
 	FVector TargetLocation;
 };

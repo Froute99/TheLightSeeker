@@ -39,16 +39,6 @@ void UGA_RangeEnemyAttack::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 	Task->ReadyForActivation();
 }
 
-void UGA_RangeEnemyAttack::SetPlayerReference(AActor* Player)
-{
-	if (!Cast<ACharacterBase>(Player))
-	{
-		UE_LOG(Enemy, Error, TEXT("SetPlayerReference: given player is not a player actor"));
-		return;
-	}
-	PlayerReference = Player;
-}
-
 void UGA_RangeEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	//UE_LOG(Enemy, Log, TEXT("EventReceived called: %s"), EventTag.GetTagName());
@@ -68,9 +58,9 @@ void UGA_RangeEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 	{
 		AEnemyBase* EnemyBase = Cast<AEnemyBase>(GetActorInfo().OwnerActor.Get());
 
-		if (EnemyBase && PlayerReference)
+		if (EnemyBase && Target.IsValid())
 		{
-			FVector PlayerLocation = PlayerReference->GetActorLocation();
+			FVector PlayerLocation = Target->GetActorLocation();
 
 			FActorSpawnParameters Parameter{};
 			Parameter.Instigator = EnemyBase;

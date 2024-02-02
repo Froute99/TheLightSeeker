@@ -42,7 +42,6 @@ AProjectileBase::AProjectileBase()
 void AProjectileBase::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 // Called every frame

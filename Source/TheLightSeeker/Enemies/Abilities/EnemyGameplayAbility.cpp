@@ -49,3 +49,8 @@ void UEnemyGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handl
 		ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, SpecHandle);
 	}
 }
+
+void UEnemyGameplayAbility::SetTargetReference(TWeakObjectPtr<AActor> Target)
+{
+	AbilityTarget = Target;
+}
