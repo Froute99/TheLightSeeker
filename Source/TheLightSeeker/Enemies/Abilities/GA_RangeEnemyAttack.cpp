@@ -11,7 +11,6 @@
 
 void UGA_RangeEnemyAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-
 	if (!AttackMontage)
 	{
 		UE_LOG(Enemy, Error, TEXT("RangeEnemyAttack class does not have Montage to play"))

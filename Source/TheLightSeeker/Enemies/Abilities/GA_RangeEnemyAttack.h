@@ -25,7 +25,4 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> ProjectileActor;
-
-private:
-	TWeakObjectPtr<AActor> Target;
 };
