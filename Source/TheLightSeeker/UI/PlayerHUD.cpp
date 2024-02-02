@@ -7,6 +7,8 @@
 
 void APlayerHUD::BeginPlay()
 {
+	Super::BeginPlay();
+
 	ALightSeekerPlayerState* PS = Cast<APlayerController>(GetOwner())->GetPlayerState<ALightSeekerPlayerState>();
 
 	UCharacterAbilitySystemComponent* ASC = Cast<UCharacterAbilitySystemComponent>(PS->GetAbilitySystemComponent());

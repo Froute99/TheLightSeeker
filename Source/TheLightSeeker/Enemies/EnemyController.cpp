@@ -12,7 +12,6 @@
 AEnemyController::AEnemyController(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	bWantsPlayerState = true;
 }
 
 void AEnemyController::OnPossess(APawn* InPawn)

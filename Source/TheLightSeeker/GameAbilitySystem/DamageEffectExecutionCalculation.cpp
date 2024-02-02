@@ -77,11 +77,13 @@ void UDamageEffectExecutionCalculation::Execute_Implementation(const FGameplayEf
 		}
 	}
 
+
 	if (DamageDone < 0.0f) DamageDone = 0.0f;
 
 	double Randomizer = FMath::FRandRange(0.8, 1.2);
 	DamageDone *= Randomizer;
 
+	DamageDone = FMath::RoundToFloat(DamageDone);
 	// Broadcast damage given
 	Cast<UCharacterAbilitySystemComponent>(TargetABSC)->ReceiveDamage(DamageDone);
 
