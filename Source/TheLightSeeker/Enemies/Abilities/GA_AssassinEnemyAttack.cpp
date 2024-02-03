@@ -1,4 +1,5 @@
-// Copyright (c) 2023 Team Light Seekers All rights reserved.
+// Fill out your copyright notice in the Description page of Project Settings.
+
 
 #include "Abilities/GA_AssassinEnemyAttack.h"
 #include "Abilities/AT_PlayMontageAndWaitForEvent.h"
@@ -12,7 +13,7 @@ void UGA_AssassinEnemyAttack::ActivateAbility(const FGameplayAbilitySpecHandle H
 	if (!AttackMontage)
 	{
 		UE_LOG(Enemy, Error, TEXT("GA_AssassinEnemyAttack class does not have Montage to play"))
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
 
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
@@ -42,7 +43,7 @@ void UGA_AssassinEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEven
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.EndAbility")))
 	{
 		OnCompleted(EventTag, EventData);
-		// EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		return;
 	}
 
@@ -55,33 +56,35 @@ void UGA_AssassinEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEven
 		if (EnemyBase)
 		{
 			FHitResult Out;
-			bool	   IsHitPlayer = GetWorld()->LineTraceSingleByChannel(Out,
-					  EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetCapsuleComponent()->GetScaledCapsuleRadius() / 2.0f,
-					  EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetAttackRange(),
-					  ECollisionChannel::ECC_GameTraceChannel1);
+			bool IsHitPlayer = GetWorld()->LineTraceSingleByChannel(Out,
+				EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetCapsuleComponent()->GetScaledCapsuleRadius() / 2.0f,
+				EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetAttackRange(),
+				ECollisionChannel::ECC_GameTraceChannel1);
 
-			// DEBUG
-			UKismetSystemLibrary::DrawDebugLine(GetWorld(), EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetCapsuleComponent()->GetScaledCapsuleRadius() / 2.0f,
-				EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetAttackRange(), FLinearColor::Blue, 5.0f);
-			UKismetSystemLibrary::DrawDebugCapsule(GetWorld(), EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetCapsuleComponent()->GetScaledCapsuleRadius() / 2.0f, 50.0f, 50.0f, FRotator(), FLinearColor::Blue, 5.0f);
-			UKismetSystemLibrary::DrawDebugCapsule(GetWorld(), EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetAttackRange(), 50.0f, 50.0f, FRotator(), FLinearColor::Blue, 5.0f);
+			if(DrawAttackRange)
+			{
+				UKismetSystemLibrary::DrawDebugLine(GetWorld(), EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetCapsuleComponent()->GetScaledCapsuleRadius() / 2.0f,
+					EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetAttackRange(), FLinearColor::Blue, 5.0f);
+				UKismetSystemLibrary::DrawDebugCapsule(GetWorld(), EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetCapsuleComponent()->GetScaledCapsuleRadius() / 2.0f, 50.0f, 50.0f, FRotator(), FLinearColor::Blue, 5.0f);
+				UKismetSystemLibrary::DrawDebugCapsule(GetWorld(), EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetAttackRange(), 50.0f, 50.0f, FRotator(), FLinearColor::Blue, 5.0f);
+			}
 
 			if (IsHitPlayer)
 			{
 				ACharacterBase* Player = Cast<ACharacterBase>(Out.GetActor());
 				if (Player)
 				{
-					// UE_LOG(Enemy, Log, TEXT("Attack event player hit2"));
+					//UE_LOG(Enemy, Log, TEXT("Attack event player hit2"));
 					ALightSeekerPlayerState* PS = Cast<ALightSeekerPlayerState>(Player->GetPlayerState());
 
 					if (PS)
 					{
-						// UE_LOG(Enemy, Log, TEXT("Player HP before enemy attack: %f"), PS->GetHealth());
+						//UE_LOG(Enemy, Log, TEXT("Player HP before enemy attack: %f"), PS->GetHealth());
 
 						FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
 						PS->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
 
-						// UE_LOG(Enemy, Log, TEXT("Player HP after enemy attack: %f"), PS->GetHealth());
+						//UE_LOG(Enemy, Log, TEXT("Player HP after enemy attack: %f"), PS->GetHealth());
 					}
 				}
 			}

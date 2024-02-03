@@ -54,5 +54,8 @@ public:
 	void SetTargetReference(TWeakObjectPtr<AActor> Target);
 
 protected:
+	UPROPERTY(EditDefaultsOnly)
+	bool DrawAttackRange;
+
 	TWeakObjectPtr<AActor> AbilityTarget;
 };

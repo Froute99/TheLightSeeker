@@ -1,4 +1,4 @@
-// Copyright (c) 2023 Team Light Seekers All rights reserved.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "GA_MeleeEnemyAttack.h"
 #include "AbilitySystemComponent.h"
@@ -44,6 +44,7 @@ void UGA_MeleeEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 	// Montage was set to continue playing animation even after ability ends so this is okay.
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.EndAbility")))
 	{
+		UE_LOG(Enemy, Error, TEXT("OnCompleted"))
 		OnCompleted(EventTag, EventData);
 		// EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		return;
@@ -66,11 +67,13 @@ void UGA_MeleeEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 					  EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetAttackRange(),
 					  ECollisionChannel::ECC_GameTraceChannel1);
 
-			// DEBUG
-			UKismetSystemLibrary::DrawDebugLine(GetWorld(), EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetCapsuleComponent()->GetScaledCapsuleRadius() / 2.0f,
-				EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetAttackRange(), FLinearColor::Blue, 5.0f);
-			UKismetSystemLibrary::DrawDebugCapsule(GetWorld(), EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetCapsuleComponent()->GetScaledCapsuleRadius() / 2.0f, 50.0f, 50.0f, FRotator(), FLinearColor::Blue, 5.0f);
-			UKismetSystemLibrary::DrawDebugCapsule(GetWorld(), EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetAttackRange(), 50.0f, 50.0f, FRotator(), FLinearColor::Blue, 5.0f);
+			if (DrawAttackRange)
+			{
+				UKismetSystemLibrary::DrawDebugLine(GetWorld(), EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetCapsuleComponent()->GetScaledCapsuleRadius() / 2.0f,
+					EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetAttackRange(), FLinearColor::Blue, 5.0f);
+				UKismetSystemLibrary::DrawDebugCapsule(GetWorld(), EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetCapsuleComponent()->GetScaledCapsuleRadius() / 2.0f, 50.0f, 50.0f, FRotator(), FLinearColor::Blue, 5.0f);
+				UKismetSystemLibrary::DrawDebugCapsule(GetWorld(), EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetAttackRange(), 50.0f, 50.0f, FRotator(), FLinearColor::Blue, 5.0f);
+			}
 
 			if (IsHitPlayer)
 			{
@@ -84,6 +87,8 @@ void UGA_MeleeEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 
 					if (PS)
 					{
+						// UE_LOG(Enemy, Log, TEXT("Player HP before enemy attack: %f"), PS->GetHealth());
+
 						FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
 						// PS->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
 						EnemyBase->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*DamageEffectSpecHandle.Data.Get(), PS->GetAbilitySystemComponent());
