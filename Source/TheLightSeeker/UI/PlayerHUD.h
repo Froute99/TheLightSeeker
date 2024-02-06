@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 #pragma once
 
@@ -18,7 +18,8 @@ public:
 	virtual void BeginPlay();
 
 	UFUNCTION(BlueprintImplementableEvent)
-
-	//void SpawnFloatingDamageTextWidget(UCharacterAbilitySystemComponent* SourceASC, float UnmitigatedDamage, float MitigatedDamage);
 	void SpawnFloatingDamageTextWidget(float Dmg);
+
+	void BindDelegate();
+	//void SpawnFloatingDamageTextWidget(UCharacterAbilitySystemComponent* SourceASC, float UnmitigatedDamage, float MitigatedDamage);
 };

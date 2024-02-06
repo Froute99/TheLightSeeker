@@ -386,3 +386,8 @@ void ACharacterBase::Dodge()
 {
 	ASC->TryActivateAbilityByClass(SkillTreeComponent->DodgeAbility);
 }
+
+void ACharacterBase::Die()
+{
+
+}

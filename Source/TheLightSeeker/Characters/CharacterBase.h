@@ -100,6 +100,8 @@ public:
 	void Ability4();
 	void Dodge();
 
+	void Die();
+
 	bool IsDoingTargeting = false;
 
 	/************************

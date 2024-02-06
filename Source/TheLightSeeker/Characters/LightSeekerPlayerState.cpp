@@ -7,7 +7,7 @@
 #include "CharacterBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "UI/PlayerHealthBarWidget.h"
-
+#include "PlayerHUD.h"
 
 ALightSeekerPlayerState::ALightSeekerPlayerState()
 {
@@ -63,6 +63,8 @@ void ALightSeekerPlayerState::BeginPlay()
 		LevelChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetLevelAttribute()).AddUObject(this, &ALightSeekerPlayerState::LevelChanged);
 		MoveSpeedChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMovementSpeedAttribute()).AddUObject(this, &ALightSeekerPlayerState::MoveSpeedChanged);
 	}
+
+	Cast<APlayerHUD>(GetOwningController())->BindDelegate();
 }
 
 void ALightSeekerPlayerState::HealthChanged(const FOnAttributeChangeData& Data)
