@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 
 #include "UI/PlayerHUD.h"
@@ -9,6 +9,10 @@ void APlayerHUD::BeginPlay()
 {
 	Super::BeginPlay();
 
+}
+
+void APlayerHUD::BindDelegate()
+{
 	ALightSeekerPlayerState* PS = Cast<APlayerController>(GetOwner())->GetPlayerState<ALightSeekerPlayerState>();
 
 	UCharacterAbilitySystemComponent* ASC = Cast<UCharacterAbilitySystemComponent>(PS->GetAbilitySystemComponent());
