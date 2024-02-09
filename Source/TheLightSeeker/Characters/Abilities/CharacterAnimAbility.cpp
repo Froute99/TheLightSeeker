@@ -28,7 +28,6 @@ void UCharacterAnimAbility::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	Task->OnInterrupted.AddDynamic(this, &UCharacterAnimAbility::OnCancelled);
 	Task->OnCancelled.AddDynamic(this, &UCharacterAnimAbility::OnCancelled);
 	Task->EventReceived.AddDynamic(this, &UCharacterAnimAbility::EventReceived);
-	// ReadyForActivation() is how you activate the AbilityTask in C++. Blueprint has magic from K2Node_LatentGameplayTaskCall that will automatically call ReadyForActivation().
 	TaskHandle = Task;
 
 	ACharacterBase* Character = Cast<ACharacterBase>(GetAvatarActorFromActorInfo());
@@ -37,6 +36,7 @@ void UCharacterAnimAbility::ActivateAbility(const FGameplayAbilitySpecHandle Han
 		Character->IsDoingTargeting = true;
 	}
 
+	// ReadyForActivation() is how you activate the AbilityTask in C++. Blueprint has magic from K2Node_LatentGameplayTaskCall that will automatically call ReadyForActivation().
 	//Task->ReadyForActivation();
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);

@@ -20,6 +20,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SpawnFloatingDamageTextWidget(float Dmg);
 
-	void BindDelegate();
+	UFUNCTION(BlueprintCallable)
+	bool BindDelegate();
 	//void SpawnFloatingDamageTextWidget(UCharacterAbilitySystemComponent* SourceASC, float UnmitigatedDamage, float MitigatedDamage);
 };

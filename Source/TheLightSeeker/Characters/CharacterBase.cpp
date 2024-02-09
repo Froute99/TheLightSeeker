@@ -201,6 +201,7 @@ float ACharacterBase::GetMaxHealth() const
 
 void ACharacterBase::OnRep_PlayerState()
 {
+	UE_LOG(LogTemp, Log, TEXT("PlayerState Rep"));
 	ALightSeekerPlayerState* PS = GetPlayerState<ALightSeekerPlayerState>();
 
 	if (PS)

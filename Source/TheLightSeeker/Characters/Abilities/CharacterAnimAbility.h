@@ -36,7 +36,7 @@ public:
 
 	void SpawnProjectile();
 
-	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "AdditionalSpawnSquence"))
+	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "AdditionalSpawnSquence(Not-Rep)"))
 	void AdditionalSpawnEvent();
 
 	class UAT_PlayMontageAndWaitForEvent* TaskHandle;

@@ -1,19 +1,19 @@
 // Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 
-#include "UI/PlayerHUD.h"
+#include "Characters/LightSeekerPlayerController.h"
 #include "LightSeekerPlayerState.h"
 #include "CharacterAbilitySystemComponent.h"
 
-void APlayerHUD::BeginPlay()
+void ALightSeekerPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
 }
 
-bool APlayerHUD::BindDelegate()
+bool ALightSeekerPlayerController::BindDelegate()
 {
-	ALightSeekerPlayerState* PS = Cast<ALightSeekerPlayerState>(PlayerOwner->PlayerState);
+	ALightSeekerPlayerState* PS = Cast<ALightSeekerPlayerState>(PlayerState);
 	if (!IsValid(PS))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("PS is invalid"));
@@ -27,6 +27,6 @@ bool APlayerHUD::BindDelegate()
 		return false;
 	}
 
-	ASC->ReceivedDamage.AddDynamic(this, &APlayerHUD::SpawnFloatingDamageTextWidget);
+	ASC->ReceivedDamage.AddDynamic(this, &ALightSeekerPlayerController::FloatingDamage);
 	return true;
 }

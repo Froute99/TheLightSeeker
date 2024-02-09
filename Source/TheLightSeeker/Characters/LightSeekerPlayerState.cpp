@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "LightSeekerPlayerState.h"
 #include "CharacterAttributeSet.h"
 #include "CharacterAbilitySystemComponent.h"
@@ -63,14 +62,11 @@ void ALightSeekerPlayerState::BeginPlay()
 		LevelChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetLevelAttribute()).AddUObject(this, &ALightSeekerPlayerState::LevelChanged);
 		MoveSpeedChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMovementSpeedAttribute()).AddUObject(this, &ALightSeekerPlayerState::MoveSpeedChanged);
 	}
-
-	Cast<APlayerHUD>(GetOwningController())->BindDelegate();
 }
 
 void ALightSeekerPlayerState::HealthChanged(const FOnAttributeChangeData& Data)
 {
 	UE_LOG(LogTemp, Log, TEXT("%s : Player Health Changed"), *FString(__FUNCTION__));
-
 
 	UPlayerHealthBarWidget* HealthBar = nullptr;
 
@@ -84,14 +80,12 @@ void ALightSeekerPlayerState::HealthChanged(const FOnAttributeChangeData& Data)
 		{
 			// TODO: Add "Die" functions here
 			UE_LOG(LogTemp, Log, TEXT("Character Dead"));
-
 		}
 	}
 	else
 	{
 		UE_LOG(LogTemp, Log, TEXT("HealthBar invalid"));
 	}
-
 }
 
 void ALightSeekerPlayerState::MaxHealthChanged(const FOnAttributeChangeData& Data)

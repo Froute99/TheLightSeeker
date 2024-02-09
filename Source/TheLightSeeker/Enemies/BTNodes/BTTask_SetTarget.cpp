@@ -27,6 +27,13 @@ EBTNodeResult::Type UBTTask_SetTarget::ExecuteTask(UBehaviorTreeComponent& Owner
 		// Set random target
 		TArray<TObjectPtr<APlayerState>> Players;
 		int								 TotalPlayerNum = GetWorld()->GetGameState()->PlayerArray.Num();
+
+		if (TotalPlayerNum <= 0)
+		{
+			return EBTNodeResult::Failed;
+		}
+
+
 		for (int i = 0; i < TotalPlayerNum; ++i)
 		{
 			if (GetWorld()->GetGameState()->PlayerArray[i]->GetPlayerController())
