@@ -21,4 +21,11 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	class UBlackboardData* BBAsset;
+
+	UFUNCTION(BlueprintCallable)
+	bool BindDelegate();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void FloatingDamage(class UCharacterAbilitySystemComponent* SourceASC,
+		class UCharacterAbilitySystemComponent* TargetASC, float Value);
 };

@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 #include "GameAbilitySystem/DamageEffectExecutionCalculation.h"
 
@@ -38,13 +37,13 @@ UDamageEffectExecutionCalculation::UDamageEffectExecutionCalculation()
 
 void UDamageEffectExecutionCalculation::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, OUT FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
-	UAbilitySystemComponent* TargetABSC = ExecutionParams.GetTargetAbilitySystemComponent();
-	AActor* TargetActor = TargetABSC ? TargetABSC->GetAvatarActor() : nullptr;
+	UAbilitySystemComponent* TargetASC = ExecutionParams.GetTargetAbilitySystemComponent();
+	AActor*					 TargetActor = TargetASC ? TargetASC->GetAvatarActor() : nullptr;
 
-	UAbilitySystemComponent* SourceABSC = ExecutionParams.GetSourceAbilitySystemComponent();
-	AActor* SourceActor = SourceABSC ? SourceABSC->GetAvatarActor() : nullptr;
+	UAbilitySystemComponent* SourceASC = ExecutionParams.GetSourceAbilitySystemComponent();
+	AActor*					 SourceActor = SourceASC ? SourceASC->GetAvatarActor() : nullptr;
 
-	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
+	const FGameplayEffectSpec&	 Spec = ExecutionParams.GetOwningSpec();
 	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	const FGameplayTagContainer* TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
 
@@ -77,16 +76,17 @@ void UDamageEffectExecutionCalculation::Execute_Implementation(const FGameplayEf
 		}
 	}
 
-
-	if (DamageDone < 0.0f) DamageDone = 0.0f;
+	if (DamageDone < 0.0f)
+		DamageDone = 0.0f;
 
 	double Randomizer = FMath::FRandRange(0.8, 1.2);
 	DamageDone *= Randomizer;
 
 	DamageDone = FMath::RoundToFloat(DamageDone);
+
 	// Broadcast damage given
-	Cast<UCharacterAbilitySystemComponent>(TargetABSC)->ReceiveDamage(DamageDone);
+	Cast<UCharacterAbilitySystemComponent>(TargetASC)->ReceivedDamage(Cast<UCharacterAbilitySystemComponent>(SourceASC),
+		Cast<UCharacterAbilitySystemComponent>(TargetASC), DamageDone);
 
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics().HealthProperty, EGameplayModOp::Additive, -DamageDone));
-
 }
