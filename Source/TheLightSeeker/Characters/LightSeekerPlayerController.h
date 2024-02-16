@@ -21,5 +21,6 @@ public:
 	bool BindDelegate();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void FloatingDamage(float Value);
+	void FloatingDamage(class UCharacterAbilitySystemComponent* SourceASC,
+		class UCharacterAbilitySystemComponent* TargetASC, float Value);
 };

@@ -94,6 +94,7 @@ public:
 
 	void Attack();
 
+	void UseAbility(int Index);
 	void Ability1();
 	void Ability2();
 	void Ability3();
@@ -123,6 +124,10 @@ public:
 	class UInputAction* AttackAction;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 	class UInputAction* DodgeAction;
+
+	// Test
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	class UInputAction* SkillAction;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 	class UInputAction* Skill1Action;
@@ -165,9 +170,16 @@ protected:
 	 ************************/
 public:
 	// This member is temporary here. Should moved to HUD class or something.
+	//UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, ReplicatedUsing = OnRep_HealthBar)
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	class UPlayerHealthBarWidget* HealthBar;
 
+	UFUNCTION()
+	void UpdateHealthBar();
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	class UItemWidget* ItemWidget;
+
+	int CurrentUsingAbilityIndex;
+	int MaxAbilityNum = 3;
 };

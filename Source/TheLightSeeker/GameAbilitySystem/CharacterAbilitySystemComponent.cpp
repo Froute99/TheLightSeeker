@@ -1,13 +1,13 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 #include "GameAbilitySystem/CharacterAbilitySystemComponent.h"
 #include "CharacterBase.h"
 #include "PlayerHUD.h"
 
-void UCharacterAbilitySystemComponent::ReceiveDamage(float DamageReceived)
+void UCharacterAbilitySystemComponent::ReceivedDamage(UCharacterAbilitySystemComponent* SourceASC,
+	UCharacterAbilitySystemComponent* TargetASC, float DamageAmount)
 {
-	//UE_LOG(LogTemp, Log, TEXT("ASC ReceivedDamage Called"));
-	ReceivedDamage.Broadcast(DamageReceived);
+	OnReceivedDamage.Broadcast(SourceASC, TargetASC, DamageAmount);
 }
 
 void UCharacterAbilitySystemComponent::LocalInputConfirm()

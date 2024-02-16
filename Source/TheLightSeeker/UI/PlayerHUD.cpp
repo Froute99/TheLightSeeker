@@ -27,6 +27,6 @@ bool APlayerHUD::BindDelegate()
 		return false;
 	}
 
-	ASC->ReceivedDamage.AddDynamic(this, &APlayerHUD::SpawnFloatingDamageTextWidget);
+	//ASC->ReceivedDamage.AddDynamic(this, &APlayerHUD::SpawnFloatingDamageTextWidget);
 	return true;
 }

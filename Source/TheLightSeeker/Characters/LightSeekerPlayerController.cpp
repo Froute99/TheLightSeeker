@@ -1,6 +1,5 @@
 // Copyright (c) 2023 Team Light Seekers All rights reserved.
 
-
 #include "Characters/LightSeekerPlayerController.h"
 #include "LightSeekerPlayerState.h"
 #include "CharacterAbilitySystemComponent.h"
@@ -8,7 +7,6 @@
 void ALightSeekerPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 bool ALightSeekerPlayerController::BindDelegate()
@@ -27,6 +25,6 @@ bool ALightSeekerPlayerController::BindDelegate()
 		return false;
 	}
 
-	ASC->ReceivedDamage.AddDynamic(this, &ALightSeekerPlayerController::FloatingDamage);
+	ASC->OnReceivedDamage.AddDynamic(this, &ALightSeekerPlayerController::FloatingDamage);
 	return true;
 }

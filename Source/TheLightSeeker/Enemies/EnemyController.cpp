@@ -1,6 +1,5 @@
 // Copyright (c) 2023 Team Light Seekers All rights reserved.
 
-
 #include "Enemies/EnemyController.h"
 #include "CharacterBase.h"
 #include "LightSeekerPlayerState.h"
@@ -9,6 +8,7 @@
 #include "Enemies/EnemyBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/GameState.h"
+#include "CharacterAbilitySystemComponent.h"
 
 AEnemyController::AEnemyController(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -38,4 +38,32 @@ void AEnemyController::OnPossess(APawn* InPawn)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Failed UseBlackboard()"));
 	}
+}
+
+bool AEnemyController::BindDelegate()
+{
+	// ALightSeekerPlayerState* PS = Cast<ALightSeekerPlayerState>(PlayerState);
+	// if (!IsValid(PS))
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("PS is invalid"));
+	//	return false;
+	// }
+
+	// UCharacterAbilitySystemComponent* ASC = Cast<UCharacterAbilitySystemComponent>(PS->GetAbilitySystemComponent());
+	AEnemyBase* E = Cast<AEnemyBase>(GetCharacter());
+	if (!IsValid(E))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Cannot get EnemyBase"));
+		return false;
+	}
+
+	UCharacterAbilitySystemComponent* ASC = Cast<UCharacterAbilitySystemComponent>(E->GetAbilitySystemComponent());
+	if (!IsValid(ASC))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Enemy ASC invalid"));
+		return false;
+	}
+
+	ASC->OnReceivedDamage.AddDynamic(this, &AEnemyController::FloatingDamage);
+	return true;
 }
