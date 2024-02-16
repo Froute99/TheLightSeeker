@@ -63,6 +63,9 @@ protected:
 	virtual void LevelChanged(const FOnAttributeChangeData& Data);
 	virtual void MoveSpeedChanged(const FOnAttributeChangeData& Data);
 
+	UFUNCTION(Client, Reliable)
+	void RepHealthBar(float NewValue);
+
 	// virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
 public:

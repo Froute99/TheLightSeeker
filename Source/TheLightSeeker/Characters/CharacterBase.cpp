@@ -23,6 +23,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 
 #include "PlayerHUD.h"
+#include "PlayerHealthBarWidget.h"
 
 // Sets default values
 ACharacterBase::ACharacterBase()
@@ -100,6 +101,8 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	EIC->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &ACharacterBase::Dodge);
 	EIC->BindAction(ItemAction, ETriggerEvent::Triggered, this, &ACharacterBase::UseItem);
 
+	EIC->BindAction(Skill1Action, ETriggerEvent::Triggered, this, &ACharacterBase::UseAbility, CurrentUsingAbilityIndex);
+
 	EIC->BindAction(Skill1Action, ETriggerEvent::Triggered, this, &ACharacterBase::Ability1);
 	EIC->BindAction(Skill2Action, ETriggerEvent::Triggered, this, &ACharacterBase::Ability2);
 	EIC->BindAction(Skill3Action, ETriggerEvent::Triggered, this, &ACharacterBase::Ability3);
@@ -155,6 +158,7 @@ void ACharacterBase::SetCharacterLevel(float Value)
 
 void ACharacterBase::SetHealth(float Value)
 {
+	UE_LOG(LogTemp, Log, TEXT("Set Health"));
 	if (AttributeSet.IsValid())
 	{
 		AttributeSet->SetHealth(Value);
@@ -183,6 +187,7 @@ float ACharacterBase::GetHealth() const
 {
 	if (AttributeSet.IsValid())
 	{
+		UE_LOG(LogTemp, Log, TEXT("HP: %f"), AttributeSet->GetHealth());
 		return AttributeSet->GetHealth();
 	}
 
@@ -201,13 +206,16 @@ float ACharacterBase::GetMaxHealth() const
 
 void ACharacterBase::OnRep_PlayerState()
 {
-	UE_LOG(LogTemp, Log, TEXT("PlayerState Rep"));
 	ALightSeekerPlayerState* PS = GetPlayerState<ALightSeekerPlayerState>();
 
 	if (PS)
 	{
 		InitializeStartingValues(PS);
 	}
+	// Can call bind delegate
+	// Call server event -> server binds delegate
+	// search about client side spawn actor(widget component included actor)
+	UE_LOG(LogTemp, Log, TEXT("PlayerState Rep"));
 }
 
 void ACharacterBase::InitializeStartingValues(ALightSeekerPlayerState* PS)
@@ -339,6 +347,32 @@ void ACharacterBase::UseItem()
 	}
 }
 
+void ACharacterBase::UpdateHealthBar()
+{
+	UE_LOG(LogTemp, Log, TEXT("UpdateHealthBar"));
+	if (!IsValid(HealthBar))
+	{
+		UE_LOG(LogTemp, Log, TEXT("HealthBar invalid"));
+		return;
+	}
+	HealthBar->SetHealth(GetHealth());
+}
+
+void ACharacterBase::UseAbility(int Index)
+{
+	if (Index <= 0 || Index > MaxAbilityNum)
+		return;
+
+	if (SkillTreeComponent->AbilityList.Num() < Index)
+	{
+		FString Msg = "You didn't granted Ability";
+		Msg.AppendInt(Index);
+		UKismetSystemLibrary::PrintString(GetWorld(), Msg, true, false, FColor::Red);
+		return;
+	}
+	ASC->TryActivateAbilityByClass(SkillTreeComponent->AbilityList[Index - 1]);
+}
+
 void ACharacterBase::Ability1()
 {
 	if (SkillTreeComponent->AbilityList.Num() < 1)
@@ -390,5 +424,4 @@ void ACharacterBase::Dodge()
 
 void ACharacterBase::Die()
 {
-
 }

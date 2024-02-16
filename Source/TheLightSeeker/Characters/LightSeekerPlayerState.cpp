@@ -8,6 +8,8 @@
 #include "UI/PlayerHealthBarWidget.h"
 #include "PlayerHUD.h"
 
+#include "Kismet/KismetSystemLibrary.h"
+
 ALightSeekerPlayerState::ALightSeekerPlayerState()
 {
 	AbilitySystemComponent = CreateDefaultSubobject<UCharacterAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
@@ -68,24 +70,28 @@ void ALightSeekerPlayerState::HealthChanged(const FOnAttributeChangeData& Data)
 {
 	UE_LOG(LogTemp, Log, TEXT("%s : Player Health Changed"), *FString(__FUNCTION__));
 
-	UPlayerHealthBarWidget* HealthBar = nullptr;
+	//UPlayerHealthBarWidget* HealthBar = nullptr;
+	//HealthBar = Cast<ACharacterBase>(GetPlayerController()->GetPawn())->HealthBar;
+	RepHealthBar(Data.NewValue);
 
-	HealthBar = Cast<ACharacterBase>(GetPlayerController()->GetPawn())->HealthBar;
+	// if (IsValid(HealthBar))
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("Health: %f"), Data.NewValue);
 
-	if (IsValid(HealthBar))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Health: %f"), Data.NewValue);
-		HealthBar->SetHealth(std::min(Data.NewValue, GetMaxHealth()));
-		if (FMath::IsNearlyZero(Data.NewValue))
-		{
-			// TODO: Add "Die" functions here
-			UE_LOG(LogTemp, Log, TEXT("Character Dead"));
-		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Log, TEXT("HealthBar invalid"));
-	}
+	//	//HealthBar->SetHealth(std::min(Data.NewValue, GetMaxHealth()));
+
+	//	RepHealthBar(Data.NewValue);
+
+	//	if (FMath::IsNearlyZero(Data.NewValue))
+	//	{
+	//		// TODO: Add "Die" functions here
+	//		UE_LOG(LogTemp, Log, TEXT("Character Dead"));
+	//	}
+	//}
+	// else
+	//{
+	//	UE_LOG(LogTemp, Log, TEXT("HealthBar invalid"));
+	//}
 }
 
 void ALightSeekerPlayerState::MaxHealthChanged(const FOnAttributeChangeData& Data)
@@ -107,6 +113,34 @@ void ALightSeekerPlayerState::MoveSpeedChanged(const FOnAttributeChangeData& Dat
 	{
 		Character->GetCharacterMovement()->MaxWalkSpeed = AttributeSet->GetMovementSpeed();
 	}
+}
+
+void ALightSeekerPlayerState::RepHealthBar_Implementation(float NewValue)
+{
+	UE_LOG(LogTemp, Log, TEXT("Replicate HealthBar"));
+
+	APlayerController* PC = GetPlayerController();
+	if (!IsValid(PC))
+	{
+		UE_LOG(LogTemp, Log, TEXT("PC invalid"));
+		return;
+	}
+
+	if (!PC->IsLocalController())
+	{
+		UE_LOG(LogTemp, Log, TEXT("Not Local Controller"));
+		return;
+	}
+
+	APawn* Pawn = PC->GetPawn();
+	if (!IsValid(Pawn))
+	{
+		UE_LOG(LogTemp, Log, TEXT("Pawn invalid"));
+		return;
+	}
+
+	ACharacterBase* Character = Cast<ACharacterBase>(Pawn);
+	Character->UpdateHealthBar();
 }
 
 void ALightSeekerPlayerState::ClearElementalEffect()
