@@ -280,6 +280,22 @@ void ACharacterBase::Attack()
 
 void ACharacterBase::OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> ItemAbility, UTexture2D* Icon)
 {
+	if (GetLocalRole() != ROLE_Authority)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed OnPickupItem"));
+		return;
+	}
+	else if (!ASC.IsValid())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed OnPickupItem2"));
+		return;
+	}
+	else if (!ASC.Get()->CharacterAbilitiesGiven)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed OnPickupItem3"));
+		return;
+	}
+
 	UCharacterGameplayAbility* Ability = ItemAbility.GetDefaultObject();
 
 	if (!Ability)
@@ -294,7 +310,10 @@ void ACharacterBase::OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> I
 	ItemAbilityHandle = ASC->GiveAbility(FGameplayAbilitySpec(ItemAbility, 1, -1, this));
 
 	if (!ItemAbilityHandle.IsValid())
+	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed to Grant ItemAbility"));
+		return;
+	}
 
 	// if Ability is used on granting, remove it immediately
 	if (!Ability->ActivateAbilityOnGranted)
@@ -302,11 +321,7 @@ void ACharacterBase::OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> I
 		UE_LOG(LogTemp, Log, TEXT("Got Item"));
 		HasItem = true;
 
-		// Set Image
-		if (ItemWidget)
-			ItemWidget->SetIcon(Icon);
-		else
-			UE_LOG(LogTemp, Error, TEXT("ItemWidget not found"));
+		Client_UpdateItemUI(Icon);
 	}
 	else
 	{
@@ -318,24 +333,66 @@ void ACharacterBase::OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> I
 
 void ACharacterBase::UseItem()
 {
-	if (!HasItem || GetLocalRole() != ROLE_Authority)
-		return;
+	// if (!HasItem || GetLocalRole() != ROLE_Authority)
+	//	return;
 
-	bool Succeed = ASC->TryActivateAbility(ItemAbilityHandle);
+	UE_LOG(LogTemp, Log, TEXT("UseItem Called"));
+
+	if (GetLocalRole() < ROLE_Authority)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Tried using item on client and called server-side function"));
+		Server_UseItem();
+		return;
+	}
+
+	if (!HasItem)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Tried using item without actual item"));
+		return;
+	}
+
+	if (!ItemAbilityHandle.IsValid())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Tried using item with invalid spechandle"));
+		return;
+	}
+
+	//bool Succeed = ASC->TryActivateAbility(ItemAbilityHandle, false);
+
+	bool Succeed = ASC->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("Ability.Player.Item"))));
 	if (Succeed)
 	{
 		HasItem = false;
-		ItemWidget->ClearIcon();
 
 		// remove item ability from player
 		ASC->ClearAbility(ItemAbilityHandle);
 		ItemAbilityHandle = FGameplayAbilitySpecHandle();
+		
+		Client_UpdateItemUI(nullptr);
 
 		UE_LOG(LogTemp, Log, TEXT("Activated Item"));
 	}
 	else
 	{
 		UE_LOG(LogTemp, Log, TEXT("Could not activate Item"));
+	}
+}
+
+
+void ACharacterBase::Server_UseItem_Implementation()
+{
+	UseItem();
+}
+
+void ACharacterBase::Client_UpdateItemUI_Implementation(UTexture2D* Texture)
+{
+	if(Texture)
+	{
+		ItemWidget->SetIcon(Texture);
+	}
+	else
+	{
+		ItemWidget->ClearIcon();
 	}
 }
 
@@ -390,5 +447,4 @@ void ACharacterBase::Dodge()
 
 void ACharacterBase::Die()
 {
-
 }

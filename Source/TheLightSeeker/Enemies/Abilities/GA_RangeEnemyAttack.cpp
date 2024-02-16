@@ -58,9 +58,9 @@ void UGA_RangeEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 	{
 		AEnemyBase* EnemyBase = Cast<AEnemyBase>(GetActorInfo().OwnerActor.Get());
 
-		if (EnemyBase && Target.IsValid())
+		if (EnemyBase && AbilityTarget.IsValid())
 		{
-			FVector PlayerLocation = Target->GetActorLocation();
+			FVector PlayerLocation = AbilityTarget->GetActorLocation();
 
 			FActorSpawnParameters Parameter{};
 			Parameter.Instigator = EnemyBase;
@@ -79,6 +79,10 @@ void UGA_RangeEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 			// DEBUG 
 			UKismetSystemLibrary::DrawDebugLine(GetWorld(), EnemyBase->GetActorLocation(),
 				PlayerLocation, FLinearColor::Blue, 5.0f);
+		}
+		else if (!AbilityTarget.IsValid())
+		{
+			UE_LOG(Enemy, Warning, TEXT("RangeEnemyAttack Target is not valid"))
 		}
 	}
 }

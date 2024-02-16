@@ -62,9 +62,10 @@ void UCharacterAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 	DOREPLIFETIME_CONDITION_NOTIFY(UCharacterAttributeSet, Level, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UCharacterAttributeSet, Health, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UCharacterAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UCharacterAttributeSet, MovementSpeed, COND_None, REPNOTIFY_Always);
 	DISABLE_REPLICATED_PROPERTY(UCharacterAttributeSet, BasicDamage);
 	DISABLE_REPLICATED_PROPERTY(UCharacterAttributeSet, DamageMultiplier);
-	DISABLE_REPLICATED_PROPERTY(UCharacterAttributeSet, MovementSpeed);
+	//DISABLE_REPLICATED_PROPERTY(UCharacterAttributeSet, MovementSpeed);
 	DISABLE_REPLICATED_PROPERTY(UCharacterAttributeSet, AttackSpeed);
 	DISABLE_REPLICATED_PROPERTY(UCharacterAttributeSet, AdditionalProjectiles);
 }

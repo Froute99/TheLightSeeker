@@ -57,8 +57,8 @@ void AItem::Movement(float DeltaTime)
 
 void AItem::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Log, TEXT("Item Picked 1"));
-	if (GetLocalRole() != ROLE_Authority) return;
+	if (GetLocalRole() != ROLE_Authority)
+		return;
 
 	ACharacterBase* Player = Cast<ACharacterBase>(OtherActor);
 	if (Player && ItemAbility)

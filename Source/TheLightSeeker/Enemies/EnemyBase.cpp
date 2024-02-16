@@ -13,7 +13,7 @@ AEnemyBase::AEnemyBase()
 {
 	ASC = CreateDefaultSubobject<UCharacterAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	ASC->SetIsReplicated(true);
-	ASC->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+	ASC->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 
 	AttributeSet = CreateDefaultSubobject<UCharacterAttributeSet>(TEXT("AttributeSet"));
 
@@ -129,6 +129,11 @@ void AEnemyBase::DropItem()
 		Parameter.Instigator = this;
 		FVector LaunchLocation = GetActorLocation();
 		AItem* SpawnedItem = GetWorld()->SpawnActor<AItem>(Item, LaunchLocation, FRotator(), Parameter);
+
+		if(!SpawnedItem)
+		{
+			UE_LOG(Enemy, Error, TEXT("Enemy dropped Item: failed to spawn item actor"));
+		}
 	}
 }
 
@@ -176,6 +181,12 @@ void AEnemyBase::OnDeactivate()
 			BrainComponent->StopLogic(FString(TEXT("Waiting for activation..")));
 		}
 	}
+}
+
+void AEnemyBase::Multicast_PlayWeaponAnimMontage_Implementation(UAnimMontage* Montage)
+{
+	UAnimInstance* WeaponAnimInstance = GetWeaponMesh()->GetAnimInstance();
+	WeaponAnimInstance->Montage_Play(Montage);
 }
 
 UAbilitySystemComponent* AEnemyBase::GetAbilitySystemComponent() const

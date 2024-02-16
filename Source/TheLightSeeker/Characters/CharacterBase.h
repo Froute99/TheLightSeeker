@@ -146,7 +146,14 @@ public:
 	 ************************/
 public:
 	void OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> ItemAbility, UTexture2D* Icon);
+
 	void UseItem();
+
+	UFUNCTION(Server, Reliable)
+	void Server_UseItem();
+
+	UFUNCTION(Client, Reliable)
+	void Client_UpdateItemUI(UTexture2D* Texture);
 
 	FGameplayAbilitySpecHandle ItemAbilityHandle;
 

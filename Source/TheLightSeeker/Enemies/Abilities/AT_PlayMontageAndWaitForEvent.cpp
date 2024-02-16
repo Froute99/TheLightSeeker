@@ -55,22 +55,32 @@ void UAT_PlayMontageAndWaitForEvent::Activate()
 					(Character->GetLocalRole() == ROLE_AutonomousProxy && Ability->GetNetExecutionPolicy() == EGameplayAbilityNetExecutionPolicy::LocalPredicted)))
 				{
 					Character->SetAnimRootMotionTranslationScale(AnimRootMotionTranslationScale);
+
+					if(OptionalMontageToPlay)
+					{
+						AEnemyBase* EnemyBase = Cast<AEnemyBase>(Character);
+						EnemyBase->Multicast_PlayWeaponAnimMontage(OptionalMontageToPlay);
+					}
 				}
 
 				bPlayedMontage = true;
 
-				if (OptionalMontageToPlay)
+				/*if (OptionalMontageToPlay)
 				{
 					AEnemyBase* EnemyBase = Cast<AEnemyBase>(Character);
 					if (EnemyBase)
 					{
 						UAnimInstance* WeaponAnimInstance = EnemyBase->GetWeaponMesh()->GetAnimInstance();
-						if (WeaponAnimInstance->Montage_Play(OptionalMontageToPlay, Rate) <= 0.0f)
+						if (float AnimPlayTime = WeaponAnimInstance->Montage_Play(OptionalMontageToPlay, Rate) > 0.0f)
+						{
+							UE_LOG(LogTemp, Warning, TEXT("UGDAbilityTask_PlayMontageAndWaitForEvent weapon anim playtime: %f"), AnimPlayTime);
+						}
+						else
 						{
 							UE_LOG(LogTemp, Warning, TEXT("UGDAbilityTask_PlayMontageAndWaitForEvent failed to play OptionalMontage!"));
 						}
 					}
-				}
+				}*/
 			}
 			else
 			{

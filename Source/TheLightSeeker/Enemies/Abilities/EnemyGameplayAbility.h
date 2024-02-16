@@ -50,6 +50,7 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	bool IsRequireTargetReference;
 
+	// Set Target reference for ability, called by Behavior Tree
 	void SetTargetReference(TWeakObjectPtr<AActor> Target);
 
 protected:

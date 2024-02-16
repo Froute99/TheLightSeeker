@@ -79,6 +79,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy")
 	TObjectPtr<UAnimMontage> WeaponDeathAnimMontage;
 
+public:
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_PlayWeaponAnimMontage(UAnimMontage* Montage);
+
 	/***********************************************
 	 * Game Abilities System
 	 ***********************************************/
