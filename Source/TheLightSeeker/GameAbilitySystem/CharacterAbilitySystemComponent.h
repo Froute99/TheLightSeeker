@@ -11,10 +11,10 @@
  *
  */
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FReceivedDamageDelegate, float, DamageReceived);
-
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FReceivedDamageDelegate,
-//	UCharacterAbilitySystemComponent*, SourceASC, float, DamageReceived);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnDamageReceivedSignature,
+	UCharacterAbilitySystemComponent*, SourceASC,
+	UCharacterAbilitySystemComponent*, TargetASC,
+	float, DamageReceived);
 
 UCLASS()
 class THELIGHTSEEKER_API UCharacterAbilitySystemComponent : public UAbilitySystemComponent
@@ -26,9 +26,10 @@ public:
 	bool StartupEffectApplied = false;
 
 	UPROPERTY(BlueprintAssignable)
-	FReceivedDamageDelegate ReceivedDamage;
+	FOnDamageReceivedSignature OnReceivedDamage;
 
-	virtual void ReceiveDamage(float DamageReceived);
+	virtual void ReceivedDamage(UCharacterAbilitySystemComponent* SourceASC,
+		UCharacterAbilitySystemComponent* TargetASC, float DamageAmount);
 
 	void LocalInputConfirm() override;
 	void LocalInputCancel() override;
