@@ -393,7 +393,7 @@ void ACharacterBase::Server_UseItem_Implementation()
 
 void ACharacterBase::Client_UpdateItemUI_Implementation(UTexture2D* Texture)
 {
-	if(Texture)
+	if (Texture)
 	{
 		ItemWidget->SetIcon(Texture);
 	}
@@ -401,7 +401,8 @@ void ACharacterBase::Client_UpdateItemUI_Implementation(UTexture2D* Texture)
 	{
 		ItemWidget->ClearIcon();
 	}
-	
+}
+
 void ACharacterBase::UpdateHealthBar()
 {
 	UE_LOG(LogTemp, Log, TEXT("UpdateHealthBar"));
