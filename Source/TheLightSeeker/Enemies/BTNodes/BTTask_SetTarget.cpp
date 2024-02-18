@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 #include "Enemies/BTNodes/BTTask_SetTarget.h"
 #include "Enemies/EnemyBase.h"
@@ -32,7 +32,6 @@ EBTNodeResult::Type UBTTask_SetTarget::ExecuteTask(UBehaviorTreeComponent& Owner
 		{
 			return EBTNodeResult::Failed;
 		}
-
 
 		for (int i = 0; i < TotalPlayerNum; ++i)
 		{

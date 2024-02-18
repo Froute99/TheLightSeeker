@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 #pragma once
 
@@ -170,7 +170,7 @@ protected:
 	 ************************/
 public:
 	// This member is temporary here. Should moved to HUD class or something.
-	//UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, ReplicatedUsing = OnRep_HealthBar)
+	// UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, ReplicatedUsing = OnRep_HealthBar)
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	class UPlayerHealthBarWidget* HealthBar;
 

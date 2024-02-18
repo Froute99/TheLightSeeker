@@ -1,7 +1,6 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
-
-#include "EnemySpawnManager.h"	
+#include "EnemySpawnManager.h"
 #include "Engine/TriggerBase.h"
 #include "Components/ShapeComponent.h"
 #include "Characters/CharacterBase.h"
@@ -12,7 +11,6 @@
 // Sets default values
 AEnemySpawnManager::AEnemySpawnManager()
 {
-
 }
 
 // Called when the game starts or when spawned
@@ -67,16 +65,17 @@ void AEnemySpawnManager::GiveItem(TObjectPtr<AEnemyBase> EnemyToSpawn)
 
 void AEnemySpawnManager::ActivateActors(TArray<TObjectPtr<AEnemyBase>>& Enemies)
 {
- 	for (TObjectPtr<AEnemyBase>& EnemyToSpawn : Enemies)
+	for (TObjectPtr<AEnemyBase>& EnemyToSpawn : Enemies)
 	{
-		if (!EnemyToSpawn) continue;
+		if (!EnemyToSpawn)
+			continue;
 		EnemyToSpawn->OnActivate();
 
 		// some enemies might have fixed reward..
 		if (!EnemyToSpawn->Item)
 		{
 			GiveItem(EnemyToSpawn);
-		} 
+		}
 	}
 }
 
@@ -84,7 +83,8 @@ void AEnemySpawnManager::DeactivateActors(TArray<TObjectPtr<AEnemyBase>>& Enemie
 {
 	for (TObjectPtr<AEnemyBase>& EnemyToSpawn : Enemies)
 	{
-		if (!EnemyToSpawn) continue;
+		if (!EnemyToSpawn)
+			continue;
 		EnemyToSpawn->OnDeactivate();
 	}
 }

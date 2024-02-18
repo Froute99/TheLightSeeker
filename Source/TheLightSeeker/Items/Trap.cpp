@@ -1,14 +1,13 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 #include "Trap.h"
-#include "Components/BoxComponent.h"	
+#include "Components/BoxComponent.h"
 #include "EnemyBase.h"
 
 // Sets default values
 ATrap::ATrap()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
@@ -56,15 +55,15 @@ void ATrap::Tick(float DeltaTime)
 void ATrap::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	AEnemyBase* EnemyBase = Cast<AEnemyBase>(OtherActor);
-	if (!EnemyBase) return;
+	if (!EnemyBase)
+		return;
 
 	if (UAbilitySystemComponent* EnemyASC = EnemyBase->GetAbilitySystemComponent())
 	{
 		if (TrapGameplayEffectSpecHandle.IsValid())
-		{			
+		{
 			FActiveGameplayEffectHandle ActiveGameplayEffectHandle = EnemyASC->ApplyGameplayEffectSpecToSelf(*TrapGameplayEffectSpecHandle.Data.Get());
-			EnemiesUnderEffect.Add({ EnemyBase, ActiveGameplayEffectHandle });			
+			EnemiesUnderEffect.Add({ EnemyBase, ActiveGameplayEffectHandle });
 		}
 	}
 }
-

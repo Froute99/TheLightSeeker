@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 #include "AT_PlayMontageAndWaitForEvent.h"
 #include "AbilitySystemComponent.h"
@@ -28,7 +27,7 @@ void UAT_PlayMontageAndWaitForEvent::Activate()
 	if (AbilitySystemComponent.IsValid())
 	{
 		const FGameplayAbilityActorInfo* ActorInfo = Ability->GetCurrentActorInfo();
-		UAnimInstance* AnimInstance = ActorInfo->GetAnimInstance();
+		UAnimInstance*					 AnimInstance = ActorInfo->GetAnimInstance();
 		if (IsValid(AnimInstance))
 		{
 			// Bind to event callback
@@ -51,12 +50,11 @@ void UAT_PlayMontageAndWaitForEvent::Activate()
 				AnimInstance->Montage_SetEndDelegate(MontageEndedDelegate, MontageToPlay);
 
 				ACharacter* Character = Cast<ACharacter>(GetAvatarActor());
-				if (Character && (Character->GetLocalRole() == ROLE_Authority ||
-					(Character->GetLocalRole() == ROLE_AutonomousProxy && Ability->GetNetExecutionPolicy() == EGameplayAbilityNetExecutionPolicy::LocalPredicted)))
+				if (Character && (Character->GetLocalRole() == ROLE_Authority || (Character->GetLocalRole() == ROLE_AutonomousProxy && Ability->GetNetExecutionPolicy() == EGameplayAbilityNetExecutionPolicy::LocalPredicted)))
 				{
 					Character->SetAnimRootMotionTranslationScale(AnimRootMotionTranslationScale);
 
-					if(OptionalMontageToPlay)
+					if (OptionalMontageToPlay)
 					{
 						AEnemyBase* EnemyBase = Cast<AEnemyBase>(Character);
 						EnemyBase->Multicast_PlayWeaponAnimMontage(OptionalMontageToPlay);
@@ -102,7 +100,7 @@ void UAT_PlayMontageAndWaitForEvent::Activate()
 		UE_LOG(LogTemp, Warning, TEXT("UGDAbilityTask_PlayMontageAndWaitForEvent called in Ability %s failed to play montage %s; Task Instance Name %s."), *Ability->GetName(), *GetNameSafe(MontageToPlay), *InstanceName.ToString());
 		if (ShouldBroadcastAbilityTaskDelegates())
 		{
-			//ABILITY_LOG(Display, TEXT("%s: OnCancelled"), *GetName());
+			// ABILITY_LOG(Display, TEXT("%s: OnCancelled"), *GetName());
 			OnCancelled.Broadcast(FGameplayTag(), FGameplayEventData());
 		}
 	}
@@ -125,7 +123,7 @@ FString UAT_PlayMontageAndWaitForEvent::GetDebugString() const
 	if (Ability)
 	{
 		const FGameplayAbilityActorInfo* ActorInfo = Ability->GetCurrentActorInfo();
-		UAnimInstance* AnimInstance = ActorInfo->GetAnimInstance();
+		UAnimInstance*					 AnimInstance = ActorInfo->GetAnimInstance();
 
 		if (AnimInstance != nullptr)
 		{
@@ -222,12 +220,10 @@ void UAT_PlayMontageAndWaitForEvent::OnMontageBlendingOut(UAnimMontage* Montage,
 
 			// Reset AnimRootMotionTranslationScale
 			ACharacter* Character = Cast<ACharacter>(GetAvatarActor());
-			if (Character && (Character->GetLocalRole() == ROLE_Authority ||
-				(Character->GetLocalRole() == ROLE_AutonomousProxy && Ability->GetNetExecutionPolicy() == EGameplayAbilityNetExecutionPolicy::LocalPredicted)))
+			if (Character && (Character->GetLocalRole() == ROLE_Authority || (Character->GetLocalRole() == ROLE_AutonomousProxy && Ability->GetNetExecutionPolicy() == EGameplayAbilityNetExecutionPolicy::LocalPredicted)))
 			{
 				Character->SetAnimRootMotionTranslationScale(1.f);
 			}
-
 		}
 	}
 

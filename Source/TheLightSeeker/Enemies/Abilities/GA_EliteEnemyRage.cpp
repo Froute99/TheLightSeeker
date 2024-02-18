@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 #include "Enemies/Abilities/GA_EliteEnemyRage.h"
 #include "AbilitySystemComponent.h"
@@ -11,7 +10,7 @@ void UGA_EliteEnemyRage::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 	if (!AttackMontage)
 	{
 		UE_LOG(Enemy, Error, TEXT("MeleeEnemyAttack class does not have Montage to play"))
-			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
 
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);

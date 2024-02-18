@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 #include "ProjectileBase.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -15,14 +14,12 @@ AProjectileBase::AProjectileBase()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
 	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AProjectileBase::OnBeginOverlap);
 	RootComponent = BoxComponent;
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	Mesh->SetupAttachment(RootComponent);
-
 
 	if (!ProjectileMovementComponent)
 	{
@@ -35,7 +32,6 @@ AProjectileBase::AProjectileBase()
 		ProjectileMovementComponent->Bounciness = 0.3f;
 		ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
 	}
-
 }
 
 // Called when the game starts or when spawned
@@ -48,7 +44,6 @@ void AProjectileBase::BeginPlay()
 void AProjectileBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void AProjectileBase::FireInDirection(const FVector& ShootDirection)
@@ -62,7 +57,8 @@ void AProjectileBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 	{
 		AEnemyBase* Overlapped = Cast<AEnemyBase>(OtherActor);
 
-		if (!IsValid(Overlapped)) return;
+		if (!IsValid(Overlapped))
+			return;
 
 		if (!DamageEffectSpecHandle.IsValid())
 		{
@@ -70,7 +66,7 @@ void AProjectileBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 			return;
 		}
 
-		//if (Overlapped->StaticClass() == AEnemyBase::StaticClass())		// redundant check
+		// if (Overlapped->StaticClass() == AEnemyBase::StaticClass())		// redundant check
 		UCharacterAbilitySystemComponent* EnemyASC = Cast<UCharacterAbilitySystemComponent>(Overlapped->GetAbilitySystemComponent());
 
 		if (!EnemyASC)
@@ -87,9 +83,6 @@ void AProjectileBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 		}
 
 		Overlapped->SetTargetPlayer(GetInstigator());
-		//EnemyASC->ReceiveDamage()
-
+		// EnemyASC->ReceiveDamage()
 	}
-
 }
-

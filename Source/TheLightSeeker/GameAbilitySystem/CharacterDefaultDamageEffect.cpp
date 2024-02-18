@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 #include "CharacterDefaultDamageEffect.h"
 #include "CharacterAttributeSet.h"
@@ -14,12 +13,11 @@ UCharacterDefaultDamageEffect::UCharacterDefaultDamageEffect()
 	DamageInfo.ModifierMagnitude = FGameplayEffectModifierMagnitude(30.0f);
 	Modifiers.Add(DamageInfo);
 
-	FGameplayEffectCue DamageCue;
+	FGameplayEffectCue	  DamageCue;
 	FGameplayTagContainer DamageTagContainer;
-	TArray<FString> Tags;
+	TArray<FString>		  Tags;
 	Tags.Add("Gameplaycue.Attack");
 	UGameplayTagsManager::Get().RequestGameplayTagContainer(Tags, DamageTagContainer);
 	DamageCue.GameplayCueTags = DamageTagContainer;
 	GameplayCues.Add(DamageCue);
-
 }

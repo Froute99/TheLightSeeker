@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 #include "LightSeekerPlayerState.h"
 #include "CharacterAttributeSet.h"
@@ -70,8 +70,8 @@ void ALightSeekerPlayerState::HealthChanged(const FOnAttributeChangeData& Data)
 {
 	UE_LOG(LogTemp, Log, TEXT("%s : Player Health Changed"), *FString(__FUNCTION__));
 
-	//UPlayerHealthBarWidget* HealthBar = nullptr;
-	//HealthBar = Cast<ACharacterBase>(GetPlayerController()->GetPawn())->HealthBar;
+	// UPlayerHealthBarWidget* HealthBar = nullptr;
+	// HealthBar = Cast<ACharacterBase>(GetPlayerController()->GetPawn())->HealthBar;
 	RepHealthBar(Data.NewValue);
 
 	// if (IsValid(HealthBar))

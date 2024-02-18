@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 #include "GA_SpawnBombAbility.h"
 #include "CharacterBase.h"
@@ -41,5 +40,4 @@ void UGA_SpawnBombAbility::OnCompleted(FGameplayTag EventTag, FGameplayEventData
 void UGA_SpawnBombAbility::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	// TODO: combine with animation montage
-	
 }

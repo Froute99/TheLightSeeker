@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 #include "GA_RangeEnemyAttack.h"
 #include "EnemyBase.h"
@@ -12,11 +11,11 @@
 
 void UGA_RangeEnemyAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	
+
 	if (!AttackMontage)
 	{
 		UE_LOG(Enemy, Error, TEXT("RangeEnemyAttack class does not have Montage to play"))
-			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
 
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
@@ -41,7 +40,7 @@ void UGA_RangeEnemyAttack::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 
 void UGA_RangeEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	//UE_LOG(Enemy, Log, TEXT("EventReceived called: %s"), EventTag.GetTagName());
+	// UE_LOG(Enemy, Log, TEXT("EventReceived called: %s"), EventTag.GetTagName());
 
 	// Montage told us to end the ability before the montage finished playing.
 	// Montage was set to continue playing animation even after ability ends so this is okay.
@@ -64,10 +63,10 @@ void UGA_RangeEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 
 			FActorSpawnParameters Parameter{};
 			Parameter.Instigator = EnemyBase;
-			FVector LaunchLocation = EnemyBase->GetActorLocation() + FVector(0.0f, 0.0f, EnemyBase->GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
-			ARangeEnemyProjectile* Projectile = GetWorld()->SpawnActor<ARangeEnemyProjectile>(ProjectileActor, 
-				    LaunchLocation,
-					FRotator(), Parameter);
+			FVector				   LaunchLocation = EnemyBase->GetActorLocation() + FVector(0.0f, 0.0f, EnemyBase->GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+			ARangeEnemyProjectile* Projectile = GetWorld()->SpawnActor<ARangeEnemyProjectile>(ProjectileActor,
+				LaunchLocation,
+				FRotator(), Parameter);
 
 			if (Projectile)
 			{
@@ -76,7 +75,7 @@ void UGA_RangeEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 				Projectile->FireInDirection(LaunchDirection.GetSafeNormal());
 			}
 
-			// DEBUG 
+			// DEBUG
 			UKismetSystemLibrary::DrawDebugLine(GetWorld(), EnemyBase->GetActorLocation(),
 				PlayerLocation, FLinearColor::Blue, 5.0f);
 		}

@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 #include "Enemies/BTNodes/BTTask_TriggerAbilityByClass.h"
 #include "CharacterAbilitySystemComponent.h"
@@ -37,7 +36,7 @@ EBTNodeResult::Type UBTTask_TriggerAbilityByClass::ExecuteTask(UBehaviorTreeComp
 	if (!ASC->TryActivateAbilityByClass(AbilityToActivate))
 	{
 		UE_LOG(Enemy, Log, TEXT("Could not activate ability"));
-		return EBTNodeResult::Type::Failed; //AbortTask(OwnerComp, NodeMemory); fix for cooldown
+		return EBTNodeResult::Type::Failed; // AbortTask(OwnerComp, NodeMemory); fix for cooldown
 	}
 	else
 	{
@@ -68,4 +67,3 @@ void UBTTask_TriggerAbilityByClass::SetTaskDone()
 	RunningAbility->SetAbilityDoneDelegateHandle.Clear();
 	RunningAbility->SetTargetReference(nullptr);
 }
- 

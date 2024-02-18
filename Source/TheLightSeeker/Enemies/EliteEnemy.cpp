@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 #include "EliteEnemy.h"
 #include "GameAbilitySystem/CharacterAbilitySystemComponent.h"
@@ -18,7 +17,7 @@ void AEliteEnemy::BeginPlay()
 	Super::BeginPlay();
 
 	HealthChangedDelegateHandle = ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this, &AEliteEnemy::OnHealthChanged);
-	
+
 	UEnemyHPBarWidget* HPBarWidget = Cast<UEnemyHPBarWidget>(HPBar->GetUserWidgetObject());
 	if (HPBarWidget)
 	{

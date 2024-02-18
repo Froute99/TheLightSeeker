@@ -1,6 +1,4 @@
-
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 #include "UI/EnemyHPBarWidget.h"
 #include "Components/ProgressBar.h"
@@ -8,7 +6,7 @@
 void UEnemyHPBarWidget::SetMaxHealth(float MaxHealthValue, bool SetHealthFull)
 {
 	MaxHealth = MaxHealthValue;
-	if(SetHealthFull)
+	if (SetHealthFull)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Set max health: %f"), MaxHealth);
 		SetHealth(MaxHealth);

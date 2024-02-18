@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 #include "CharacterAnimAbility.h"
 #include "CharacterBase.h"
@@ -11,7 +10,6 @@
 UCharacterAnimAbility::UCharacterAnimAbility()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
-
 }
 
 void UCharacterAnimAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
@@ -20,7 +18,6 @@ void UCharacterAnimAbility::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
-
 
 	UAT_PlayMontageAndWaitForEvent* Task = UAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, MontageToPlay, nullptr, FGameplayTagContainer(), 1.0f, NAME_None, false, 1.0f);
 	Task->OnBlendOut.AddDynamic(this, &UCharacterAnimAbility::OnCompleted);
@@ -37,8 +34,8 @@ void UCharacterAnimAbility::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	}
 
 	// ReadyForActivation() is how you activate the AbilityTask in C++. Blueprint has magic from K2Node_LatentGameplayTaskCall that will automatically call ReadyForActivation().
-	//Task->ReadyForActivation();
-	
+	// Task->ReadyForActivation();
+
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
@@ -58,11 +55,10 @@ void UCharacterAnimAbility::EventReceived(FGameplayTag EventTag, FGameplayEventD
 	// Montage was set to continue playing animation even after ability ends so this is okay.
 	if (EventTag == AnimDoneTag)
 	{
-		//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-		//SetAbilityDoneDelegateHandle.Broadcast();
+		// EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		// SetAbilityDoneDelegateHandle.Broadcast();
 		return;
 	}
-
 
 	// Only spawn projectiles on the Server.
 	// Predicting projectiles is an advanced topic not covered in this example.
@@ -72,7 +68,6 @@ void UCharacterAnimAbility::EventReceived(FGameplayTag EventTag, FGameplayEventD
 		SpawnProjectile();
 		AdditionalSpawnEvent();
 	}
-
 }
 
 void UCharacterAnimAbility::SpawnProjectile()
@@ -83,14 +78,14 @@ void UCharacterAnimAbility::SpawnProjectile()
 	Parameter.Instigator = Player;
 
 	FVector Location = Player->GetActorLocation();
-	FVector LocationOffset{ 0,0,30.f };
+	FVector LocationOffset{ 0, 0, 30.f };
 
 	FRotator Rotation = Player->GetActorRotation();
-	FRotator RotationOffset{ 0,90.f,0 };
+	FRotator RotationOffset{ 0, 90.f, 0 };
 
-	//FVector Start = Player->GetGunComponent()->GetSocketLocation(FName("Muzzle"));
-	//FVector End = Player->GetCameraBoom()->GetComponentLocation() + Player->GetFollowCamera()->GetForwardVector() * 1000.0f;
-	//FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(Start, End);
+	// FVector Start = Player->GetGunComponent()->GetSocketLocation(FName("Muzzle"));
+	// FVector End = Player->GetCameraBoom()->GetComponentLocation() + Player->GetFollowCamera()->GetForwardVector() * 1000.0f;
+	// FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(Start, End);
 
 	FTransform Transform;
 	Transform.SetLocation(Location);
@@ -104,13 +99,11 @@ void UCharacterAnimAbility::SpawnProjectile()
 
 	Projectile->DamageEffectSpecHandle = DamageEffectSpecHandle;
 	Projectile->DamageEffect = DamageGameplayEffect;
-	//Projectile->Range = Range;
+	// Projectile->Range = Range;
 	Projectile->FinishSpawning(Transform);
-
 }
 
 void UCharacterAnimAbility::PlayAnim()
 {
 	TaskHandle->ReadyForActivation();
-
 }

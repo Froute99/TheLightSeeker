@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 #include "Enemies/BTNodes/BTTask_MoveToForSeconds.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -15,7 +14,7 @@ EBTNodeResult::Type UBTTask_MoveToForSeconds::ExecuteTask(UBehaviorTreeComponent
 	EBTNodeResult::Type Result = UBTTask_MoveTo::ExecuteTask(OwnerComp, NodeMemory);
 
 	FTimerHandle TimerHandle;
-	
+
 	// 람다 함수를 사용하여 타이머 만료 시 호출할 함수 정의
 	FTimerDelegate TimerDelegate = FTimerDelegate::CreateLambda([this, &OwnerComp]() {
 		// 타이머 만료 후 실패로 처리, 여기서 &OwnerComp를 사용하여 OwnerComp에 접근할 수 있음

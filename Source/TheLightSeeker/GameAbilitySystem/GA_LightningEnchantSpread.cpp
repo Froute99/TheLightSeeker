@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 #include "GA_LightningEnchantSpread.h"
 #include "Enemies/EnemyBase.h"
@@ -10,7 +10,8 @@
 // Function for shuffling Enemy Index for random lightning spread effect
 void Shuffle(TArray<AEnemyBase*>& Array, int min, int max)
 {
-	if (min >= max) return;
+	if (min >= max)
+		return;
 
 	srand(time(NULL));
 
@@ -48,8 +49,10 @@ void UGA_LightningEnchantSpread::ActivateAbility(const FGameplayAbilitySpecHandl
 
 		for (AActor* Actor : FoundActors)
 		{
-			if (Actor == ActorInfo->AvatarActor.Get()) continue;
-			if (Actor->IsHidden() == true) continue;
+			if (Actor == ActorInfo->AvatarActor.Get())
+				continue;
+			if (Actor->IsHidden() == true)
+				continue;
 
 			float Distance = Actor->GetDistanceTo(ActorInfo->AvatarActor.Get());
 			if (Distance < SpreadRange)
@@ -59,12 +62,12 @@ void UGA_LightningEnchantSpread::ActivateAbility(const FGameplayAbilitySpecHandl
 		}
 		Shuffle(TargetEnemies, 1, TargetEnemies.Num() - 1);
 		int TargetNum = std::min(TargetEnemies.Num(), MaxTargetNum);
-		
+
 		FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
 		// 스킬에 맞은 Enemy: SpreadHolder에서 GameplayEffect 적용함(당사자에겐 적용이 안되는 문제 있음)
-		// 
-		//ActorInfo->AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
-		//TargetEnemies[0]->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data);
+		//
+		// ActorInfo->AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+		// TargetEnemies[0]->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data);
 
 		UKismetSystemLibrary::DrawDebugCapsule(GetWorld(), TargetEnemies[0]->GetActorLocation(), 100.0f, 100.0f, FRotator(), FLinearColor::Red, 3.0f);
 
@@ -75,7 +78,6 @@ void UGA_LightningEnchantSpread::ActivateAbility(const FGameplayAbilitySpecHandl
 			// Chain Effect
 			if (TargetEnemies[i]->Children.Num() > 0)
 			{
-
 			}
 
 			// Debug Drawing

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 #include "Enemies/Abilities/GA_BossEnemyLeap.h"
 #include "AbilitySystemComponent.h"
@@ -25,12 +25,11 @@ void UGA_BossEnemyLeap::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 		return;
 	}
 
-
-	//if (PlayerReference)
+	// if (PlayerReference)
 	//{
 	//	TargetLocation = PlayerReference->GetActorLocation();
 	//	TargetLocation.Z = 0.0f;
-	//}
+	// }
 
 	UAnimMontage* MontageToPlay = AttackMontage;
 

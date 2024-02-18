@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 #pragma once
 
@@ -10,11 +10,11 @@
  * Move To task node.
  * Moves the AI pawn toward the specified Actor or Location blackboard entry using the navigation system for specific time.
  */
-UCLASS(config=Game)
+UCLASS(config = Game)
 class THELIGHTSEEKER_API UBTTask_MoveToForSeconds : public UBTTask_MoveTo
 {
 	GENERATED_BODY()
-	
+
 public:
 	UBTTask_MoveToForSeconds();
 
@@ -25,5 +25,4 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	float Timer;
-
 };

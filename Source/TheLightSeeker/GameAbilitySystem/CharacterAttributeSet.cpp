@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 #include "GameAbilitySystem/CharacterAttributeSet.h"
 #include "Net/UnrealNetwork.h"
@@ -8,7 +7,6 @@
 
 #include "CharacterBase.h"
 #include "EnemyBase.h"
-
 
 void UCharacterAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)
 {
@@ -65,8 +63,7 @@ void UCharacterAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 	DOREPLIFETIME_CONDITION_NOTIFY(UCharacterAttributeSet, MovementSpeed, COND_None, REPNOTIFY_Always);
 	DISABLE_REPLICATED_PROPERTY(UCharacterAttributeSet, BasicDamage);
 	DISABLE_REPLICATED_PROPERTY(UCharacterAttributeSet, DamageMultiplier);
-	//DISABLE_REPLICATED_PROPERTY(UCharacterAttributeSet, MovementSpeed);
+	// DISABLE_REPLICATED_PROPERTY(UCharacterAttributeSet, MovementSpeed);
 	DISABLE_REPLICATED_PROPERTY(UCharacterAttributeSet, AttackSpeed);
 	DISABLE_REPLICATED_PROPERTY(UCharacterAttributeSet, AdditionalProjectiles);
 }
-

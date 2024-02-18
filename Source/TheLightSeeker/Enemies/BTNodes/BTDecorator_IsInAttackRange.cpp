@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 #include "BTNodes/BTDecorator_IsInAttackRange.h"
 #include "EnemyBase.h"
@@ -32,7 +31,7 @@ bool UBTDecorator_IsInAttackRange::CalculateRawConditionValue(UBehaviorTreeCompo
 	float AttackRange = OwnerComp.GetBlackboardComponent()->GetValueAsFloat(FName("AttackRange"));
 	float Distance = Target->GetDistanceTo(ControllingPawn);
 
-	if(UseCustomRange)
+	if (UseCustomRange)
 	{
 		bResult = (Distance < CustomRange);
 		return bResult;
@@ -46,7 +45,6 @@ bool UBTDecorator_IsInAttackRange::CalculateRawConditionValue(UBehaviorTreeCompo
 	FVector ToTarget = (Target->GetActorLocation() - ControllingPawn->GetActorLocation());
 	ToTarget.Z = 0.0f;
 	ToTarget.Normalize();
-	
 
 	float AngleInRadians = FMath::DegreesToRadians(AllowableFaceAngleDiff);
 	float DotProductResult = FVector::DotProduct(ControllingPawn->GetActorForwardVector(), ToTarget);

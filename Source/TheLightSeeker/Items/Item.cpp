@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 #include "Items/Item.h"
 #include "Components/BoxComponent.h"
@@ -10,7 +9,7 @@
 // Sets default values
 AItem::AItem()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Component"));
 	if (BoxComponent)
@@ -19,7 +18,6 @@ AItem::AItem()
 		BoxComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 		BoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Overlap);
 		BoxComponent->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
-
 
 		Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 		Mesh->SetupAttachment(BoxComponent);
@@ -33,8 +31,8 @@ void AItem::BeginPlay()
 
 	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AItem::OnBeginOverlap);
 
-	//BaseHeight->SetWorldScale3D({ 1.0f, 1.0f, Height });
-	//PickupCollision->SetSphereRadius(PickupRange);
+	// BaseHeight->SetWorldScale3D({ 1.0f, 1.0f, Height });
+	// PickupCollision->SetSphereRadius(PickupRange);
 }
 
 // Called every frame
@@ -48,7 +46,7 @@ void AItem::Tick(float DeltaTime)
 void AItem::OnPickup(ACharacterBase* Player)
 {
 	Player->OnPickupItem(ItemAbility, Icon);
-	//PS->GetAbilitySystemComponent()->GiveAbility(FGameplayAbilitySpec(ItemAbility, 1, -1, this));
+	// PS->GetAbilitySystemComponent()->GiveAbility(FGameplayAbilitySpec(ItemAbility, 1, -1, this));
 }
 
 void AItem::Movement(float DeltaTime)
@@ -68,4 +66,3 @@ void AItem::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherAct
 		Destroy();
 	}
 }
-
