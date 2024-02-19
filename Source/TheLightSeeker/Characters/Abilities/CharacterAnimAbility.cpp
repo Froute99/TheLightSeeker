@@ -72,7 +72,8 @@ void UCharacterAnimAbility::EventReceived(FGameplayTag EventTag, FGameplayEventD
 
 void UCharacterAnimAbility::SpawnProjectile()
 {
-	ACharacterBase* Player = Cast<ACharacterBase>(Cast<ALightSeekerPlayerState>(GetActorInfo().OwnerActor.Get())->GetPawn());
+	ALightSeekerPlayerState* PlayerState = Cast<ALightSeekerPlayerState>(GetActorInfo().OwnerActor.Get());
+	ACharacterBase*			 Player = Cast<ACharacterBase>(PlayerState->GetPawn());
 
 	FActorSpawnParameters Parameter{};
 	Parameter.Instigator = Player;
@@ -101,6 +102,11 @@ void UCharacterAnimAbility::SpawnProjectile()
 	Projectile->DamageEffect = DamageGameplayEffect;
 	// Projectile->Range = Range;
 	Projectile->FinishSpawning(Transform);
+
+	if (PlayerState->ElementalEffectHandle.IsValid())
+	{
+		Projectile->AdditionalEffectSpecHandle = PlayerState->ElementalEffectHandle;
+	}
 }
 
 void UCharacterAnimAbility::PlayAnim()

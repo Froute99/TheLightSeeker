@@ -110,8 +110,13 @@ void AEnemyBase::OnDied()
 		{
 			WeaponMesh->GetAnimInstance()->Montage_Play(WeaponDeathAnimMontage);
 		}
+
 		// stop enemy behavior tree so enemy does not rotate to facing player
-		CastChecked<AAIController>(GetController())->GetBrainComponent()->StopLogic("Enemy Dead");
+		if (GetLocalRole() == ROLE_Authority)
+		{
+			CastChecked<AAIController>(GetController())->GetBrainComponent()->StopLogic("Enemy Dead");
+			return;
+		}
 	}
 	else
 	{
@@ -123,6 +128,11 @@ void AEnemyBase::OnDied()
 
 void AEnemyBase::DropItem()
 {
+	if (GetLocalRole() != ROLE_Authority)
+	{
+		return;
+	}
+
 	if (Item)
 	{
 		UE_LOG(Enemy, Log, TEXT("Enemy dropped Item"));
@@ -141,6 +151,11 @@ void AEnemyBase::DropItem()
 
 void AEnemyBase::FinishDying()
 {
+	if (GetLocalRole() != ROLE_Authority)
+	{
+		return;
+	}
+
 	UE_LOG(Enemy, Log, TEXT("Enemy FinishDying"));
 	Destroy();
 }
