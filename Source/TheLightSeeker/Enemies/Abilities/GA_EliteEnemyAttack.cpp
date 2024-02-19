@@ -55,7 +55,6 @@ void UGA_EliteEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 	if (GetOwningActorFromActorInfo()->GetLocalRole() == ROLE_Authority
 		&& EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.Enemy.MeleeAttack")))
 	{
-
 		AEnemyBase* EnemyBase = Cast<AEnemyBase>(GetActorInfo().OwnerActor.Get());
 		check(EnemyBase != nullptr);
 

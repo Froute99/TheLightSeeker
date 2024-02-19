@@ -110,6 +110,8 @@ void AEnemyBase::OnDied()
 		{
 			WeaponMesh->GetAnimInstance()->Montage_Play(WeaponDeathAnimMontage);
 		}
+		// stop enemy behavior tree so enemy does not rotate to facing player
+		CastChecked<AAIController>(GetController())->GetBrainComponent()->StopLogic("Enemy Dead");
 	}
 	else
 	{

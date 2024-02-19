@@ -13,6 +13,11 @@ EBTNodeResult::Type UBTTask_MoveToForSeconds::ExecuteTask(UBehaviorTreeComponent
 {
 	EBTNodeResult::Type Result = UBTTask_MoveTo::ExecuteTask(OwnerComp, NodeMemory);
 
+	if(OwnerComp.GetBlackboardComponent()->GetValueAsObject("Target") == nullptr)
+	{
+		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+	}
+
 	FTimerHandle TimerHandle;
 
 	// 람다 함수를 사용하여 타이머 만료 시 호출할 함수 정의
@@ -21,7 +26,7 @@ EBTNodeResult::Type UBTTask_MoveToForSeconds::ExecuteTask(UBehaviorTreeComponent
 		OnTimerExpired(OwnerComp);
 	});
 	OwnerComp.GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, Timer, false);
-	UE_LOG(LogTemp, Warning, TEXT("MoveToForSeconds ExecuteTask Called"));
+	//UE_LOG(LogTemp, Log, TEXT("MoveToForSeconds ExecuteTask Called"));
 	return Result;
 }
 
