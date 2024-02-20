@@ -36,6 +36,9 @@ public:
 	// UFUNCTION(BlueprintCallable, Category = "PlayerState|Attributes")
 	// void ShowAbilityConfirmCancelText(bool ShowText);
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Abilities")
+	class USkillTreeComponent* SkillTreeComponent;
+
 	UFUNCTION(BlueprintCallable, Category = "PlayerState|Attributes")
 	float GetHealth() const;
 	UFUNCTION(BlueprintCallable, Category = "PlayerState|Attributes")

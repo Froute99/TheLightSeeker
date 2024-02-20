@@ -23,7 +23,7 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(Replicated, BlueprintReadWrite, EditAnywhere)
 	TArray<TSubclassOf<class UCharacterGameplayAbility>> AbilityList;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -31,4 +31,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool IsAbilityAcquired(const FString& AbilityName);
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

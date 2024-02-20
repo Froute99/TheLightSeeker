@@ -2,6 +2,7 @@
 
 #include "Characters/SkillTreeComponent.h"
 #include "Abilities/CharacterGameplayAbility.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
 USkillTreeComponent::USkillTreeComponent()
@@ -36,4 +37,11 @@ bool USkillTreeComponent::IsAbilityAcquired(const FString& AbilityName)
 	}
 
 	return false;
+}
+
+void USkillTreeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(USkillTreeComponent, AbilityList);
 }
