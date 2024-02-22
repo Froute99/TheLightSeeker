@@ -62,6 +62,8 @@ void ACharacterBase::PossessedBy(AController* NewController)
 		InitializeAttributes();
 		AddStartupEffects();
 		AddCharacterAbilities();
+
+		// Binding event
 	}
 }
 
@@ -101,8 +103,6 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	EIC->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ACharacterBase::Attack);
 	EIC->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &ACharacterBase::Dodge);
 	EIC->BindAction(ItemAction, ETriggerEvent::Triggered, this, &ACharacterBase::UseItem);
-
-	EIC->BindAction(Skill1Action, ETriggerEvent::Triggered, this, &ACharacterBase::UseAbility, CurrentUsingAbilityIndex);
 
 	EIC->BindAction(Skill1Action, ETriggerEvent::Triggered, this, &ACharacterBase::Ability1);
 	EIC->BindAction(Skill2Action, ETriggerEvent::Triggered, this, &ACharacterBase::Ability2);
@@ -213,10 +213,6 @@ void ACharacterBase::OnRep_PlayerState()
 	{
 		InitializeStartingValues(PS);
 	}
-	// Can call bind delegate
-	// Call server event -> server binds delegate
-	// search about client side spawn actor(widget component included actor)
-	UE_LOG(LogTemp, Log, TEXT("PlayerState Rep"));
 }
 
 void ACharacterBase::InitializeStartingValues(ALightSeekerPlayerState* PS)
@@ -442,53 +438,59 @@ void ACharacterBase::UseAbility(int Index)
 
 void ACharacterBase::Ability1()
 {
-	if (SkillTreeComponent->AbilityList.Num() < 1)
+	ALightSeekerPlayerState* PS = GetPlayerState<ALightSeekerPlayerState>();
+	if (PS->SkillTreeComponent->AbilityList.Num() < 1)
 	{
 		UKismetSystemLibrary::PrintString(GetWorld(), FString("You didn't granted Ability1"), true, false, FColor::Red);
 		return;
 	}
 
-	ASC->TryActivateAbilityByClass(SkillTreeComponent->AbilityList[0]);
+	ASC->TryActivateAbilityByClass(PS->SkillTreeComponent->AbilityList[0]);
 }
 
 void ACharacterBase::Ability2()
 {
-	if (SkillTreeComponent->AbilityList.Num() < 2)
+	ALightSeekerPlayerState* PS = GetPlayerState<ALightSeekerPlayerState>();
+	if (PS->SkillTreeComponent->AbilityList.Num() < 2)
 	{
 		UKismetSystemLibrary::PrintString(GetWorld(), FString("You didn't granted Ability2"), true, false, FColor::Red);
 		return;
 	}
 
-	ASC->TryActivateAbilityByClass(SkillTreeComponent->AbilityList[1]);
+	ASC->TryActivateAbilityByClass(PS->SkillTreeComponent->AbilityList[1]);
 }
 
 void ACharacterBase::Ability3()
 {
-	if (SkillTreeComponent->AbilityList.Num() < 3)
+	ALightSeekerPlayerState* PS = GetPlayerState<ALightSeekerPlayerState>();
+	if (PS->SkillTreeComponent->AbilityList.Num() < 3)
 	{
 		UKismetSystemLibrary::PrintString(GetWorld(), FString("You didn't granted Ability3"), true, false, FColor::Red);
 		return;
 	}
 
-	ASC->TryActivateAbilityByClass(SkillTreeComponent->AbilityList[2]);
+	ASC->TryActivateAbilityByClass(PS->SkillTreeComponent->AbilityList[2]);
 }
 
 void ACharacterBase::Ability4()
 {
-	if (SkillTreeComponent->AbilityList.Num() < 4)
+	ALightSeekerPlayerState* PS = GetPlayerState<ALightSeekerPlayerState>();
+	if (PS->SkillTreeComponent->AbilityList.Num() < 4)
 	{
 		UKismetSystemLibrary::PrintString(GetWorld(), FString("You didn't granted Ability4"), true, false, FColor::Red);
 		return;
 	}
 
-	ASC->TryActivateAbilityByClass(SkillTreeComponent->AbilityList[3]);
+	ASC->TryActivateAbilityByClass(PS->SkillTreeComponent->AbilityList[3]);
 }
 
 void ACharacterBase::Dodge()
 {
-	ASC->TryActivateAbilityByClass(SkillTreeComponent->DodgeAbility);
+	ALightSeekerPlayerState* PS = GetPlayerState<ALightSeekerPlayerState>();
+	ASC->TryActivateAbilityByClass(PS->SkillTreeComponent->DodgeAbility);
 }
 
 void ACharacterBase::Die()
 {
+	UKismetSystemLibrary::PrintString(GetWorld(), FString("You died"), true, false, FColor::Red);
 }
