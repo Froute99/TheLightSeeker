@@ -143,6 +143,41 @@ void ALightSeekerPlayerState::RepHealthBar_Implementation(float NewValue)
 	Character->UpdateHealthBar();
 }
 
+void ALightSeekerPlayerState::RepBossHealthBar_Implementation(float NewValue, bool IsMaxHealth)
+{
+	UE_LOG(LogTemp, Log, TEXT("Replicate BossHealthBar"));
+
+	APlayerController* PC = GetPlayerController();
+	if (!IsValid(PC))
+	{
+		UE_LOG(LogTemp, Log, TEXT("PC invalid"));
+		return;
+	}
+
+	if (!PC->IsLocalController())
+	{
+		UE_LOG(LogTemp, Log, TEXT("Not Local Controller"));
+		return;
+	}
+
+	APawn* Pawn = PC->GetPawn();
+	if (!IsValid(Pawn))
+	{
+		UE_LOG(LogTemp, Log, TEXT("Pawn invalid"));
+		return;
+	}
+
+	ACharacterBase* Character = Cast<ACharacterBase>(Pawn);
+	if (IsMaxHealth)
+	{
+		Character->InitializeBossHealthBar(NewValue);
+	}
+	else
+	{
+		Character->UpdateBossHealthBar(NewValue);
+	}
+}
+
 void ALightSeekerPlayerState::ClearElementalEffect()
 {
 	UE_LOG(LogTemp, Log, TEXT("ClearElemenetalEffect called"));

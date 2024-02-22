@@ -33,6 +33,7 @@ EBTNodeResult::Type UBTTask_TriggerAbilityByClass::ExecuteTask(UBehaviorTreeComp
 	}
 
 	UAbilitySystemComponent* ASC = OwnerEnemy->GetAbilitySystemComponent();
+
 	if (!ASC->TryActivateAbilityByClass(AbilityToActivate))
 	{
 		UE_LOG(Enemy, Log, TEXT("Could not activate ability"));
@@ -40,14 +41,13 @@ EBTNodeResult::Type UBTTask_TriggerAbilityByClass::ExecuteTask(UBehaviorTreeComp
 	}
 	else
 	{
-		IsTaskDone = false;
+		UE_LOG(Enemy, Log, TEXT("Running Ability...."));
 		RunningAbility = Cast<UEnemyGameplayAbility>(ASC->GetAnimatingAbility());
+		
+		IsTaskDone = false;
 		Cast<UEnemyGameplayAbility>(RunningAbility)->SetAbilityDoneDelegateHandle.AddUFunction(this, FName("SetTaskDone"));
+		RunningAbility->SetTargetReference(TWeakObjectPtr<AActor>(Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject("Target"))));
 
-		if (RunningAbility->IsRequireTargetReference)
-		{
-			RunningAbility->SetTargetReference(TWeakObjectPtr<AActor>(Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject("Target"))));
-		}
 	}
 
 	return EBTNodeResult::Type::InProgress;

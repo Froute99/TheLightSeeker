@@ -24,8 +24,6 @@ void UGA_EliteEnemyAttack::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
 
-
-
 	UAnimMontage* MontageToPlay = AttackMontage;
 
 	// Play fire montage and wait for event telling us to spawn the projectile

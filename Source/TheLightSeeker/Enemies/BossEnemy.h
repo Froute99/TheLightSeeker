@@ -27,6 +27,5 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void InitializeHealthBar();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<UEnemyHPBarWidget> HPBar;
+	TArray<TWeakObjectPtr<class ALightSeekerPlayerState>> PlayerStates;
 };

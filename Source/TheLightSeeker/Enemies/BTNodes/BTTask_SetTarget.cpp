@@ -28,12 +28,7 @@ EBTNodeResult::Type UBTTask_SetTarget::ExecuteTask(UBehaviorTreeComponent& Owner
 		TArray<TObjectPtr<APlayerState>> Players;
 		int								 TotalPlayerNum = GetWorld()->GetGameState()->PlayerArray.Num();
 
-		if (TotalPlayerNum <= 0)
-		{
-			return EBTNodeResult::Failed;
-		}
-
-		for (int i = 0; i < TotalPlayerNum; ++i)
+		for (int i = 0; i < TotalPlayerNum; ++i)	
 		{
 			if (GetWorld()->GetGameState()->PlayerArray[i]->GetPlayerController())
 			{
@@ -41,6 +36,12 @@ EBTNodeResult::Type UBTTask_SetTarget::ExecuteTask(UBehaviorTreeComponent& Owner
 			}
 		}
 
+		if (Players.Num() <= 0)
+		{
+			OwnerComp.GetBlackboardComponent()->ClearValue("Target");
+			return EBTNodeResult::Failed;
+		}
+			
 		int RandomIndex = FMath::RandRange(0, Players.Num() - 1);
 
 		OwnerComp.GetBlackboardComponent()->SetValueAsObject(FName("Target"),

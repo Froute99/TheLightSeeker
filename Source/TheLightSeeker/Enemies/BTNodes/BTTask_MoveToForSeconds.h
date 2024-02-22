@@ -25,4 +25,6 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	float Timer;
+
+	FTimerHandle TimerHandle;
 };

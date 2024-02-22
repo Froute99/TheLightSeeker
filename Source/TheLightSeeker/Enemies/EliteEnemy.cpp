@@ -26,7 +26,7 @@ void AEliteEnemy::BeginPlay()
 	}
 	else
 	{
-		UE_LOG(Enemy, Error, TEXT("HPBarWidget not connected"));
+		UE_LOG(Enemy, Error, TEXT("HPBarWidget not connected2"));
 	}
 }
 

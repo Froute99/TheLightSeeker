@@ -72,6 +72,11 @@ float AEnemyBase::GetAttackRange() const
 
 void AEnemyBase::OnDied()
 {
+	if (GetLocalRole() != ROLE_Authority)
+	{
+		return;
+	}
+
 	UE_LOG(Enemy, Log, TEXT("OnDied Called"));
 	RemoveCharacterAbilities();
 
@@ -115,7 +120,6 @@ void AEnemyBase::OnDied()
 		if (GetLocalRole() == ROLE_Authority)
 		{
 			CastChecked<AAIController>(GetController())->GetBrainComponent()->StopLogic("Enemy Dead");
-			return;
 		}
 	}
 	else

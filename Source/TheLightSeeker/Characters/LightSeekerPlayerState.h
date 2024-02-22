@@ -77,4 +77,9 @@ public:
 	void ClearElementalEffect();
 
 	FDoneElementalEffect ElementalEffectDone;
+
+	
+	// call by boss enemy - to update health bar..
+	UFUNCTION(Client, Reliable)
+	void RepBossHealthBar(float NewValue, bool IsMaxHealth);
 };

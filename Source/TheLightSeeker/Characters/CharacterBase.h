@@ -180,6 +180,15 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	class UItemWidget* ItemWidget;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class UEnemyHPBarWidget* BossHPWidget;
+
+	UFUNCTION()
+	void InitializeBossHealthBar(float MaxHealth);
+
+	UFUNCTION()
+	void UpdateBossHealthBar(float CurrentHealth);
+
 	int CurrentUsingAbilityIndex;
 	int MaxAbilityNum = 3;
 };

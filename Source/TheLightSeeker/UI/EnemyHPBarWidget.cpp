@@ -2,10 +2,12 @@
 
 #include "UI/EnemyHPBarWidget.h"
 #include "Components/ProgressBar.h"
+#include "Net/UnrealNetwork.h"
 
 void UEnemyHPBarWidget::SetMaxHealth(float MaxHealthValue, bool SetHealthFull)
 {
 	MaxHealth = MaxHealthValue;
+	SetVisibility(ESlateVisibility::Visible);
 	if (SetHealthFull)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Set max health: %f"), MaxHealth);
@@ -19,9 +21,5 @@ void UEnemyHPBarWidget::SetHealth(float CurrentHealthValue)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Set Heatlh percent: %f"), CurrentHealthValue / MaxHealth);
 		HealthBar->SetPercent(CurrentHealthValue / MaxHealth);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Log, TEXT("shiba"));
 	}
 }

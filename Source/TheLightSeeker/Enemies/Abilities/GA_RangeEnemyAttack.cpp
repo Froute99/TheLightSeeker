@@ -66,7 +66,7 @@ void UGA_RangeEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 			FVector LaunchLocation = EnemyBase->GetActorLocation() + FVector(0.0f, 0.0f, EnemyBase->GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
 			ARangeEnemyProjectile* Projectile = GetWorld()->SpawnActor<ARangeEnemyProjectile>(ProjectileActor, 
 				    LaunchLocation,
-					FRotator(), Parameter);
+					FRotator::ZeroRotator, Parameter);
 
 			if (Projectile)
 			{

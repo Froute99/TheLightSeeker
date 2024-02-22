@@ -15,6 +15,7 @@ class THELIGHTSEEKER_API UEnemyHPBarWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+
 	void SetMaxHealth(float MaxHealthValue, bool SetHealthFull = true);
 
 	void SetHealth(float CurrentHealthValue);

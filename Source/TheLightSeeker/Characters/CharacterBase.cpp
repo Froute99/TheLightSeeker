@@ -24,6 +24,7 @@
 
 #include "PlayerHUD.h"
 #include "PlayerHealthBarWidget.h"
+#include "UI/EnemyHPBarWidget.h"
 
 // Sets default values
 ACharacterBase::ACharacterBase()
@@ -412,6 +413,16 @@ void ACharacterBase::UpdateHealthBar()
 		return;
 	}
 	HealthBar->SetHealth(GetHealth());
+}
+
+void ACharacterBase::InitializeBossHealthBar(float MaxHealth)
+{
+	BossHPWidget->SetMaxHealth(MaxHealth);
+}
+
+void ACharacterBase::UpdateBossHealthBar(float CurrentHealth)
+{
+	BossHPWidget->SetHealth(CurrentHealth);
 }
 
 void ACharacterBase::UseAbility(int Index)

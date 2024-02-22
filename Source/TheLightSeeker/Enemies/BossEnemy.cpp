@@ -4,6 +4,8 @@
 #include "GameAbilitySystem/CharacterAbilitySystemComponent.h"
 #include "GameAbilitySystem/CharacterAttributeSet.h"
 #include "UI/EnemyHPBarWidget.h"
+#include "GameFramework/GameState.h"
+#include "Characters/LightSeekerPlayerState.h"
 
 void ABossEnemy::BeginPlay()
 {
@@ -16,14 +18,14 @@ void ABossEnemy::OnHealthChanged(const FOnAttributeChangeData& Data)
 {
 	Super::OnHealthChanged(Data);
 
-	if (HPBar)
+	if(GetLocalRole() != ROLE_Authority)
 	{
-		UE_LOG(Enemy, Log, TEXT("HPBarWidget set current health"));
-		HPBar->SetHealth(Data.NewValue);
+		return;
 	}
-	else
+	UE_LOG(Enemy, Warning, TEXT("Boss Max, Health: %f, %f"), AttributeSet->GetMaxHealth(), AttributeSet->GetHealth());
+	for (auto PS : PlayerStates)
 	{
-		UE_LOG(Enemy, Error, TEXT("HPBarWidget not connected"));
+		PS->RepBossHealthBar(Data.NewValue, false);
 	}
 }
 
@@ -31,37 +33,39 @@ void ABossEnemy::OnActivate()
 {
 	Super::OnActivate();
 
-	if (HPBar)
+	TArray<TObjectPtr<APlayerState>> Players;
+	int								 TotalPlayerNum = GetWorld()->GetGameState()->PlayerArray.Num();
+
+	if (TotalPlayerNum <= 0)
 	{
-		UE_LOG(Enemy, Log, TEXT("HPBarWidget set maxhealth"));
-		HPBar->SetVisibility(ESlateVisibility::Visible);
-		HPBar->SetMaxHealth(AttributeSet->GetMaxHealth());
+		return;
 	}
-	else
+
+	PlayerStates.Reset();
+	for (int i = 0; i < TotalPlayerNum; ++i)
 	{
-		UE_LOG(Enemy, Error, TEXT("OnActivate: Boss HPBarWidget not connected"));
+		ALightSeekerPlayerState* PS = Cast<ALightSeekerPlayerState>(GetWorld()->GetGameState()->PlayerArray[i]);
+		if (PS)
+		{
+			UE_LOG(Enemy, Warning, TEXT("ABossEnemy::HPBar Init with hp %i"), AttributeSet->GetMaxHealth());
+			PS->RepBossHealthBar(AttributeSet->GetMaxHealth(), true);
+			PlayerStates.Add(PS);
+		}
 	}
+
+	UE_LOG(Enemy, Warning, TEXT("ABossEnemy::OnActivate PS num: %i"), PlayerStates.Num());
 }
 
 void ABossEnemy::OnDeactivate()
 {
 	Super::OnDeactivate();
-
-	if (HPBar)
-	{
-		HPBar->SetVisibility(ESlateVisibility::Hidden);
-	}
-	else
-	{
-		UE_LOG(Enemy, Error, TEXT("OnDeactivate: Boss HPBarWidget not connected"));
-	}
 }
 
 void ABossEnemy::InitializeHealthBar()
 {
-	if (HPBar)
+	/*if (HPBar)
 	{
 		HPBar->SetVisibility(ESlateVisibility::Hidden);
 		HPBar->SetMaxHealth(AttributeSet->GetMaxHealth());
-	}
+	}*/
 }

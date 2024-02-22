@@ -11,6 +11,8 @@
 void UGA_BossEnemyLeap::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	return;
 
 	if (!AttackMontage)
 	{
@@ -25,11 +27,17 @@ void UGA_BossEnemyLeap::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 		return;
 	}
 
-	// if (PlayerReference)
-	//{
-	//	TargetLocation = PlayerReference->GetActorLocation();
-	//	TargetLocation.Z = 0.0f;
-	// }
+	if(AbilityTarget.IsValid())
+	{
+		TargetLocation = AbilityTarget->GetActorLocation();
+	}
+	else
+	{
+		UE_LOG(Enemy, Log, TEXT("Ability Leap run fail2"));
+		//SetAbilityDoneDelegateHandle.Broadcast();
+		//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		//return;
+	}
 
 	UAnimMontage* MontageToPlay = AttackMontage;
 
