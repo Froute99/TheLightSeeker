@@ -23,6 +23,6 @@ public:
 
 	virtual void OnHealthChanged(const FOnAttributeChangeData& Data) override;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UWidgetComponent* HPBar;
 };

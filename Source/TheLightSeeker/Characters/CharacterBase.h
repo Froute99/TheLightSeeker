@@ -94,6 +94,7 @@ public:
 
 	void Attack();
 
+	void UseAbility(int Index);
 	void Ability1();
 	void Ability2();
 	void Ability3();
