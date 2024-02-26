@@ -18,11 +18,4 @@ class THELIGHTSEEKER_API AEliteEnemy : public AEnemyBase
 
 public:
 	AEliteEnemy();
-
-	virtual void BeginPlay() override;
-
-	virtual void OnHealthChanged(const FOnAttributeChangeData& Data) override;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	UWidgetComponent* HPBar;
 };

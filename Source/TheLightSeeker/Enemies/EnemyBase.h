@@ -57,9 +57,9 @@ public:
 
 	void   SetTargetPlayer(APawn* Target);
 	APawn* GetTargetPlayer() const;
-	
+
 	FTimerHandle TargetResetTimerHandle;
-	APawn* TargetPlayer;
+	APawn*		 TargetPlayer;
 
 protected:
 	virtual void BeginPlay() override;
@@ -134,4 +134,8 @@ public:
 	FDelegateHandle MoveSpeedChangedDelegateHandle;
 
 	void RemoveCharacterAbilities();
+
+protected:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	class UWidgetComponent* HPBar;
 };

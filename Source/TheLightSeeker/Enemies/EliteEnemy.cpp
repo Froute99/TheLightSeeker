@@ -8,40 +8,6 @@
 
 AEliteEnemy::AEliteEnemy()
 {
-	HPBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HP Display Bar"));
-	HPBar->SetupAttachment(RootComponent);
-}
-
-void AEliteEnemy::BeginPlay()
-{
-	Super::BeginPlay();
-
-	HealthChangedDelegateHandle = ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this, &AEliteEnemy::OnHealthChanged);
-
-	UEnemyHPBarWidget* HPBarWidget = Cast<UEnemyHPBarWidget>(HPBar->GetUserWidgetObject());
-	if (HPBarWidget)
-	{
-		UE_LOG(Enemy, Log, TEXT("HPBarWidget set maxhealth"));
-		HPBarWidget->SetMaxHealth(AttributeSet->GetMaxHealth());
-	}
-	else
-	{
-		UE_LOG(Enemy, Error, TEXT("HPBarWidget not connected2"));
-	}
-}
-
-void AEliteEnemy::OnHealthChanged(const FOnAttributeChangeData& Data)
-{
-	Super::OnHealthChanged(Data);
-
-	UEnemyHPBarWidget* HPBarWidget = Cast<UEnemyHPBarWidget>(HPBar->GetUserWidgetObject());
-	if (HPBarWidget)
-	{
-		UE_LOG(Enemy, Log, TEXT("HPBarWidget set current health"));
-		HPBarWidget->SetHealth(Data.NewValue);
-	}
-	else
-	{
-		UE_LOG(Enemy, Error, TEXT("HPBarWidget not connected"));
-	}
+	//HPBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HP Display Bar"));
+	//HPBar->SetupAttachment(RootComponent);
 }

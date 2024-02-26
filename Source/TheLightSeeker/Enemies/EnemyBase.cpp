@@ -9,6 +9,9 @@
 #include "AIController.h"
 #include "BrainComponent.h"
 
+#include "UI/EnemyHPBarWidget.h"
+#include "Components/WidgetComponent.h"
+
 AEnemyBase::AEnemyBase()
 {
 	ASC = CreateDefaultSubobject<UCharacterAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
@@ -21,6 +24,9 @@ AEnemyBase::AEnemyBase()
 
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	WeaponMesh->SetupAttachment(GetCapsuleComponent());
+
+	HPBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HP Display Bar"));
+	HPBar->SetupAttachment(RootComponent);
 }
 
 UBehaviorTree* AEnemyBase::GetBTAsset() const
@@ -62,6 +68,17 @@ void AEnemyBase::BeginPlay()
 	else
 	{
 		UE_LOG(Enemy, Log, TEXT("Enemy ASC Init could not called"));
+	}
+	
+	UEnemyHPBarWidget* HPBarWidget = Cast<UEnemyHPBarWidget>(HPBar->GetUserWidgetObject());
+	if (HPBarWidget)
+	{
+		UE_LOG(Enemy, Log, TEXT("HPBarWidget set maxhealth"));
+		HPBarWidget->SetMaxHealth(AttributeSet->GetMaxHealth());
+	}
+	else
+	{
+		//UE_LOG(Enemy, Error, TEXT("HPBarWidget not connected2"));
 	}
 }
 
@@ -240,6 +257,17 @@ void AEnemyBase::OnHealthChanged(const FOnAttributeChangeData& Data)
 	{
 		UE_LOG(Enemy, Log, TEXT("OnHealthChanged - OnDied"));
 		OnDied();
+	}
+
+	UEnemyHPBarWidget* HPBarWidget = Cast<UEnemyHPBarWidget>(HPBar->GetUserWidgetObject());
+	if (HPBarWidget)
+	{
+		UE_LOG(Enemy, Log, TEXT("HPBarWidget set current health"));
+		HPBarWidget->SetHealth(Data.NewValue);
+	}
+	else
+	{
+		UE_LOG(Enemy, Error, TEXT("HPBarWidget not connected"));
 	}
 }
 
