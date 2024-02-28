@@ -101,6 +101,7 @@ void AEnemySpawnManager::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AAc
 			{
 				ActivateActors(Info.Enemies);
 				Info.Trigger->GetCollisionComponent()->OnComponentBeginOverlap.Clear();
+				Trigger->Destroy();
 			}
 		}
 	}

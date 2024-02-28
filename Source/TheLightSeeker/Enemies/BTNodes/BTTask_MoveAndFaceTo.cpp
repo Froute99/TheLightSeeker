@@ -16,13 +16,10 @@ EBTNodeResult::Type UBTTask_MoveAndFaceTo::ExecuteTask(UBehaviorTreeComponent& O
 {
 	UBTTask_MoveTo::AcceptableRadius = 1.0f; // to make AI to face target.
 
-	UE_LOG(Enemy, Warning, TEXT("MoveAndFaceTo1"));
 	EBTNodeResult::Type Result = UBTTask_MoveTo::ExecuteTask(OwnerComp, NodeMemory);
-	UE_LOG(Enemy, Warning, TEXT("MoveAndFaceTo2"));
 
 	if (Result == EBTNodeResult::Type::Succeeded && !IsTaskDone(OwnerComp))
 	{
-		UE_LOG(Enemy, Warning, TEXT("MoveAndFaceTo3"));
 		Result = EBTNodeResult::Type::InProgress;
 	}
 
@@ -33,7 +30,6 @@ void UBTTask_MoveAndFaceTo::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
 {
 	if (IsTaskDone(OwnerComp))
 	{
-		UE_LOG(Enemy, Warning, TEXT("MoveAndFaceTo4"));
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 }

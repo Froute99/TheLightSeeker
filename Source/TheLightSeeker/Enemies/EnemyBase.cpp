@@ -89,19 +89,37 @@ float AEnemyBase::GetAttackRange() const
 
 void AEnemyBase::OnDied()
 {
+	UE_LOG(Enemy, Log, TEXT("OnDied Called"));
+
+	IsDying = true;
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCharacterMovement()->GravityScale = 0;
+	GetCharacterMovement()->Velocity = FVector(0);
+
+	if (DeathAnimMontage)
+	{
+		PlayAnimMontage(DeathAnimMontage);
+		if (WeaponDeathAnimMontage)
+		{
+			WeaponMesh->GetAnimInstance()->Montage_Play(WeaponDeathAnimMontage);
+		}
+	}
+	else
+	{
+		UE_LOG(Enemy, Log, TEXT("Enemy Missing Death Animation Montage!"));
+		DropItem();
+		Destroy();
+	}
+
+	// Server-side only
 	if (GetLocalRole() != ROLE_Authority)
 	{
 		return;
 	}
 
-	UE_LOG(Enemy, Log, TEXT("OnDied Called"));
+	// stop enemy behavior tree so enemy does not rotate to facing player
+	CastChecked<AAIController>(GetController())->GetBrainComponent()->StopLogic("Enemy Dead");
 	RemoveCharacterAbilities();
-
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	GetCharacterMovement()->GravityScale = 0;
-	GetCharacterMovement()->Velocity = FVector(0);
-
-	IsDying = true;
 	
 	auto& Effects = ASC->GetActiveGameplayEffects();
 
@@ -123,27 +141,6 @@ void AEnemyBase::OnDied()
 		//int32 NumEffectsRemoved = AbilitySystemComponent->RemoveActiveEffectsWithTags(EffectTagsToRemove);
 		//
 		//AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
-	}
-
-	if (DeathAnimMontage)
-	{
-		PlayAnimMontage(DeathAnimMontage);
-		if (WeaponDeathAnimMontage)
-		{
-			WeaponMesh->GetAnimInstance()->Montage_Play(WeaponDeathAnimMontage);
-		}
-
-		// stop enemy behavior tree so enemy does not rotate to facing player
-		if (GetLocalRole() == ROLE_Authority)
-		{
-			CastChecked<AAIController>(GetController())->GetBrainComponent()->StopLogic("Enemy Dead");
-		}
-	}
-	else
-	{
-		UE_LOG(Enemy, Log, TEXT("Enemy Missing Death Animation Montage!"));
-		DropItem();
-		Destroy();
 	}
 }
 
@@ -264,10 +261,6 @@ void AEnemyBase::OnHealthChanged(const FOnAttributeChangeData& Data)
 	{
 		UE_LOG(Enemy, Log, TEXT("HPBarWidget set current health"));
 		HPBarWidget->SetHealth(Data.NewValue);
-	}
-	else
-	{
-		UE_LOG(Enemy, Error, TEXT("HPBarWidget not connected"));
 	}
 }
 
