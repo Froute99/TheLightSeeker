@@ -36,18 +36,22 @@ EBTNodeResult::Type UBTTask_TriggerAbilityByClass::ExecuteTask(UBehaviorTreeComp
 
 	if (!ASC->TryActivateAbilityByClass(AbilityToActivate))
 	{
-		UE_LOG(Enemy, Log, TEXT("Could not activate ability"));
+		UE_LOG(Enemy, Verbose, TEXT("Could not activate ability"));
 		return EBTNodeResult::Type::Failed; // AbortTask(OwnerComp, NodeMemory); fix for cooldown
 	}
 	else
 	{
 		UE_LOG(Enemy, Log, TEXT("Running Ability...."));
 		RunningAbility = Cast<UEnemyGameplayAbility>(ASC->GetAnimatingAbility());
-		
+
+		TWeakObjectPtr<AActor> Target = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject("Target"));
+		if (RunningAbility->IsRequireTargetReference && Target.IsValid())
+		{
+			RunningAbility->SetTargetReference(Target);
+		}
+
 		IsTaskDone = false;
 		Cast<UEnemyGameplayAbility>(RunningAbility)->SetAbilityDoneDelegateHandle.AddUFunction(this, FName("SetTaskDone"));
-		RunningAbility->SetTargetReference(TWeakObjectPtr<AActor>(Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject("Target"))));
-
 	}
 
 	return EBTNodeResult::Type::InProgress;

@@ -46,7 +46,8 @@ void AEnemySpawnManager::GiveItem(TObjectPtr<AEnemyBase> EnemyToSpawn)
 		return;
 	}
 
-	int32 RandomValue = FMath::RandRange(0, (int32)(TotalWeight / ItemDropRate));
+	int32 RandomValue = FMath::RandRange(0, TotalWeight);
+	(int32)(TotalWeight / ItemDropRate);
 
 	if (RandomValue < ItemDropTable.Last().Weight) // can drop item. otherwise - do not drop item
 	{

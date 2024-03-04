@@ -413,12 +413,18 @@ void ACharacterBase::UpdateHealthBar()
 
 void ACharacterBase::InitializeBossHealthBar(float MaxHealth)
 {
-	BossHPWidget->SetMaxHealth(MaxHealth);
+	if (BossHPWidget)
+	{
+		BossHPWidget->SetMaxHealth(MaxHealth);
+	}
 }
 
 void ACharacterBase::UpdateBossHealthBar(float CurrentHealth)
 {
-	BossHPWidget->SetHealth(CurrentHealth);
+	if (BossHPWidget)
+	{
+		BossHPWidget->SetHealth(CurrentHealth);
+	}
 }
 
 void ACharacterBase::UseAbility(int Index)

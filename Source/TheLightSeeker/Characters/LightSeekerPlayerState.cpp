@@ -108,11 +108,7 @@ void ALightSeekerPlayerState::MoveSpeedChanged(const FOnAttributeChangeData& Dat
 {
 	UE_LOG(LogTemp, Warning, TEXT("%s : Player MoveSpeed Changed!"), *FString(__FUNCTION__))
 
-	ACharacterBase* Character = Cast<ACharacterBase>(GetPlayerController()->GetPawn());
-	if (Character)
-	{
-		Character->GetCharacterMovement()->MaxWalkSpeed = AttributeSet->GetMovementSpeed();
-	}
+	RepMovementSpeed(Data.NewValue);
 }
 
 void ALightSeekerPlayerState::RepHealthBar_Implementation(float NewValue)
@@ -141,6 +137,34 @@ void ALightSeekerPlayerState::RepHealthBar_Implementation(float NewValue)
 
 	ACharacterBase* Character = Cast<ACharacterBase>(Pawn);
 	Character->UpdateHealthBar();
+}
+
+void ALightSeekerPlayerState::RepMovementSpeed_Implementation(float NewValue)
+{
+	UE_LOG(LogTemp, Log, TEXT("Replicate MovemenetSpeed"));
+
+	APlayerController* PC = GetPlayerController();
+	if (!IsValid(PC))
+	{
+		UE_LOG(LogTemp, Log, TEXT("PC invalid"));
+		return;
+	}
+
+	if (!PC->IsLocalController())
+	{
+		UE_LOG(LogTemp, Log, TEXT("Not Local Controller"));
+		return;
+	}
+
+	APawn* Pawn = PC->GetPawn();
+	if (!IsValid(Pawn))
+	{
+		UE_LOG(LogTemp, Log, TEXT("Pawn invalid"));
+		return;
+	}
+
+	ACharacterBase* Character = Cast<ACharacterBase>(Pawn);
+	Character->GetCharacterMovement()->MaxWalkSpeed = NewValue;
 }
 
 void ALightSeekerPlayerState::RepBossHealthBar_Implementation(float NewValue, bool IsMaxHealth)

@@ -11,8 +11,6 @@
 void UGA_BossEnemyLeap::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-	return;
 
 	if (!AttackMontage)
 	{
@@ -25,18 +23,6 @@ void UGA_BossEnemyLeap::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		return;
-	}
-
-	if(AbilityTarget.IsValid())
-	{
-		TargetLocation = AbilityTarget->GetActorLocation();
-	}
-	else
-	{
-		UE_LOG(Enemy, Log, TEXT("Ability Leap run fail2"));
-		//SetAbilityDoneDelegateHandle.Broadcast();
-		//EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-		//return;
 	}
 
 	UAnimMontage* MontageToPlay = AttackMontage;
@@ -66,12 +52,21 @@ void UGA_BossEnemyLeap::EventReceived(FGameplayTag EventTag, FGameplayEventData 
 		FVector CurrentLocation = GetOwningActorFromActorInfo()->GetActorLocation();
 		CurrentLocation.Z = 0.0f;
 
+		if (AbilityTarget.IsValid())
+		{
+			TargetLocation = AbilityTarget->GetActorLocation();
+			UE_LOG(Enemy, Log, TEXT("Successfully set targetd location in event"));
+		}
+		else
+		{
+			UE_LOG(Enemy, Log, TEXT("test: %s"), *AActor::GetDebugName(AbilityTarget.Get()));
+		}
+
 		FVector						 LeapVelocity = (TargetLocation - CurrentLocation) / LeapDuration;
 		UCharacterMovementComponent* EnemyCharacterMovement = Cast<ACharacter>(GetOwningActorFromActorInfo())->GetCharacterMovement();
 		Cast<ACharacter>(GetOwningActorFromActorInfo())->FaceRotation(LeapVelocity.Rotation());
 		EnemyCharacterMovement->Velocity = LeapVelocity;
 		EnemyCharacterMovement->DoJump(false);
-		// UE_LOG(Enemy, Log, TEXT("Tried jump: %i"),  ? 1 : 0);
 	}
 
 	if (GetOwningActorFromActorInfo()->GetLocalRole() == ROLE_Authority

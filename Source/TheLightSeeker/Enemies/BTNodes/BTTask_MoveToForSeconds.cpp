@@ -29,12 +29,10 @@ EBTNodeResult::Type UBTTask_MoveToForSeconds::ExecuteTask(UBehaviorTreeComponent
 		OnTimerExpired(OwnerComp);
 	});
 	OwnerComp.GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, Timer, false);
-	// UE_LOG(LogTemp, Log, TEXT("MoveToForSeconds ExecuteTask Called"));
 	return Result;
 }
 
 void UBTTask_MoveToForSeconds::OnTimerExpired(UBehaviorTreeComponent& OwnerComp)
 {
-	UE_LOG(LogTemp, Warning, TEXT("MoveToForSeconds OnTimerExpired Called"));
 	FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 }

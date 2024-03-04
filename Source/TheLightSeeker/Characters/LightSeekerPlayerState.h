@@ -69,6 +69,9 @@ protected:
 	UFUNCTION(Client, Reliable)
 	void RepHealthBar(float NewValue);
 
+	UFUNCTION(Client, Reliable)
+	void RepMovementSpeed(float NewValue);
+
 	// virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
 public:
@@ -81,7 +84,6 @@ public:
 
 	FDoneElementalEffect ElementalEffectDone;
 
-	
 	// call by boss enemy - to update health bar..
 	UFUNCTION(Client, Reliable)
 	void RepBossHealthBar(float NewValue, bool IsMaxHealth);
