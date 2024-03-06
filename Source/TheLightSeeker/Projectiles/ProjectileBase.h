@@ -48,4 +48,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Meta = (ExposeOnSpawn = true))
 	FGameplayEffectSpecHandle AdditionalEffectSpecHandle;
+
+
+	void SetVelocity(const FVector& NewVelocity);
 };
