@@ -18,6 +18,12 @@ void USkillTreeComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
+void USkillTreeComponent::IncreaseSkillPoint()
+{
+	++SkillPoints;
+	UE_LOG(LogTemp, Log, TEXT("Increased Character Skill Point"));
+}
+
 // Called every frame
 void USkillTreeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
