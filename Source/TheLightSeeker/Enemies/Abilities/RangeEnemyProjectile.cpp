@@ -21,6 +21,10 @@ void ARangeEnemyProjectile::Tick(float DeltaTime)
 
 void ARangeEnemyProjectile::OnBeginOverlap_EnemyAttack(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (GetLocalRole() != ROLE_Authority)
+	{
+		return;
+	}
 
 	ACharacterBase* Player = Cast<ACharacterBase>(OtherActor);
 	if (Player)

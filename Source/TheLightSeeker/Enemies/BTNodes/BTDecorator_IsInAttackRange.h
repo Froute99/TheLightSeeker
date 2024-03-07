@@ -29,4 +29,7 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = Node)
 	float CustomRange;
+
+	UPROPERTY(EditAnywhere, Category = Node)
+	bool CheckOutOfRange;
 };

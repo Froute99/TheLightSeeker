@@ -27,6 +27,8 @@ AEnemyBase::AEnemyBase()
 
 	HPBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HP Display Bar"));
 	HPBar->SetupAttachment(RootComponent);
+
+	
 }
 
 UBehaviorTree* AEnemyBase::GetBTAsset() const
@@ -93,7 +95,7 @@ void AEnemyBase::OnDied()
 
 	IsDying = true;
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	GetCharacterMovement()->GravityScale = 0;
+	GetCharacterMovement()->GravityScale = 0.0f;
 	GetCharacterMovement()->Velocity = FVector(0);
 
 	if (DeathAnimMontage)
@@ -116,6 +118,9 @@ void AEnemyBase::OnDied()
 	{
 		return;
 	}
+
+	// remove dead enemy's collision so that player can ignore it
+	//Multicast_RemoveCollision();
 
 	// stop enemy behavior tree so enemy does not rotate to facing player
 	CastChecked<AAIController>(GetController())->GetBrainComponent()->StopLogic("Enemy Dead");
@@ -158,6 +163,7 @@ void AEnemyBase::DropItem()
 		FActorSpawnParameters Parameter{};
 		Parameter.Instigator = this;
 		FVector LaunchLocation = GetActorLocation();
+		LaunchLocation.Z = 100.0;
 		AItem* SpawnedItem = GetWorld()->SpawnActor<AItem>(Item, LaunchLocation, FRotator(), Parameter);
 
 		if(!SpawnedItem)
@@ -222,6 +228,14 @@ void AEnemyBase::Multicast_PlayWeaponAnimMontage_Implementation(UAnimMontage* Mo
 {
 	UAnimInstance* WeaponAnimInstance = GetWeaponMesh()->GetAnimInstance();
 	WeaponAnimInstance->Montage_Play(Montage);
+}
+
+void AEnemyBase::Multicast_RemoveCollision_Implementation()
+{
+	IsDying = true;
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCharacterMovement()->GravityScale = 0.0f;
+	GetCharacterMovement()->Velocity = FVector(0);
 }
 
 UAbilitySystemComponent* AEnemyBase::GetAbilitySystemComponent() const

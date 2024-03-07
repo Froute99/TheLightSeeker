@@ -83,6 +83,9 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_PlayWeaponAnimMontage(UAnimMontage* Montage);
 
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_RemoveCollision();
+
 	/***********************************************
 	 * Game Abilities System
 	 ***********************************************/

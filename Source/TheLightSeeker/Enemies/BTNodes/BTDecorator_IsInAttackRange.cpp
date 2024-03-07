@@ -28,15 +28,10 @@ bool UBTDecorator_IsInAttackRange::CalculateRawConditionValue(UBehaviorTreeCompo
 		return false;
 	}
 
-	float AttackRange = OwnerComp.GetBlackboardComponent()->GetValueAsFloat(FName("AttackRange"));
+	float Range = (UseCustomRange ? CustomRange : OwnerComp.GetBlackboardComponent()->GetValueAsFloat(FName("AttackRange")));
 	float Distance = Target->GetDistanceTo(ControllingPawn);
 
-	if (UseCustomRange)
-	{
-		bResult = (Distance < CustomRange);
-		return bResult;
-	}
-	else if (Distance > AttackRange)
+	if ((!CheckOutOfRange && (Distance > Range)) || (CheckOutOfRange && (Distance < Range)))
 	{
 		bResult = false;
 		return bResult;

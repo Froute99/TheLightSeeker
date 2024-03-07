@@ -23,6 +23,9 @@ AItem::AItem()
 		Mesh->SetupAttachment(BoxComponent);
 		Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
+
+	PrimaryActorTick.bCanEverTick = true;
+	RotationRate = 2.7f;
 }
 
 void AItem::BeginPlay()
@@ -51,6 +54,8 @@ void AItem::OnPickup(ACharacterBase* Player)
 
 void AItem::Movement(float DeltaTime)
 {
+	// rotation
+	AddActorLocalRotation(FQuat(FVector(0.0, 0.0, 1.0), RotationRate * DeltaTime));
 }
 
 void AItem::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -63,6 +68,6 @@ void AItem::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherAct
 	{
 		UE_LOG(LogTemp, Log, TEXT("Item Picked Up"));
 		OnPickup(Player);
-		Destroy();
 	}
+	Destroy();
 }

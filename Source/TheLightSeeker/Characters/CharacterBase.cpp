@@ -417,6 +417,10 @@ void ACharacterBase::InitializeBossHealthBar(float MaxHealth)
 	{
 		BossHPWidget->SetMaxHealth(MaxHealth);
 	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("InitializeBossHealthBar: Boss HealthBar invalid"));
+	}
 }
 
 void ACharacterBase::UpdateBossHealthBar(float CurrentHealth)
@@ -424,6 +428,10 @@ void ACharacterBase::UpdateBossHealthBar(float CurrentHealth)
 	if (BossHPWidget)
 	{
 		BossHPWidget->SetHealth(CurrentHealth);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("UpdateBossHealthBar: Boss HealthBar invalid"));
 	}
 }
 
