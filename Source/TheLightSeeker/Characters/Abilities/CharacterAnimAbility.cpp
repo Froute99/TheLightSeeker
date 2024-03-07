@@ -82,7 +82,7 @@ void UCharacterAnimAbility::SpawnProjectile()
 	FVector LocationOffset{ 0, 0, 30.f };
 
 	FRotator Rotation = Player->GetActorRotation();
-	FRotator RotationOffset{ 0, 90.f, 0 };
+	FRotator RotationOffset{ 0, 0, 0 };
 
 	// FVector Start = Player->GetGunComponent()->GetSocketLocation(FName("Muzzle"));
 	// FVector End = Player->GetCameraBoom()->GetComponentLocation() + Player->GetFollowCamera()->GetForwardVector() * 1000.0f;
@@ -90,7 +90,7 @@ void UCharacterAnimAbility::SpawnProjectile()
 
 	FTransform Transform;
 	Transform.SetLocation(Location);
-	Transform.SetRotation(Rotation.Quaternion());
+	//Transform.SetRotation(Rotation.Quaternion());
 	Transform.SetScale3D(FVector(1.0f));
 
 	AProjectileBase* Projectile = GetWorld()->SpawnActorDeferred<AProjectileBase>(ArrowClass, Transform, Player,
@@ -101,6 +101,10 @@ void UCharacterAnimAbility::SpawnProjectile()
 	Projectile->DamageEffectSpecHandle = DamageEffectSpecHandle;
 	Projectile->DamageEffect = DamageGameplayEffect;
 	// Projectile->Range = Range;
+
+
+	Projectile->SetVelocity(Rotation.Vector());
+
 	Projectile->FinishSpawning(Transform);
 
 	if (PlayerState->ElementalEffectHandle.IsValid())
