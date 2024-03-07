@@ -86,3 +86,8 @@ void AProjectileBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 		// EnemyASC->ReceiveDamage()
 	}
 }
+
+void AProjectileBase::SetVelocity(const FVector& NewVelocity)
+{
+	ProjectileMovementComponent->Velocity = NewVelocity;
+}
