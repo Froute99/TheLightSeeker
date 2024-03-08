@@ -361,10 +361,9 @@ void ACharacterBase::UseItem()
 		UE_LOG(LogTemp, Warning, TEXT("Tried using item with invalid spechandle"));
 		return;
 	}
-
 	//bool Succeed = ASC->TryActivateAbility(ItemAbilityHandle, false);
 
-	bool Succeed = ASC->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("Ability.Player.Item"))));
+	bool Succeed = ASC->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("Ability.Player.Item.Enhancement.Fire"))));
 	if (Succeed)
 	{
 		HasItem = false;
