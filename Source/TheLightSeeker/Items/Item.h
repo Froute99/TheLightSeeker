@@ -45,8 +45,8 @@ protected:
 	*   Actor Appearance
 	***************************************/
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	UStaticMeshComponent* Mesh;
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	//UStaticMeshComponent* Mesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float RotationRate;

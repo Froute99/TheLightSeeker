@@ -19,9 +19,9 @@ AItem::AItem()
 		BoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Overlap);
 		BoxComponent->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
 
-		Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-		Mesh->SetupAttachment(BoxComponent);
-		Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		//Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
+		//Mesh->SetupAttachment(BoxComponent);
+		//Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 
 	PrimaryActorTick.bCanEverTick = true;

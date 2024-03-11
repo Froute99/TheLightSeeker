@@ -75,7 +75,6 @@ void AEnemyBase::BeginPlay()
 	UEnemyHPBarWidget* HPBarWidget = Cast<UEnemyHPBarWidget>(HPBar->GetUserWidgetObject());
 	if (HPBarWidget)
 	{
-		UE_LOG(Enemy, Log, TEXT("HPBarWidget set maxhealth"));
 		HPBarWidget->SetMaxHealth(AttributeSet->GetMaxHealth());
 	}
 	else
@@ -123,7 +122,10 @@ void AEnemyBase::OnDied()
 	//Multicast_RemoveCollision();
 
 	// stop enemy behavior tree so enemy does not rotate to facing player
-	CastChecked<AAIController>(GetController())->GetBrainComponent()->StopLogic("Enemy Dead");
+	if (AAIController* AIController = CastChecked<AAIController>(GetController()))
+	{
+		AIController->GetBrainComponent()->StopLogic("Enemy Dead");
+	}
 	RemoveCharacterAbilities();
 	
 	auto& Effects = ASC->GetActiveGameplayEffects();
@@ -273,7 +275,6 @@ void AEnemyBase::OnHealthChanged(const FOnAttributeChangeData& Data)
 	UEnemyHPBarWidget* HPBarWidget = Cast<UEnemyHPBarWidget>(HPBar->GetUserWidgetObject());
 	if (HPBarWidget)
 	{
-		UE_LOG(Enemy, Log, TEXT("HPBarWidget set current health"));
 		HPBarWidget->SetHealth(Data.NewValue);
 	}
 }
