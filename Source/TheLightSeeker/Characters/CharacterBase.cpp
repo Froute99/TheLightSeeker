@@ -308,6 +308,14 @@ void ACharacterBase::OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> I
 		UE_LOG(LogTemp, Warning, TEXT("Failed to Cast Item Ability"));
 		return;
 	}
+
+	// for potion - prevent removing current item
+	if (Ability->ActivateAbilityOnGranted)
+	{
+		ASC->GiveAbility(FGameplayAbilitySpec(ItemAbility, 1, -1, this));
+		return;
+	}
+
 	// Remove original item ability
 	ASC->ClearAbility(ItemAbilityHandle);
 
@@ -320,20 +328,10 @@ void ACharacterBase::OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> I
 		return;
 	}
 
-	// if Ability is used on granting, remove it immediately
-	if (!Ability->ActivateAbilityOnGranted)
-	{
-		UE_LOG(LogTemp, Log, TEXT("Got Item"));
-		HasItem = true;
+	UE_LOG(LogTemp, Log, TEXT("Got Item"));
+	HasItem = true;
 
-		Client_UpdateItemUI(Icon);
-	}
-	else
-	{
-		// for potion - clear ability so that ability cannot be used by player
-		UE_LOG(LogTemp, Log, TEXT("Clear Item successfully"));
-		ASC->ClearAbility(ItemAbilityHandle);
-	}
+	Client_UpdateItemUI(Icon);
 }
 
 void ACharacterBase::UseItem()
@@ -363,13 +361,13 @@ void ACharacterBase::UseItem()
 	}
 	//bool Succeed = ASC->TryActivateAbility(ItemAbilityHandle, false);
 
-	bool Succeed = ASC->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("Ability.Player.Item.Enhancement.Fire"))));
+	bool Succeed = ASC->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("Ability.Player.Item"))));
 	if (Succeed)
 	{
 		HasItem = false;
 
 		// remove item ability from player
-		ASC->ClearAbility(ItemAbilityHandle);
+		//ASC->ClearAbility(ItemAbilityHandle);
 		ItemAbilityHandle = FGameplayAbilitySpecHandle();
 		
 		Client_UpdateItemUI(nullptr);

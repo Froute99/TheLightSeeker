@@ -59,6 +59,11 @@ void ABomb::Explode()
 		}
 	}
 
+	FTransform Transform;
+	Transform.SetLocation(GetActorLocation());
+
+	AActor* VFXActor = GetWorld()->SpawnActor<AActor>(ExplosionVFXActor, Transform);
+
 	Destroy();
 	IsSet = false;
 }

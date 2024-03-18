@@ -29,6 +29,9 @@ public:
 
 	bool IsSet;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AActor> ExplosionVFXActor;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Bomb")
 	float Radius;
 

@@ -122,9 +122,9 @@ void AEnemyBase::OnDied()
 	//Multicast_RemoveCollision();
 
 	// stop enemy behavior tree so enemy does not rotate to facing player
-	if (AAIController* AIController = CastChecked<AAIController>(GetController()))
+	if (UBrainComponent* BrainComponent = CastChecked<AAIController>(GetController())->GetBrainComponent())
 	{
-		AIController->GetBrainComponent()->StopLogic("Enemy Dead");
+		BrainComponent->StopLogic("Enemy Dead");
 	}
 	RemoveCharacterAbilities();
 	
