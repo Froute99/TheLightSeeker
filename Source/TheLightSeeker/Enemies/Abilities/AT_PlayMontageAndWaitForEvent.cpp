@@ -63,7 +63,7 @@ void UAT_PlayMontageAndWaitForEvent::Activate()
 
 				bPlayedMontage = true;
 
-				/*if (OptionalMontageToPlay)
+				if (OptionalMontageToPlay)
 				{
 					AEnemyBase* EnemyBase = Cast<AEnemyBase>(Character);
 					if (EnemyBase)
@@ -71,14 +71,14 @@ void UAT_PlayMontageAndWaitForEvent::Activate()
 						UAnimInstance* WeaponAnimInstance = EnemyBase->GetWeaponMesh()->GetAnimInstance();
 						if (float AnimPlayTime = WeaponAnimInstance->Montage_Play(OptionalMontageToPlay, Rate) > 0.0f)
 						{
-							UE_LOG(LogTemp, Warning, TEXT("UGDAbilityTask_PlayMontageAndWaitForEvent weapon anim playtime: %f"), AnimPlayTime);
+							//UE_LOG(LogTemp, Warning, TEXT("UGDAbilityTask_PlayMontageAndWaitForEvent weapon anim playtime: %f"), AnimPlayTime);
 						}
 						else
 						{
-							UE_LOG(LogTemp, Warning, TEXT("UGDAbilityTask_PlayMontageAndWaitForEvent failed to play OptionalMontage!"));
+							//UE_LOG(LogTemp, Warning, TEXT("UGDAbilityTask_PlayMontageAndWaitForEvent failed to play OptionalMontage!"));
 						}
 					}
-				}*/
+				}
 			}
 			else
 			{

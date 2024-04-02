@@ -4,6 +4,7 @@
 #include "Characters/CharacterBase.h"
 #include "Characters/LightSeekerPlayerState.h"
 #include "Items/Trap.h"
+#include "Kismet/GameplayStatics.h"
 
 void UGA_SpawnTrapAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -24,6 +25,8 @@ void UGA_SpawnTrapAbility::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 			Player, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		Trap->TrapGameplayEffectSpecHandle = MakeOutgoingGameplayEffectSpec(TrapGameplayEffect);
 		Trap->FinishSpawning(Transform);
+
+		UGameplayStatics::PlaySound2D(GetWorld(), SpawnSound);
 	}
 }
 

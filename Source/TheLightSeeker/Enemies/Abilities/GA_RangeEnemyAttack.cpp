@@ -5,6 +5,7 @@
 #include "EnemyBase.h"
 #include "AbilitySystemComponent.h"
 #include "AT_PlayMontageAndWaitForEvent.h"
+#include "AT_RotateToTarget.h"
 #include "LightSeekerPlayerState.h"
 #include "RangeEnemyProjectile.h"
 #include "Components/CapsuleComponent.h"

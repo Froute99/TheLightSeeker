@@ -28,7 +28,7 @@ AEnemyBase::AEnemyBase()
 	HPBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HP Display Bar"));
 	HPBar->SetupAttachment(RootComponent);
 
-	
+	DeadTag = FGameplayTag::RequestGameplayTag("Enemy.Dead");
 }
 
 UBehaviorTree* AEnemyBase::GetBTAsset() const
@@ -93,9 +93,12 @@ void AEnemyBase::OnDied()
 	UE_LOG(Enemy, Log, TEXT("OnDied Called"));
 
 	IsDying = true;
+	SetActorEnableCollision(false);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCharacterMovement()->GravityScale = 0.0f;
 	GetCharacterMovement()->Velocity = FVector(0);
+
+	ASC->AddLooseGameplayTag(DeadTag);
 
 	if (DeathAnimMontage)
 	{
@@ -126,22 +129,27 @@ void AEnemyBase::OnDied()
 	{
 		BrainComponent->StopLogic("Enemy Dead");
 	}
-	RemoveCharacterAbilities();
-	
-	auto& Effects = ASC->GetActiveGameplayEffects();
 
-	for (auto it = Effects.CreateConstIterator(); it; ++it)
+	TArray<TObjectPtr<AActor>> ChildrenToRemove = Children;
+	for (TObjectPtr<AActor> Child : ChildrenToRemove)
 	{
-		ASC->RemoveActiveGameplayEffect(it->Handle);
+		UE_LOG(Enemy, Log, TEXT("Child destroyed"));
+		Child->Destroy();
 	}
 
 	ASC->RemoveAllGameplayCues();
-
-	//OnCharacterDied.Broadcast(this);
+	
+	auto& Effects = ASC->GetActiveGameplayEffects();
+	for (auto it = Effects.CreateConstIterator(); it; ++it)
+	{
+		UE_LOG(Enemy, Log, TEXT("destoryed... %s, res: %i"), *it->Spec.Def->GetName(), ASC->RemoveActiveGameplayEffect(it->Handle));
+		//ASC->RemoveActiveGameplayEffect(it->Handle);
+	}
 
 	if (ASC)
 	{
 		ASC->CancelAllAbilities();
+		RemoveCharacterAbilities();
 
 		//FGameplayTagContainer EffectTagsToRemove;
 		//EffectTagsToRemove.AddTag(EffectRemoveOnDeathTag);
@@ -165,7 +173,7 @@ void AEnemyBase::DropItem()
 		FActorSpawnParameters Parameter{};
 		Parameter.Instigator = this;
 		FVector LaunchLocation = GetActorLocation();
-		LaunchLocation.Z = 100.0;
+		LaunchLocation.Z = LaunchLocation.Z - GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + 100.0;
 		AItem* SpawnedItem = GetWorld()->SpawnActor<AItem>(Item, LaunchLocation, FRotator(), Parameter);
 
 		if(!SpawnedItem)
@@ -268,7 +276,6 @@ void AEnemyBase::OnHealthChanged(const FOnAttributeChangeData& Data)
 	// If the minion died, handle death
 	if (!IsAlive() && !IsDying)
 	{
-		UE_LOG(Enemy, Log, TEXT("OnHealthChanged - OnDied"));
 		OnDied();
 	}
 

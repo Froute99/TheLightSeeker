@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
+#include "Items/LightningTransferProjectile.h"
 
 // Function for shuffling Enemy Index for random lightning spread effect
 void Shuffle(TArray<AEnemyBase*>& Array, int min, int max)
@@ -45,13 +46,15 @@ void UGA_LightningEnchantSpread::ActivateAbility(const FGameplayAbilitySpecHandl
 
 		// Find enemies in range
 		TArray<AEnemyBase*> TargetEnemies;
-		TargetEnemies.Push(Cast<AEnemyBase>(ActorInfo->AvatarActor.Get()));
+		//TargetEnemies.Push(Cast<AEnemyBase>(ActorInfo->AvatarActor.Get()));
 
 		for (AActor* Actor : FoundActors)
 		{
 			if (Actor == ActorInfo->AvatarActor.Get())
 				continue;
 			if (Actor->IsHidden() == true)
+				continue;
+			if (!Cast<AEnemyBase>(Actor)->IsAlive())
 				continue;
 
 			float Distance = Actor->GetDistanceTo(ActorInfo->AvatarActor.Get());
@@ -63,17 +66,21 @@ void UGA_LightningEnchantSpread::ActivateAbility(const FGameplayAbilitySpecHandl
 		Shuffle(TargetEnemies, 1, TargetEnemies.Num() - 1);
 		int TargetNum = std::min(TargetEnemies.Num(), MaxTargetNum);
 
+		FGameplayEffectContextHandle handle;
+		ActorInfo->AbilitySystemComponent->ApplyGameplayEffectToSelf(Cast<UGameplayEffect>(DamageGameplayEffect->GetDefaultObject()), GetAbilityLevel(), FGameplayEffectContextHandle());
+
 		FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
 		// 스킬에 맞은 Enemy: SpreadHolder에서 GameplayEffect 적용함(당사자에겐 적용이 안되는 문제 있음)
 		//
-		// ActorInfo->AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+		//ActorInfo->AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
 		// TargetEnemies[0]->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data);
-
+		
+		/*
 		UKismetSystemLibrary::DrawDebugCapsule(GetWorld(), TargetEnemies[0]->GetActorLocation(), 100.0f, 100.0f, FRotator(), FLinearColor::Red, 3.0f);
 
 		for (int i = 1; i < TargetNum; ++i)
 		{
-			TargetEnemies[0]->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*DamageEffectSpecHandle.Data.Get(), TargetEnemies[i]->GetAbilitySystemComponent());
+			//TargetEnemies[0]->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*DamageEffectSpecHandle.Data.Get(), TargetEnemies[i]->GetAbilitySystemComponent());
 
 			// Chain Effect
 			if (TargetEnemies[i]->Children.Num() > 0)
@@ -83,6 +90,18 @@ void UGA_LightningEnchantSpread::ActivateAbility(const FGameplayAbilitySpecHandl
 			// Debug Drawing
 			UKismetSystemLibrary::DrawDebugCapsule(GetWorld(), TargetEnemies[i]->GetActorLocation(), 100.0f, 100.0f, FRotator(), FLinearColor::Red, 3.0f);
 			UKismetSystemLibrary::DrawDebugLine(GetWorld(), TargetEnemies[i - 1]->GetActorLocation(), TargetEnemies[i]->GetActorLocation(), FLinearColor::Red, 3.0f);
+		}
+		*/
+
+		FTransform Transform;
+		Transform.SetLocation(ActorInfo->AvatarActor->GetActorLocation());
+
+		if (ProjectileClass)
+		{
+			ALightningTransferProjectile* Projectile = GetWorld()->SpawnActorDeferred<ALightningTransferProjectile>(ProjectileClass, Transform, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+			Projectile->TargetEnemies = TargetEnemies;
+			Projectile->DamageEffectSpecHandle = DamageEffectSpecHandle;
+			Projectile->FinishSpawning(Transform);
 		}
 	}
 }

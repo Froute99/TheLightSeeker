@@ -1,6 +1,7 @@
 // Copyright (c) 2023 Team Light Seekers All rights reserved.
 
 #include "EnemyGameplayAbility.h"
+#include "AT_RotateToTarget.h"
 
 UEnemyGameplayAbility::UEnemyGameplayAbility()
 {
@@ -55,4 +56,7 @@ void UEnemyGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handl
 void UEnemyGameplayAbility::SetTargetReference(TWeakObjectPtr<AActor> Target)
 {
 	AbilityTarget = Target;
+	UAT_RotateToTarget* RotateTask = UAbilityTask::NewAbilityTask<UAT_RotateToTarget>(this);
+	RotateTask->Target = AbilityTarget;
+	RotateTask->ReadyForActivation();
 }

@@ -162,6 +162,9 @@ public:
 
 	FGameplayAbilitySpecHandle ItemAbilityHandle;
 
+	USoundBase* ItemPickupSound;
+	USoundBase* ItemUseFailureSound;
+
 protected:
 	bool HasItem;
 

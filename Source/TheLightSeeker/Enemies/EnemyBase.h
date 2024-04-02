@@ -48,6 +48,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void FinishDying();
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy")
+	FGameplayTag DeadTag;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Enemy")
 	TSubclassOf<class AItem> Item;
 

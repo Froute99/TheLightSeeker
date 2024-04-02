@@ -4,6 +4,7 @@
 #include "CharacterBase.h"
 #include "LightSeekerPlayerState.h"
 #include "Items/Bomb.h"
+#include "Kismet/GameplayStatics.h"
 
 void UGA_SpawnBombAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -26,6 +27,8 @@ void UGA_SpawnBombAbility::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 		Bomb->FinishSpawning(Transform);
 
 		Bomb->OnSet();
+
+		UGameplayStatics::PlaySound2D(GetWorld(), SpawnSound);
 	}
 }
 

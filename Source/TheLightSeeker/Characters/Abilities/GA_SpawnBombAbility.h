@@ -33,4 +33,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Bomb")
 	TSubclassOf<class UGameplayEffect> BombGameplayEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Bomb")
+	USoundBase* SpawnSound;
 };

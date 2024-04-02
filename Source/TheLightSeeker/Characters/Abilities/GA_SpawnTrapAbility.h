@@ -33,4 +33,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Trap")
 	TSubclassOf<class UGameplayEffect> TrapGameplayEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Trap")
+	USoundBase* SpawnSound;
 };

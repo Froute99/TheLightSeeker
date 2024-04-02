@@ -17,6 +17,8 @@
 #include "Abilities/CharacterGameplayAbility.h"
 
 #include "UI/ItemWidget.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 #include "TheLightSeeker.h"
 
@@ -25,6 +27,7 @@
 #include "PlayerHUD.h"
 #include "PlayerHealthBarWidget.h"
 #include "UI/EnemyHPBarWidget.h"
+
 
 // Sets default values
 ACharacterBase::ACharacterBase()
@@ -49,6 +52,17 @@ ACharacterBase::ACharacterBase()
 	GetMesh()->SetCollisionProfileName(FName("NoCollision"));
 
 	// SkillTreeComponent = CreateDefaultSubobject<USkillTreeComponent>(TEXT("SkillTree"));
+
+	ConstructorHelpers::FObjectFinder<USoundCue> ItemPickupSoundCueFinder(TEXT("/Script/Engine.SoundCue'/Game/SoundCollection/UI/SFX_ItemPickup.SFX_ItemPickup'"));
+	if (ItemPickupSoundCueFinder.Succeeded())
+	{
+		ItemPickupSound = ItemPickupSoundCueFinder.Object;
+	}
+	ConstructorHelpers::FObjectFinder<USoundCue> ItemUseFailureCueFinder(TEXT("/Script/Engine.SoundCue'/Game/SoundCollection/UI/SFX_ItemUseFailure.SFX_ItemUseFailure'"));
+	if (ItemUseFailureCueFinder.Succeeded())
+	{
+		ItemUseFailureSound = ItemUseFailureCueFinder.Object;
+	}
 }
 
 void ACharacterBase::PossessedBy(AController* NewController)
@@ -308,6 +322,7 @@ void ACharacterBase::OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> I
 		UE_LOG(LogTemp, Warning, TEXT("Failed to Cast Item Ability"));
 		return;
 	}
+	UGameplayStatics::PlaySound2D(GetWorld(), ItemPickupSound);
 
 	// for potion - prevent removing current item
 	if (Ability->ActivateAbilityOnGranted)
@@ -341,16 +356,17 @@ void ACharacterBase::UseItem()
 
 	UE_LOG(LogTemp, Log, TEXT("UseItem Called"));
 
+	if (!HasItem)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), ItemUseFailureSound);
+		UE_LOG(LogTemp, Warning, TEXT("Tried using item without actual item"));
+		return;
+	}
+
 	if (GetLocalRole() < ROLE_Authority)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Tried using item on client and called server-side function"));
 		Server_UseItem();
-		return;
-	}
-
-	if (!HasItem)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Tried using item without actual item"));
 		return;
 	}
 
