@@ -33,4 +33,6 @@ public:
 
 	void LocalInputConfirm() override;
 	void LocalInputCancel() override;
+
+	void ApplyCooldownReduceForSkills(float ReduceRate);
 };

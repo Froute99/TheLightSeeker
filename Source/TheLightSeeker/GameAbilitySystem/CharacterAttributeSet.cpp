@@ -53,6 +53,11 @@ void UCharacterAttributeSet::OnRep_AdditionalProjectiles(const FGameplayAttribut
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UCharacterAttributeSet, AdditionalProjectiles, OldValue);
 }
 
+void UCharacterAttributeSet::OnRep_CooldownReduceRate(const FGameplayAttributeData& OldValue)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UCharacterAttributeSet, CooldownReduceRate, OldValue);
+}
+
 void UCharacterAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -66,4 +71,5 @@ void UCharacterAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty
 	// DISABLE_REPLICATED_PROPERTY(UCharacterAttributeSet, MovementSpeed);
 	DISABLE_REPLICATED_PROPERTY(UCharacterAttributeSet, AttackSpeed);
 	DISABLE_REPLICATED_PROPERTY(UCharacterAttributeSet, AdditionalProjectiles);
+	DISABLE_REPLICATED_PROPERTY(UCharacterAttributeSet, CooldownReduceRate);
 }

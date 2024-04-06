@@ -2,6 +2,8 @@
 
 #include "CharacterGameplayAbility.h"
 #include "AbilitySystemComponent.h"
+#include "CharacterBase.h"
+#include "LightSeekerPlayerState.h"
 
 UCharacterGameplayAbility::UCharacterGameplayAbility()
 {
@@ -36,12 +38,25 @@ void UCharacterGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle H
 	UGameplayEffect* CooldownGE = GetCooldownGameplayEffect();
 	int32			 Level = GetAbilityLevel();
 	float			 Cooldown = CooldownDuration.GetValueAtLevel(Level);
+	float			 CooldownReduceRate = 0.0f;
+
+	if (ALightSeekerPlayerState* PS = Cast<ALightSeekerPlayerState>(ActorInfo->OwnerActor)) // confirmed owner is playerstate
+	{
+		CooldownReduceRate = PS->GetAttributeSet()->GetCooldownReduceRate();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("UCharacterGameplayAbility::OwnerActor to ALightSeekerPlayerState cast failed"));
+	}
 
 	if (CooldownGE && (Cooldown > 0.0f))
 	{
+		float					  FinalCooldown = Cooldown * (1.0f - CooldownReduceRate);
 		FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(CooldownGE->GetClass(), Level);
 		SpecHandle.Data.Get()->DynamicGrantedTags.AppendTags(CooldownTags);
-		SpecHandle.Data.Get()->SetSetByCallerMagnitude(CooldownTags.GetByIndex(0), CooldownDuration.GetValueAtLevel(Level));
-		ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, SpecHandle);
+		// RequestDirectParent(): Change tag "Data.Cooldown.SkillName" to "Data.Cooldown",
+		// so that the the can be matched with GE cooldown SetByCaller tag
+		SpecHandle.Data.Get()->SetSetByCallerMagnitude(CooldownTags.GetByIndex(0).RequestDirectParent(), FinalCooldown);
+		auto EffectHandle = ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, SpecHandle);
 	}
 }

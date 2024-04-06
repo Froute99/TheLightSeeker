@@ -7,7 +7,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "UI/PlayerHealthBarWidget.h"
 #include "PlayerHUD.h"
-
+#include "Components/Image.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 ALightSeekerPlayerState::ALightSeekerPlayerState()
@@ -51,6 +51,30 @@ float ALightSeekerPlayerState::GetMaxHealth() const
 int32 ALightSeekerPlayerState::GetCharacterLevel() const
 {
 	return FMath::Floor(AttributeSet->GetLevel());
+}
+
+void ALightSeekerPlayerState::RegisterQuickslotForCooldown(UImage* QuickSlotImage, FGameplayTag CooldownTag, FColor OverridingColor)
+{
+	UE_LOG(LogTemp, Warning, TEXT("DelegateValue0: %s"), *CooldownTag.ToString());
+	//FOnGameplayEffectTagCountChanged Delegate = AbilitySystemComponent->RegisterGameplayTagEvent(CooldownTag);
+	//Delegate.AddLambda([](FGameplayTag Tag, int32 val) {});
+	
+	AbilitySystemComponent->RegisterGameplayTagEvent(CooldownTag).AddLambda([QuickSlotImage, OverridingColor](FGameplayTag Tag, int32 val) {
+		if (QuickSlotImage && QuickSlotImage->GetColorAndOpacity() == FLinearColor::White)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("DelegateValue1: %i"), val);
+			QuickSlotImage->SetColorAndOpacity(OverridingColor);
+		}
+		else if (QuickSlotImage)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("DelegateValue2: %i"), val);
+			QuickSlotImage->SetColorAndOpacity(FLinearColor::White);
+		}
+		else 
+		{
+			UE_LOG(LogTemp, Warning, TEXT("DelegateValue3: %i"), val);
+		}
+		});
 }
 
 void ALightSeekerPlayerState::BeginPlay()

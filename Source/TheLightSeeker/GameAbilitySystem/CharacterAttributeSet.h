@@ -57,6 +57,10 @@ public:
 	FGameplayAttributeData AdditionalProjectiles;
 	ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, AdditionalProjectiles);
 
+	UPROPERTY(BlueprintReadOnly, Category = "CooldownReduceRate", ReplicatedUsing = OnRep_CooldownReduceRate)
+	FGameplayAttributeData CooldownReduceRate;
+	ATTRIBUTE_ACCESSORS(UCharacterAttributeSet, CooldownReduceRate);
+
 	UFUNCTION()
 	virtual void OnRep_Level(const FGameplayAttributeData& OldLevel);
 	UFUNCTION()
@@ -75,6 +79,8 @@ public:
 	virtual void OnRep_AttackSpeed(const FGameplayAttributeData& OldValue);
 	UFUNCTION()
 	virtual void OnRep_AdditionalProjectiles(const FGameplayAttributeData& OldValue);
+	UFUNCTION()
+	virtual void OnRep_CooldownReduceRate(const FGameplayAttributeData& OldValue);
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

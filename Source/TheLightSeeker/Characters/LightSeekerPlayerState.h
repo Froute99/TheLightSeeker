@@ -46,6 +46,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "PlayerState|Attributes")
 	int32 GetCharacterLevel() const;
 
+	UFUNCTION(BlueprintCallable)
+	void RegisterQuickslotForCooldown(class UImage* QuickSlotImage, FGameplayTag CooldownTag, FColor OverridingColor);
+
 protected:
 	UPROPERTY()
 	class UCharacterAbilitySystemComponent* AbilitySystemComponent;
