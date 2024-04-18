@@ -32,7 +32,7 @@ void ATrap::DestroySelf()
 {
 	for (auto Pair : EnemiesUnderEffect)
 	{
-		if (IsValid(Pair.Key))
+		if (IsValid(Pair.Key) && Pair.Key->GetAbilitySystemComponent())
 		{
 			Pair.Key->GetAbilitySystemComponent()->RemoveActiveGameplayEffect(Pair.Value);
 		}

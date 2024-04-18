@@ -35,7 +35,6 @@ void UCharacterAbilitySystemComponent::ApplyCooldownReduceForSkills(float Reduce
 	for (int i = 0; i < TagContainer.Num(); ++i)
 	{
 		FGameplayTag Tag = TagContainer.GetByIndex(i);
-		UE_LOG(LogTemp, Warning, TEXT("Tag found: %s"), *Tag.ToString());
 	}
 
 	for (const FActiveGameplayEffect& ActiveGE : &ActiveGameplayEffects)
@@ -43,7 +42,6 @@ void UCharacterAbilitySystemComponent::ApplyCooldownReduceForSkills(float Reduce
 		if (ActiveGE.Spec.DynamicGrantedTags.HasAny(CooldownTagContainer))
 		{
 			ActiveGameplayEffects.ModifyActiveEffectStartTime(ActiveGE.Handle, -ActiveGE.GetDuration() * ReduceRate);
-			UE_LOG(LogTemp, Warning, TEXT("ActiveGE Tag found: %s"), *ActiveGE.Spec.DynamicGrantedTags.ToString());
 		}
 	}
 }
