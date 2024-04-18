@@ -16,7 +16,6 @@ void ASkillPointItem::BeginPlay()
 
 void ASkillPointItem::OnPickup(ACharacterBase* Player)
 {
-	UE_LOG(LogTemp, Log, TEXT("SkillPoint Item used"));
 	if (ALightSeekerPlayerState* PS = Cast<ALightSeekerPlayerState>(Player->GetPlayerState()))
 	{
 		PS->SkillTreeComponent->IncreaseSkillPoint();

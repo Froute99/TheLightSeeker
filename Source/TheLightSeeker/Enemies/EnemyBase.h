@@ -14,6 +14,8 @@
  *   A Base class for all kind of enemies
  */
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEnemyOnDiedDelegateHandle);
+
 UCLASS()
 class THELIGHTSEEKER_API AEnemyBase : public ACharacter, public IAbilitySystemInterface
 {
@@ -41,6 +43,7 @@ public:
 	 ***********************************************/
 	UFUNCTION(BlueprintCallable)
 	void OnDied();
+	FEnemyOnDiedDelegateHandle OnDiedDelegateHandle;
 
 	UFUNCTION(BlueprintCallable)
 	void DropItem();
@@ -144,4 +147,14 @@ public:
 protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	class UWidgetComponent* HPBar;
+
+	// sound
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy|SFX")
+	class UAudioComponent* AudioComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy|SFX")
+	class USoundBase* DeathSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy|SFX")
+	class USoundBase* HitSound;
 };

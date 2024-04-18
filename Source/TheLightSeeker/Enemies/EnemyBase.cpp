@@ -11,6 +11,7 @@
 
 #include "UI/EnemyHPBarWidget.h"
 #include "Components/WidgetComponent.h"
+#include "Components/AudioComponent.h"
 
 AEnemyBase::AEnemyBase()
 {
@@ -29,6 +30,9 @@ AEnemyBase::AEnemyBase()
 	HPBar->SetupAttachment(RootComponent);
 
 	DeadTag = FGameplayTag::RequestGameplayTag("Enemy.Dead");
+
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	AudioComponent->SetupAttachment(RootComponent);
 }
 
 UBehaviorTree* AEnemyBase::GetBTAsset() const
@@ -90,13 +94,17 @@ float AEnemyBase::GetAttackRange() const
 
 void AEnemyBase::OnDied()
 {
-	UE_LOG(Enemy, Log, TEXT("OnDied Called"));
-
 	IsDying = true;
 	SetActorEnableCollision(false);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCharacterMovement()->GravityScale = 0.0f;
 	GetCharacterMovement()->Velocity = FVector(0);
+
+	if (AudioComponent->IsValidLowLevelFast() && DeathSound)
+	{
+		AudioComponent->SetSound(DeathSound);
+		AudioComponent->Play();
+	}
 
 	ASC->AddLooseGameplayTag(DeadTag);
 
@@ -156,6 +164,11 @@ void AEnemyBase::OnDied()
 		//int32 NumEffectsRemoved = AbilitySystemComponent->RemoveActiveEffectsWithTags(EffectTagsToRemove);
 		//
 		//AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
+	}
+
+	if (OnDiedDelegateHandle.IsBound())
+	{
+		OnDiedDelegateHandle.Broadcast();
 	}
 }
 
@@ -273,16 +286,24 @@ void AEnemyBase::OnHealthChanged(const FOnAttributeChangeData& Data)
 {
 	float Health = Data.NewValue;
 
-	// If the minion died, handle death
-	if (!IsAlive() && !IsDying)
-	{
-		OnDied();
-	}
-
+	// update HP Bar first
 	UEnemyHPBarWidget* HPBarWidget = Cast<UEnemyHPBarWidget>(HPBar->GetUserWidgetObject());
 	if (HPBarWidget)
 	{
 		HPBarWidget->SetHealth(Data.NewValue);
+	}
+
+	// If the minion died, handle death
+	if (!IsAlive() && !IsDying)
+	{
+		OnDied();
+		return;
+	}
+
+	if (AudioComponent->IsValidLowLevelFast() && HitSound)
+	{
+		AudioComponent->SetSound(HitSound);
+		AudioComponent->Play();
 	}
 }
 

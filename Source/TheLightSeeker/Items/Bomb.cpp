@@ -49,7 +49,6 @@ void ABomb::Explode()
 	TArray<FHitResult> HitResults;
 	GetWorld()->SweepMultiByChannel(HitResults, GetActorLocation(), GetActorLocation(), FQuat(), ECollisionChannel::ECC_Pawn, CollisionShape);
 
-	UE_LOG(LogTemp, Warning, TEXT("Bomb Explosion with Size: %i"), HitResults.Num());
 	for (FHitResult& Hit : HitResults)
 	{
 		AEnemyBase* Target = Cast<AEnemyBase>(Hit.GetActor());

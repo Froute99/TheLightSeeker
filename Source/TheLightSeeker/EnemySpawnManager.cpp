@@ -37,6 +37,9 @@ void AEnemySpawnManager::BeginPlay()
 			ItemDropTable[i].Weight = TotalWeight;
 		}
 	}
+
+	NumOfActiveEnemies = 0;
+	IsInCombat = false;
 }
 
 void AEnemySpawnManager::GiveItem(TObjectPtr<AEnemyBase> EnemyToSpawn)
@@ -70,12 +73,25 @@ void AEnemySpawnManager::ActivateActors(TArray<TObjectPtr<AEnemyBase>>& Enemies)
 	{
 		if (!EnemyToSpawn)
 			continue;
+
 		EnemyToSpawn->OnActivate();
+		EnemyToSpawn->OnDiedDelegateHandle.AddDynamic(this, &AEnemySpawnManager::DecreaseNumOfActiveEnemies);
+		
+		++NumOfActiveEnemies;
 
 		// some enemies might have fixed reward..
 		if (!EnemyToSpawn->Item)
 		{
 			GiveItem(EnemyToSpawn);
+		}
+	}
+
+	if (NumOfActiveEnemies > 0)
+	{
+		IsInCombat = true;
+		if (OnCombatStatusChangedDelegateHandle.IsBound())
+		{
+			OnCombatStatusChangedDelegateHandle.Broadcast(IsInCombat);
 		}
 	}
 }
@@ -100,10 +116,33 @@ void AEnemySpawnManager::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AAc
 		{
 			if (Info.Trigger == Trigger)
 			{
+				if (Info.IsLastStage)
+				{
+					IsLastStage = true;
+				}
+				
 				ActivateActors(Info.Enemies);
 				Info.Trigger->GetCollisionComponent()->OnComponentBeginOverlap.Clear();
 				Trigger->Destroy();
 			}
+		}
+	}
+}
+
+void AEnemySpawnManager::DecreaseNumOfActiveEnemies()
+{
+	--NumOfActiveEnemies;
+	if (NumOfActiveEnemies == 0)
+	{
+		IsInCombat = false;
+		
+		if (IsLastStage)
+		{
+			IsBossDefeatedDelegateHandle.Broadcast();
+		}
+		else
+		{
+			OnCombatStatusChangedDelegateHandle.Broadcast(IsInCombat);
 		}
 	}
 }

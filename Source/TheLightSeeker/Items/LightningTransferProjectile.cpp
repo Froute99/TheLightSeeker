@@ -37,7 +37,6 @@ void ALightningTransferProjectile::Tick(float DeltaTime)
 
 void ALightningTransferProjectile::OnBeginOverlap_Override(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Log, TEXT("%s() OnBeginOverlap_Override called for %s"), *FString(__FUNCTION__), *GetDebugName(OtherActor));
 
 	AEnemyBase* EnemyBase = Cast<AEnemyBase>(OtherActor);
 	if (!EnemyBase)
