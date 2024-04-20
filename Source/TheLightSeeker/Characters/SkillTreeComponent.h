@@ -20,7 +20,6 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	void IncreaseSkillPoint();
 
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -35,6 +34,9 @@ public:
 	bool IsAbilityAcquired(const FString& AbilityName);
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	void IncreaseSkillPoint();
+	int GetSkillPointNum() { return SkillPoints; }
 
 protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
