@@ -41,7 +41,6 @@ EBTNodeResult::Type UBTTask_TriggerAbilityByClass::ExecuteTask(UBehaviorTreeComp
 	}
 	else
 	{
-		UE_LOG(Enemy, Log, TEXT("Running Ability...."));
 		RunningAbility = Cast<UEnemyGameplayAbility>(ASC->GetAnimatingAbility());
 
 		TWeakObjectPtr<AActor> Target = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject("Target"));

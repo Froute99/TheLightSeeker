@@ -144,11 +144,16 @@ public:
 
 	void RemoveCharacterAbilities();
 
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	class UBoxComponent* MeleeAttackCollisionVolume;
+
 protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	class UWidgetComponent* HPBar;
 
-	// sound
+	/***********************************************
+	 * Sounds
+	 ***********************************************/
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy|SFX")
 	class UAudioComponent* AudioComponent;
 

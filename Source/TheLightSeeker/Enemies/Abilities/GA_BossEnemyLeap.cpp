@@ -7,6 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "AT_RotateToTarget.h"
 
 void UGA_BossEnemyLeap::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -43,6 +44,16 @@ void UGA_BossEnemyLeap::EventReceived(FGameplayTag EventTag, FGameplayEventData 
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.EndAbility")))
 	{
 		OnCompleted(EventTag, EventData);
+		return;
+	}
+
+	// stop rotation if needed
+	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.StopRotation")))
+	{
+		if (RotateTask && RotateTask->IsActive())
+		{
+			RotateTask->EndTask();
+		}
 		return;
 	}
 

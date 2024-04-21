@@ -7,6 +7,8 @@
 #include "LightSeekerPlayerState.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "AT_RotateToTarget.h"
+#include "Components/BoxComponent.h"
 
 void UGA_AssassinEnemyAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -47,6 +49,16 @@ void UGA_AssassinEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEven
 		return;
 	}
 
+	// stop rotation if needed
+	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.StopRotation")))
+	{
+		if (RotateTask && RotateTask->IsActive())
+		{
+			RotateTask->EndTask();
+		}
+		return;
+	}
+
 	if (GetOwningActorFromActorInfo()->GetLocalRole() == ROLE_Authority
 		&& EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.Enemy.StabAttack")))
 	{
@@ -55,36 +67,19 @@ void UGA_AssassinEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEven
 
 		if (EnemyBase)
 		{
-			FHitResult Out;
-			bool IsHitPlayer = GetWorld()->LineTraceSingleByChannel(Out,
-				EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetCapsuleComponent()->GetScaledCapsuleRadius() / 2.0f,
-				EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetAttackRange(),
-				ECollisionChannel::ECC_GameTraceChannel1);
+			TSet<AActor*> OverlappingActors;
+			EnemyBase->MeleeAttackCollisionVolume->GetOverlappingActors(OverlappingActors, ACharacterBase::StaticClass());
 
-			if(DrawAttackRange)
+			for (AActor* Actor : OverlappingActors)
 			{
-				UKismetSystemLibrary::DrawDebugLine(GetWorld(), EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetCapsuleComponent()->GetScaledCapsuleRadius() / 2.0f,
-					EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetAttackRange(), FLinearColor::Blue, 5.0f);
-				UKismetSystemLibrary::DrawDebugCapsule(GetWorld(), EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetCapsuleComponent()->GetScaledCapsuleRadius() / 2.0f, 50.0f, 50.0f, FRotator(), FLinearColor::Blue, 5.0f);
-				UKismetSystemLibrary::DrawDebugCapsule(GetWorld(), EnemyBase->GetActorLocation() + EnemyBase->GetActorForwardVector() * EnemyBase->GetAttackRange(), 50.0f, 50.0f, FRotator(), FLinearColor::Blue, 5.0f);
-			}
-
-			if (IsHitPlayer)
-			{
-				ACharacterBase* Player = Cast<ACharacterBase>(Out.GetActor());
-				if (Player)
+				if (ACharacterBase* Player = Cast<ACharacterBase>(Actor))
 				{
-					//UE_LOG(Enemy, Log, TEXT("Attack event player hit2"));
 					ALightSeekerPlayerState* PS = Cast<ALightSeekerPlayerState>(Player->GetPlayerState());
 
 					if (PS)
 					{
-						//UE_LOG(Enemy, Log, TEXT("Player HP before enemy attack: %f"), PS->GetHealth());
-
 						FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
-						PS->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
-
-						//UE_LOG(Enemy, Log, TEXT("Player HP after enemy attack: %f"), PS->GetHealth());
+						EnemyBase->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*DamageEffectSpecHandle.Data.Get(), PS->GetAbilitySystemComponent());
 					}
 				}
 			}

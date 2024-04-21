@@ -22,7 +22,6 @@ void ABossEnemy::OnHealthChanged(const FOnAttributeChangeData& Data)
 	{
 		return;
 	}
-	UE_LOG(Enemy, Warning, TEXT("Boss Max, Health: %f, %f"), AttributeSet->GetMaxHealth(), AttributeSet->GetHealth());
 	for (auto PS : PlayerStates)
 	{
 		PS->RepBossHealthBar(Data.NewValue, false);
@@ -52,8 +51,6 @@ void ABossEnemy::OnActivate()
 			PlayerStates.Add(PS);
 		}
 	}
-
-	UE_LOG(Enemy, Warning, TEXT("ABossEnemy::OnActivate PS num: %i"), PlayerStates.Num());
 }
 
 void ABossEnemy::OnDeactivate()

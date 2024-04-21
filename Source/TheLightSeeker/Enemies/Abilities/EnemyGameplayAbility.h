@@ -58,4 +58,6 @@ protected:
 	bool DrawAttackRange;
 
 	TWeakObjectPtr<AActor> AbilityTarget;
+
+	class UAT_RotateToTarget* RotateTask;
 };

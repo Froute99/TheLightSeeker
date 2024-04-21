@@ -21,4 +21,7 @@ public:
 protected:
 	UFUNCTION()
 	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "EnemyGameplayAbility")
+	TSubclassOf<UGameplayEffect> AdditionalDamageGameplayEffect;
 };

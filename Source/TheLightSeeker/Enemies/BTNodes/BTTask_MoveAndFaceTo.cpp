@@ -5,6 +5,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Enemies/EnemyBase.h"
 #include "AIController.h"
+#include "Tasks/AITask_MoveTo.h"
 
 UBTTask_MoveAndFaceTo::UBTTask_MoveAndFaceTo()
 {
@@ -49,6 +50,7 @@ bool UBTTask_MoveAndFaceTo::IsTaskDone(UBehaviorTreeComponent& OwnerComp) const
 
 	if (Distance > AttackRange)
 	{
+		UE_LOG(Enemy, Log, TEXT("BTTAsk: %f, %f"), Distance, AttackRange);
 		return false;
 	}
 
@@ -59,5 +61,14 @@ bool UBTTask_MoveAndFaceTo::IsTaskDone(UBehaviorTreeComponent& OwnerComp) const
 	float AngleInRadians = FMath::DegreesToRadians(AcceptableFaceAngleDiff);
 	float DotProductResult = FVector::DotProduct(ControllingPawn->GetActorForwardVector(), ToTarget);
 
-	return (DotProductResult >= 0.0f) && (cos(AngleInRadians) < DotProductResult);
+	UE_LOG(Enemy, Log, TEXT("BTTAsk2: %f, %f"), AngleInRadians, DotProductResult);
+	if ((DotProductResult >= 0.0f) && (cos(AngleInRadians) < DotProductResult))
+	{
+		return true;
+	}
+	else
+	{
+		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+		return false;
+	}
 }

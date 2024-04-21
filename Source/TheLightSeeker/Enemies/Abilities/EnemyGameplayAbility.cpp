@@ -56,7 +56,7 @@ void UEnemyGameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handl
 void UEnemyGameplayAbility::SetTargetReference(TWeakObjectPtr<AActor> Target)
 {
 	AbilityTarget = Target;
-	UAT_RotateToTarget* RotateTask = UAbilityTask::NewAbilityTask<UAT_RotateToTarget>(this);
+	RotateTask = UAbilityTask::NewAbilityTask<UAT_RotateToTarget>(this);
 	RotateTask->Target = AbilityTarget;
 	RotateTask->ReadyForActivation();
 }

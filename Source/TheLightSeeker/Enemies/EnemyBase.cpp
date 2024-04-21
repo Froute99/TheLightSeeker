@@ -5,6 +5,7 @@
 #include "CharacterAbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/BoxComponent.h"
 #include "Items/Item.h"
 #include "AIController.h"
 #include "BrainComponent.h"
@@ -33,6 +34,9 @@ AEnemyBase::AEnemyBase()
 
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 	AudioComponent->SetupAttachment(RootComponent);
+
+	MeleeAttackCollisionVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("AttackCollision"));
+	MeleeAttackCollisionVolume->SetupAttachment(RootComponent);
 }
 
 UBehaviorTree* AEnemyBase::GetBTAsset() const

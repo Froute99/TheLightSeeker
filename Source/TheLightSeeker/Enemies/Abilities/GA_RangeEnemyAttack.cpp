@@ -10,6 +10,7 @@
 #include "RangeEnemyProjectile.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "AT_RotateToTarget.h"
 
 void UGA_RangeEnemyAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -48,6 +49,16 @@ void UGA_RangeEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.EndAbility")))
 	{
 		OnCompleted(EventTag, EventData);
+		return;
+	}
+
+	// stop rotation if needed
+	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.StopRotation")))
+	{
+		if (RotateTask && RotateTask->IsActive())
+		{
+			RotateTask->EndTask();
+		}
 		return;
 	}
 
