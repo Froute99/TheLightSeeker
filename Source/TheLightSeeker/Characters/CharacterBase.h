@@ -194,4 +194,10 @@ public:
 
 	int CurrentUsingAbilityIndex;
 	int MaxAbilityNum = 3;
+
+	UFUNCTION(BlueprintCallable)
+	void IncreaseSkillPoint();
+	UFUNCTION(BlueprintCallable)
+	int GetSkillPointNum();
+
 };

@@ -448,6 +448,16 @@ void ACharacterBase::UpdateBossHealthBar(float CurrentHealth)
 	}
 }
 
+void ACharacterBase::IncreaseSkillPoint()
+{
+	SkillTreeComponent->IncreaseSkillPoint();
+}
+
+int ACharacterBase::GetSkillPointNum()
+{
+	return SkillTreeComponent->GetSkillPointNum();
+}
+
 void ACharacterBase::UseAbility(int Index)
 {
 	if (Index <= 0 || Index > MaxAbilityNum)
