@@ -21,8 +21,14 @@ protected:
 	UFUNCTION()
 	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Leap Motion")
 	float LeapDuration;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Impact")
+	float ImpactRange;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Impact")
+	float MaxImpactForce;
 
 	FVector TargetLocation;
 };

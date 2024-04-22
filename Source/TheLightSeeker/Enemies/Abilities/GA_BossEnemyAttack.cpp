@@ -75,15 +75,15 @@ void UGA_BossEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 			static FVector	   BoxExtent(5.f, 50.f, 200.f);
 
 			TArray<FHitResult> OutHits;
-			bool IsHitPlayer = GetWorld()->SweepMultiByChannel(OutHits, Start, End, FQuat(),
+			bool			   IsHitPlayer = GetWorld()->SweepMultiByChannel(OutHits, Start, End, EnemyBase->GetControlRotation().Quaternion(),
 				ECollisionChannel::ECC_GameTraceChannel1,
 				FCollisionShape::MakeBox(FVector3f(BoxExtent.X, BoxExtent.Y, BoxExtent.Z)));
 
 			if (DrawAttackRange)
 			{
 				// DEBUG
-				UKismetSystemLibrary::DrawDebugBox(GetWorld(), Start, BoxExtent, FLinearColor::Blue, FRotator::ZeroRotator, 5.0f);
-				UKismetSystemLibrary::DrawDebugBox(GetWorld(), End, BoxExtent, FLinearColor::Blue, FRotator::ZeroRotator, 5.0f);
+				UKismetSystemLibrary::DrawDebugBox(GetWorld(), Start, BoxExtent, FLinearColor::Blue, EnemyBase->GetControlRotation(), 5.0f);
+				UKismetSystemLibrary::DrawDebugBox(GetWorld(), End, BoxExtent, FLinearColor::Blue, EnemyBase->GetControlRotation(), 5.0f);
 				UKismetSystemLibrary::DrawDebugLine(GetWorld(), Start, End, FLinearColor::Blue, 5.0f);
 			}
 

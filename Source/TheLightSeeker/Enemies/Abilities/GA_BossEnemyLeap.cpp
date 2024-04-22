@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "AT_RotateToTarget.h"
+#include "LightSeekerPlayerState.h"
 
 void UGA_BossEnemyLeap::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -66,11 +67,6 @@ void UGA_BossEnemyLeap::EventReceived(FGameplayTag EventTag, FGameplayEventData 
 		if (AbilityTarget.IsValid())
 		{
 			TargetLocation = AbilityTarget->GetActorLocation();
-			UE_LOG(Enemy, Log, TEXT("Successfully set targetd location in event"));
-		}
-		else
-		{
-			UE_LOG(Enemy, Log, TEXT("test: %s"), *AActor::GetDebugName(AbilityTarget.Get()));
 		}
 
 		FVector						 LeapVelocity = (TargetLocation - CurrentLocation) / LeapDuration;
@@ -85,5 +81,43 @@ void UGA_BossEnemyLeap::EventReceived(FGameplayTag EventTag, FGameplayEventData 
 	{
 		UCharacterMovementComponent* EnemyCharacterMovement = Cast<ACharacter>(GetOwningActorFromActorInfo())->GetCharacterMovement();
 		EnemyCharacterMovement->Velocity = FVector::ZeroVector;
+	}
+
+	if (GetOwningActorFromActorInfo()->GetLocalRole() == ROLE_Authority
+		&& EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.Enemy.Boss.Leap.Landing")))
+	{
+		UE_LOG(Enemy, Log, TEXT("Event called"));
+		GetActorInfo().AbilitySystemComponent->ExecuteGameplayCue(FGameplayTag::RequestGameplayTag(FName("GameplayCue.Enemy.Leap.Landing")));
+
+		TWeakObjectPtr<AEnemyBase> EnemyBase = Cast<AEnemyBase>(GetActorInfo().AvatarActor);
+		if (EnemyBase.IsValid())
+		{
+			FVector			ImpactPoint = EnemyBase->GetActorLocation() - FVector(0.f, 0.f, EnemyBase->GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+			FCollisionShape CollisionShape;
+			CollisionShape.SetSphere(ImpactRange);
+
+			TArray<FOverlapResult> OverlapResults;
+			GetWorld()->OverlapMultiByChannel(OverlapResults, ImpactPoint, FQuat(), ECollisionChannel::ECC_GameTraceChannel1, CollisionShape);
+
+			for (FOverlapResult OverlapResult : OverlapResults)
+			{
+				if (ACharacterBase* Player = Cast<ACharacterBase>(OverlapResult.GetActor()))
+				{
+					if (ALightSeekerPlayerState* PS = Cast<ALightSeekerPlayerState>(Player->GetPlayerState()))
+					{
+						FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
+						EnemyBase->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*DamageEffectSpecHandle.Data.Get(), PS->GetAbilitySystemComponent());
+
+						// Apply Knockback to player
+						Player->GetMovementComponent()->AddRadialImpulse(ImpactPoint, ImpactRange, MaxImpactForce, ERadialImpulseFalloff::RIF_Linear, true);
+					}
+				}
+			}
+
+			if (DrawAttackRange)
+			{
+				DrawDebugSphere(GetWorld(), ImpactPoint, ImpactRange, 32, FColor::Blue, false, 2.0f);
+			}
+		}
 	}
 }
