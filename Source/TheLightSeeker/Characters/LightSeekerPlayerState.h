@@ -47,7 +47,7 @@ public:
 	int32 GetCharacterLevel() const;
 
 	UFUNCTION(BlueprintCallable)
-	void RegisterQuickslotForCooldown(class UImage* QuickSlotImage, FGameplayTag CooldownTag, FColor OverridingColor);
+	void RegisterQuickslotForCooldown(class UImage* QuickSlotImage, UImage* QuickSlotHighlighterImage, FGameplayTag CooldownTag, FColor OverridingColor);
 
 protected:
 	UPROPERTY()

@@ -53,25 +53,34 @@ int32 ALightSeekerPlayerState::GetCharacterLevel() const
 	return FMath::Floor(AttributeSet->GetLevel());
 }
 
-void ALightSeekerPlayerState::RegisterQuickslotForCooldown(UImage* QuickSlotImage, FGameplayTag CooldownTag, FColor OverridingColor)
+void ALightSeekerPlayerState::RegisterQuickslotForCooldown(UImage* QuickSlotImage, UImage* QuickSlotHighlighterImage, FGameplayTag CooldownTag, FColor OverridingColor)
 {
-	//FOnGameplayEffectTagCountChanged Delegate = AbilitySystemComponent->RegisterGameplayTagEvent(CooldownTag);
-	//Delegate.AddLambda([](FGameplayTag Tag, int32 val) {});
-	
-	AbilitySystemComponent->RegisterGameplayTagEvent(CooldownTag).AddLambda([QuickSlotImage, OverridingColor](FGameplayTag Tag, int32 val) {
+	// FOnGameplayEffectTagCountChanged Delegate = AbilitySystemComponent->RegisterGameplayTagEvent(CooldownTag);
+	// Delegate.AddLambda([](FGameplayTag Tag, int32 val) {});
+
+	AbilitySystemComponent->RegisterGameplayTagEvent(CooldownTag).AddLambda([this, QuickSlotImage, QuickSlotHighlighterImage, OverridingColor](FGameplayTag Tag, int32 val) {
 		if (QuickSlotImage && QuickSlotImage->GetColorAndOpacity() == FLinearColor::White)
 		{
 			QuickSlotImage->SetColorAndOpacity(OverridingColor);
 		}
-		else if (QuickSlotImage)
+		else if (QuickSlotImage && QuickSlotHighlighterImage)
 		{
 			QuickSlotImage->SetColorAndOpacity(FLinearColor::White);
+			QuickSlotHighlighterImage->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+
+			// Set timer for highlighter
+			FTimerHandle TimerHandle;
+			GetWorld()->GetTimerManager().SetTimer(
+				TimerHandle, [QuickSlotHighlighterImage]() {
+					QuickSlotHighlighterImage->SetVisibility(ESlateVisibility::Hidden);
+				},
+				0.5f, false);
 		}
-		else 
+		else
 		{
 			UE_LOG(LogTemp, Warning, TEXT("%s: RegisterQuickslotForCooldown could not work"), FString(__FUNCTION__));
 		}
-		});
+	});
 }
 
 void ALightSeekerPlayerState::BeginPlay()
