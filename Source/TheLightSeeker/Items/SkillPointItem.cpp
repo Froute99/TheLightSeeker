@@ -16,14 +16,7 @@ void ASkillPointItem::BeginPlay()
 
 void ASkillPointItem::OnPickup(ACharacterBase* Player)
 {
-	if (ALightSeekerPlayerState* PS = Cast<ALightSeekerPlayerState>(Player->GetPlayerState()))
-	{
-		PS->SkillTreeComponent->IncreaseSkillPoint();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Log, TEXT("Skillpoint item : PS not available"));
-	}
+	Player->SkillTreeComponent->IncreaseSkillPoint();
 }
 
 void ASkillPointItem::OnBeginOverlap_Skillpoint(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

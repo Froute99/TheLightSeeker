@@ -9,6 +9,7 @@
 #include "PlayerHUD.h"
 #include "Components/Image.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "SkillTreeComponent.h"
 
 ALightSeekerPlayerState::ALightSeekerPlayerState()
 {
@@ -16,6 +17,8 @@ ALightSeekerPlayerState::ALightSeekerPlayerState()
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
+	SkillTreeComponent = CreateDefaultSubobject<USkillTreeComponent>(TEXT("SkillTree"));
+	
 	AttributeSet = CreateDefaultSubobject<UCharacterAttributeSet>(TEXT("AttributeSet"));
 
 	NetUpdateFrequency = 100.0f;

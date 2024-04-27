@@ -63,7 +63,7 @@ public:
 	TWeakObjectPtr<class UCharacterAttributeSet> AttributeSet;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Abilities")
-	class USkillTreeComponent* SkillTreeComponent;
+	TWeakObjectPtr<class USkillTreeComponent> SkillTreeComponent;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Abilities")
 	TArray<TSubclassOf<class UCharacterGameplayAbility>> CharacterAbilities;
