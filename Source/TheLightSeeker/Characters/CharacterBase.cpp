@@ -530,4 +530,10 @@ void ACharacterBase::Dodge()
 void ACharacterBase::Die()
 {
 	UKismetSystemLibrary::PrintString(GetWorld(), FString("You died"), true, false, FColor::Red);
+
+	IsDead = true;
+	DisableInput(Cast<APlayerController>(GetController()));
+
+	// Call event in Game Mode, spawn grave
+
 }

@@ -200,4 +200,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	int GetSkillPointNum();
 
+
+	UPROPERTY(BlueprintReadWrite)
+	bool IsDead = false;
+
 };
