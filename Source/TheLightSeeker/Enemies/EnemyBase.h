@@ -42,7 +42,8 @@ public:
 	 * Death & Item Drop
 	 ***********************************************/
 	UFUNCTION(BlueprintCallable)
-	void OnDied();
+	virtual void OnDied();
+
 	FEnemyOnDiedDelegateHandle OnDiedDelegateHandle;
 
 	UFUNCTION(BlueprintCallable)

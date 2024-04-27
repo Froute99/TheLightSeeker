@@ -10,7 +10,7 @@ public class TheLightSeeker : ModuleRules
 
 		PublicDependencyModuleNames.AddRange(new string[] {
 			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput",
-			"GameplayAbilities", "GameplayTags", "GameplayTasks",
+			"GameplayAbilities", "GameplayTags", "GameplayTasks", "GeometryCollectionEngine",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {
