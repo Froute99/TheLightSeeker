@@ -18,4 +18,6 @@ class THELIGHTSEEKER_API AEliteEnemy : public AEnemyBase
 
 public:
 	AEliteEnemy();
+
+	virtual void DropItem() override;
 };

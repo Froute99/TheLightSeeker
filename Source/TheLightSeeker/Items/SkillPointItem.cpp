@@ -30,9 +30,15 @@ void ASkillPointItem::OnBeginOverlap_Skillpoint(UPrimitiveComponent* OverlappedC
 {
 	if (GetLocalRole() != ROLE_Authority)
 		return;
-
+	
 	if (ACharacterBase* Player = Cast<ACharacterBase>(OtherActor))
 	{
+		if (GetNetOwner() != Player->GetController())
+		{
+			UE_LOG(LogTemp, Log, TEXT("Controller not matching. player: %s, item: %s"), *GetDebugName(Player->GetController()), *GetDebugName(GetNetOwner()));
+			return;
+		}
+
 		OnPickup(Player);
 	}
 	Destroy();

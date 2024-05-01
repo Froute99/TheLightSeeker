@@ -47,7 +47,7 @@ public:
 	FEnemyOnDiedDelegateHandle OnDiedDelegateHandle;
 
 	UFUNCTION(BlueprintCallable)
-	void DropItem();
+	virtual void DropItem();
 
 	UFUNCTION(BlueprintCallable)
 	void FinishDying();

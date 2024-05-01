@@ -50,27 +50,4 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float RotationRate;
-
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	// class UBoxComponent* BaseHeight;
-	//
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	// class USphereComponent* PickupCollision;
-
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
-	// float Height;
-	//
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
-	// float PickupRange;
-	//
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
-	// float FloatingRange;
-	//
-	///* Floating Rate per second */
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
-	// float FloatingSpeed;
-	//
-	///* Rotation Rate per second in degree */
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Item|Movement")
-	// float RotationRate;
 };

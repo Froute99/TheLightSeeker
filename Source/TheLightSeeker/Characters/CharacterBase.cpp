@@ -356,17 +356,18 @@ void ACharacterBase::UseItem()
 
 	UE_LOG(LogTemp, Log, TEXT("UseItem Called"));
 
-	if (!HasItem)
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ItemUseFailureSound);
-		UE_LOG(LogTemp, Warning, TEXT("Tried using item without actual item"));
-		return;
-	}
 
 	if (GetLocalRole() < ROLE_Authority)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Tried using item on client and called server-side function"));
 		Server_UseItem();
+		return;
+	}
+
+	if (!HasItem)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), ItemUseFailureSound);
+		UE_LOG(LogTemp, Warning, TEXT("Tried using item without actual item"));
 		return;
 	}
 
