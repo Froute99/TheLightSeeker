@@ -351,23 +351,18 @@ void ACharacterBase::OnPickupItem(TSubclassOf<class UCharacterGameplayAbility> I
 
 void ACharacterBase::UseItem()
 {
-	// if (!HasItem || GetLocalRole() != ROLE_Authority)
-	//	return;
-
 	UE_LOG(LogTemp, Log, TEXT("UseItem Called"));
 
-
-	if (GetLocalRole() < ROLE_Authority)
+	if (GetLocalRole() != ROLE_Authority)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Tried using item on client and called server-side function"));
 		Server_UseItem();
 		return;
 	}
 
 	if (!HasItem)
 	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ItemUseFailureSound);
 		UE_LOG(LogTemp, Warning, TEXT("Tried using item without actual item"));
+		Client_OnUseItemFailed();
 		return;
 	}
 
@@ -376,6 +371,7 @@ void ACharacterBase::UseItem()
 		UE_LOG(LogTemp, Warning, TEXT("Tried using item with invalid spechandle"));
 		return;
 	}
+
 	//bool Succeed = ASC->TryActivateAbility(ItemAbilityHandle, false);
 
 	bool Succeed = ASC->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("Ability.Player.Item"))));
@@ -412,6 +408,11 @@ void ACharacterBase::Client_UpdateItemUI_Implementation(UTexture2D* Texture)
 	{
 		ItemWidget->ClearIcon();
 	}
+}
+
+void ACharacterBase::Client_OnUseItemFailed_Implementation()
+{
+	UGameplayStatics::PlaySound2D(GetWorld(), ItemUseFailureSound);
 }
 
 void ACharacterBase::UpdateHealthBar()

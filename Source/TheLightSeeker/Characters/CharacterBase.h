@@ -160,6 +160,9 @@ public:
 	UFUNCTION(Client, Reliable)
 	void Client_UpdateItemUI(UTexture2D* Texture);
 
+	UFUNCTION(Client, Reliable)
+	void Client_OnUseItemFailed();
+
 	FGameplayAbilitySpecHandle ItemAbilityHandle;
 
 	USoundBase* ItemPickupSound;
