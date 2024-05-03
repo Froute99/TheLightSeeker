@@ -34,21 +34,22 @@ protected:
 
 	virtual void InitializeAttributes();
 
-	void		 OnHealthChanged(const FOnAttributeChangeData& Data);
-	
-	void		 OnDied();
+public:
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	class UWidgetComponent* HPBar;
 
-	float GetHealth() const;
-
 	FDelegateHandle HealthChangedDelegateHandle;
 
-	bool IsAlive() const;
+	float GetHealth() const;
 
-public:
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	bool  IsAlive() const;
+
+	void  OnHealthChanged(const FOnAttributeChangeData& Data);
+
+	void OnDied();
 
 	UPROPERTY(EditAnywhere, Category = "Entrance")
 	UGeometryCollectionComponent* GeometryCollection;
@@ -58,4 +59,13 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Entrance")
 	class USoundBase* HitSound;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Entrance")
+	class USoundBase* DeathSound;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_PlaySound(USoundBase* SoundToPlay);
+
+	UFUNCTION(NetMultiCast, Reliable)
+	void Multicast_BreakGeometry();
 };

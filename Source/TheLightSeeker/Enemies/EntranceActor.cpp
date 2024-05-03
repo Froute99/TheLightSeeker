@@ -52,14 +52,7 @@ void AEntranceActor::OnDied()
 		return;
 	}
 
-	if (GeometryCollection)
-	{
-		GeometryCollection->SetSimulatePhysics(true);
-		GeometryCollection->AddRadialImpulse(GetActorLocation(), 10.f, 100.f, ERadialImpulseFalloff::RIF_Constant);
-		//GeometryCollection->AddImpulse(FVector(10000.f, 0.f, 10000.f));
-	}
-
-	GetStaticMeshComponent()->SetHiddenInGame(true);
+	Multicast_BreakGeometry();
 
 	// timer for destroy actor
 	FTimerHandle SelfDestroyTimerHandle;
@@ -70,8 +63,33 @@ void AEntranceActor::OnDied()
 		}
 	});
 	GetWorld()->GetTimerManager().SetTimer(SelfDestroyTimerHandle, TimerDelegate, 3.0f, false);
+	Multicast_PlaySound(DeathSound);
 
 	// spanwer->notify
+}
+
+void AEntranceActor::Multicast_BreakGeometry_Implementation()
+{
+	UE_LOG(LogTemp, Log, TEXT("Client BreakGeometry called"));
+
+	if (GeometryCollection)
+	{
+		GetStaticMeshComponent()->SetHiddenInGame(true);
+		GetStaticMeshComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+		GeometryCollection->SetSimulatePhysics(true);
+		GeometryCollection->AddRadialImpulse(GetActorLocation(), 1000.f, 1000.f, ERadialImpulseFalloff::RIF_Constant);
+	}
+}
+
+void AEntranceActor::Multicast_PlaySound_Implementation(USoundBase* SoundToPlay)
+{
+	UE_LOG(LogTemp, Log, TEXT("Client playsound called"));
+	if (SoundToPlay)
+	{
+		AudioComponent->SetSound(SoundToPlay);
+		AudioComponent->Play();
+	}
 }
 
 void AEntranceActor::InitializeAttributes()
@@ -112,6 +130,11 @@ void AEntranceActor::InitializeAttributes()
 
 void AEntranceActor::OnHealthChanged(const FOnAttributeChangeData& Data)
 {
+	if (!IsAlive())
+	{
+		return;
+	}
+
 	float Health = Data.NewValue;
 
 	// update HP Bar first
@@ -127,7 +150,7 @@ void AEntranceActor::OnHealthChanged(const FOnAttributeChangeData& Data)
 		return;
 	}
 
-	AudioComponent->Play();
+	Multicast_PlaySound(DeathSound);
 }
 
 float AEntranceActor::GetHealth() const
