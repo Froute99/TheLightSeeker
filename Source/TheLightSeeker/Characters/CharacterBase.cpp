@@ -51,7 +51,7 @@ ACharacterBase::ACharacterBase()
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetMesh()->SetCollisionProfileName(FName("NoCollision"));
 
-	// SkillTreeComponent = CreateDefaultSubobject<USkillTreeComponent>(TEXT("SkillTree"));
+	//SkillTreeComponent = CreateDefaultSubobject<USkillTreeComponent>(TEXT("SkillTree"));
 
 	ConstructorHelpers::FObjectFinder<USoundCue> ItemPickupSoundCueFinder(TEXT("/Script/Engine.SoundCue'/Game/SoundCollection/UI/SFX_ItemPickup.SFX_ItemPickup'"));
 	if (ItemPickupSoundCueFinder.Succeeded())
@@ -77,6 +77,7 @@ void ACharacterBase::PossessedBy(AController* NewController)
 		AddStartupEffects();
 		AddCharacterAbilities();
 
+		SkillTreeComponent = PS->SkillTreeComponent;
 		// Binding event
 	}
 }
@@ -494,56 +495,51 @@ void ACharacterBase::UseAbility(int Index)
 
 void ACharacterBase::Ability1()
 {
-	ALightSeekerPlayerState* PS = GetPlayerState<ALightSeekerPlayerState>();
-	if (PS->SkillTreeComponent->AbilityList.Num() < 1)
+	if (SkillTreeComponent->AbilityList.Num() < 1)
 	{
 		UKismetSystemLibrary::PrintString(GetWorld(), FString("You didn't granted Ability1"), true, false, FColor::Red);
 		return;
 	}
 
-	ASC->TryActivateAbilityByClass(PS->SkillTreeComponent->AbilityList[0]);
+	ASC->TryActivateAbilityByClass(SkillTreeComponent->AbilityList[0]);
 }
 
 void ACharacterBase::Ability2()
 {
-	ALightSeekerPlayerState* PS = GetPlayerState<ALightSeekerPlayerState>();
-	if (PS->SkillTreeComponent->AbilityList.Num() < 2)
+	if (SkillTreeComponent->AbilityList.Num() < 2)
 	{
 		UKismetSystemLibrary::PrintString(GetWorld(), FString("You didn't granted Ability2"), true, false, FColor::Red);
 		return;
 	}
 
-	ASC->TryActivateAbilityByClass(PS->SkillTreeComponent->AbilityList[1]);
+	ASC->TryActivateAbilityByClass(SkillTreeComponent->AbilityList[1]);
 }
 
 void ACharacterBase::Ability3()
 {
-	ALightSeekerPlayerState* PS = GetPlayerState<ALightSeekerPlayerState>();
-	if (PS->SkillTreeComponent->AbilityList.Num() < 3)
+	if (SkillTreeComponent->AbilityList.Num() < 3)
 	{
 		UKismetSystemLibrary::PrintString(GetWorld(), FString("You didn't granted Ability3"), true, false, FColor::Red);
 		return;
 	}
 
-	ASC->TryActivateAbilityByClass(PS->SkillTreeComponent->AbilityList[2]);
+	ASC->TryActivateAbilityByClass(SkillTreeComponent->AbilityList[2]);
 }
 
 void ACharacterBase::Ability4()
 {
-	ALightSeekerPlayerState* PS = GetPlayerState<ALightSeekerPlayerState>();
-	if (PS->SkillTreeComponent->AbilityList.Num() < 4)
+	if (SkillTreeComponent->AbilityList.Num() < 4)
 	{
 		UKismetSystemLibrary::PrintString(GetWorld(), FString("You didn't granted Ability4"), true, false, FColor::Red);
 		return;
 	}
 
-	ASC->TryActivateAbilityByClass(PS->SkillTreeComponent->AbilityList[3]);
+	ASC->TryActivateAbilityByClass(SkillTreeComponent->AbilityList[3]);
 }
 
 void ACharacterBase::Dodge()
 {
-	ALightSeekerPlayerState* PS = GetPlayerState<ALightSeekerPlayerState>();
-	ASC->TryActivateAbilityByClass(PS->SkillTreeComponent->DodgeAbility);
+	ASC->TryActivateAbilityByClass(SkillTreeComponent->DodgeAbility);
 }
 
 void ACharacterBase::Die()
