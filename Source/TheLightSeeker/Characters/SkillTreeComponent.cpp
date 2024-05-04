@@ -18,10 +18,15 @@ void USkillTreeComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
-void USkillTreeComponent::IncreaseSkillPoint()
+void USkillTreeComponent::IncreaseSkillPoint_Implementation()
 {
 	++SkillPoints;
-	UE_LOG(LogTemp, Log, TEXT("Increased Character Skill Point"));
+}
+
+void USkillTreeComponent::SubtractSkillPoint_Implementation(int NumSkillPoint)
+{
+	SkillPoints -= NumSkillPoint;
+
 }
 
 // Called every frame
@@ -50,4 +55,5 @@ void USkillTreeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(USkillTreeComponent, AbilityList);
+	DOREPLIFETIME(USkillTreeComponent, SkillPoints);
 }

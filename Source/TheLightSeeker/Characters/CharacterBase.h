@@ -63,7 +63,7 @@ public:
 	TWeakObjectPtr<class UCharacterAttributeSet> AttributeSet;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Abilities")
-	class USkillTreeComponent* SkillTreeComponent;
+	TWeakObjectPtr<class USkillTreeComponent> SkillTreeComponent;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Abilities")
 	TArray<TSubclassOf<class UCharacterGameplayAbility>> CharacterAbilities;
@@ -198,9 +198,19 @@ public:
 	int CurrentUsingAbilityIndex;
 	int MaxAbilityNum = 3;
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(Client, Reliable, BlueprintCallable)
 	void IncreaseSkillPoint();
 	UFUNCTION(BlueprintCallable)
 	int GetSkillPointNum();
+
+
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void GrantAbility(TSubclassOf<class UGameplayAbility> AbilityClass);
+
+	UFUNCTION(Client, Reliable)
+	void RepSkillPointSubtract(class UCharacterAnimAbility* Ability, int SkillPoint);
+
+	UPROPERTY(BlueprintReadWrite)
+	bool IsDead = false;
 
 };

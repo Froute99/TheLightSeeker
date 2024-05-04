@@ -35,11 +35,15 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	UFUNCTION(Client, Reliable)
 	void IncreaseSkillPoint();
 	int GetSkillPointNum() { return SkillPoints; }
 
+	UFUNCTION(Client, Reliable)
+	void SubtractSkillPoint(int NumSkillPoint);
+
 protected:
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(Replicated, BlueprintReadWrite, EditAnywhere)
 	int SkillPoints = 0;
 
 };
