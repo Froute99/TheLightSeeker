@@ -15,6 +15,7 @@
 #include "CharacterAttributeSet.h"
 #include "CharacterAbilitySystemComponent.h"
 #include "Abilities/CharacterGameplayAbility.h"
+#include "Abilities/CharacterAnimAbility.h"
 
 #include "UI/ItemWidget.h"
 #include "Kismet/GameplayStatics.h"
@@ -27,7 +28,6 @@
 #include "PlayerHUD.h"
 #include "PlayerHealthBarWidget.h"
 #include "UI/EnemyHPBarWidget.h"
-
 
 // Sets default values
 ACharacterBase::ACharacterBase()
@@ -51,7 +51,7 @@ ACharacterBase::ACharacterBase()
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetMesh()->SetCollisionProfileName(FName("NoCollision"));
 
-	// SkillTreeComponent = CreateDefaultSubobject<USkillTreeComponent>(TEXT("SkillTree"));
+	//SkillTreeComponent = CreateDefaultSubobject<USkillTreeComponent>(TEXT("SkillTree"));
 
 	ConstructorHelpers::FObjectFinder<USoundCue> ItemPickupSoundCueFinder(TEXT("/Script/Engine.SoundCue'/Game/SoundCollection/UI/SFX_ItemPickup.SFX_ItemPickup'"));
 	if (ItemPickupSoundCueFinder.Succeeded())
@@ -77,6 +77,7 @@ void ACharacterBase::PossessedBy(AController* NewController)
 		AddStartupEffects();
 		AddCharacterAbilities();
 
+		SkillTreeComponent = PS->SkillTreeComponent;
 		// Binding event
 	}
 }
@@ -375,7 +376,7 @@ void ACharacterBase::UseItem()
 		UE_LOG(LogTemp, Warning, TEXT("Tried using item with invalid spechandle"));
 		return;
 	}
-	//bool Succeed = ASC->TryActivateAbility(ItemAbilityHandle, false);
+	// bool Succeed = ASC->TryActivateAbility(ItemAbilityHandle, false);
 
 	bool Succeed = ASC->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("Ability.Player.Item"))));
 	if (Succeed)
@@ -383,9 +384,9 @@ void ACharacterBase::UseItem()
 		HasItem = false;
 
 		// remove item ability from player
-		//ASC->ClearAbility(ItemAbilityHandle);
+		// ASC->ClearAbility(ItemAbilityHandle);
 		ItemAbilityHandle = FGameplayAbilitySpecHandle();
-		
+
 		Client_UpdateItemUI(nullptr);
 
 		UE_LOG(LogTemp, Log, TEXT("Activated Item"));
@@ -448,7 +449,7 @@ void ACharacterBase::UpdateBossHealthBar(float CurrentHealth)
 	}
 }
 
-void ACharacterBase::IncreaseSkillPoint()
+void ACharacterBase::IncreaseSkillPoint_Implementation()
 {
 	SkillTreeComponent->IncreaseSkillPoint();
 }
@@ -456,6 +457,25 @@ void ACharacterBase::IncreaseSkillPoint()
 int ACharacterBase::GetSkillPointNum()
 {
 	return SkillTreeComponent->GetSkillPointNum();
+}
+
+void ACharacterBase::GrantAbility_Implementation(TSubclassOf<UGameplayAbility> AbilityClass)
+{
+	UCharacterAnimAbility* CharacterAbility = Cast<UCharacterAnimAbility>(AbilityClass.GetDefaultObject());
+	if (!IsValid(CharacterAbility))
+		return;
+
+	FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 0, 0);	// Ignore level, inputID arguments
+	ASC->GiveAbility(AbilitySpec);
+
+	UKismetSystemLibrary::PrintString(GetWorld(), FString::FromInt(SkillTreeComponent->GetSkillPointNum()), true, false, FColor::Red);
+
+	SkillTreeComponent->SubtractSkillPoint(CharacterAbility->NumRequiredSkillPoint);
+}
+
+void ACharacterBase::RepSkillPointSubtract_Implementation(UCharacterAnimAbility* Ability, int SkillPoint)
+{
+	SkillTreeComponent->SubtractSkillPoint(Ability->NumRequiredSkillPoint);
 }
 
 void ACharacterBase::UseAbility(int Index)
@@ -475,59 +495,60 @@ void ACharacterBase::UseAbility(int Index)
 
 void ACharacterBase::Ability1()
 {
-	ALightSeekerPlayerState* PS = GetPlayerState<ALightSeekerPlayerState>();
-	if (PS->SkillTreeComponent->AbilityList.Num() < 1)
+	if (SkillTreeComponent->AbilityList.Num() < 1)
 	{
 		UKismetSystemLibrary::PrintString(GetWorld(), FString("You didn't granted Ability1"), true, false, FColor::Red);
 		return;
 	}
 
-	ASC->TryActivateAbilityByClass(PS->SkillTreeComponent->AbilityList[0]);
+	ASC->TryActivateAbilityByClass(SkillTreeComponent->AbilityList[0]);
 }
 
 void ACharacterBase::Ability2()
 {
-	ALightSeekerPlayerState* PS = GetPlayerState<ALightSeekerPlayerState>();
-	if (PS->SkillTreeComponent->AbilityList.Num() < 2)
+	if (SkillTreeComponent->AbilityList.Num() < 2)
 	{
 		UKismetSystemLibrary::PrintString(GetWorld(), FString("You didn't granted Ability2"), true, false, FColor::Red);
 		return;
 	}
 
-	ASC->TryActivateAbilityByClass(PS->SkillTreeComponent->AbilityList[1]);
+	ASC->TryActivateAbilityByClass(SkillTreeComponent->AbilityList[1]);
 }
 
 void ACharacterBase::Ability3()
 {
-	ALightSeekerPlayerState* PS = GetPlayerState<ALightSeekerPlayerState>();
-	if (PS->SkillTreeComponent->AbilityList.Num() < 3)
+	if (SkillTreeComponent->AbilityList.Num() < 3)
 	{
 		UKismetSystemLibrary::PrintString(GetWorld(), FString("You didn't granted Ability3"), true, false, FColor::Red);
 		return;
 	}
 
-	ASC->TryActivateAbilityByClass(PS->SkillTreeComponent->AbilityList[2]);
+	ASC->TryActivateAbilityByClass(SkillTreeComponent->AbilityList[2]);
 }
 
 void ACharacterBase::Ability4()
 {
-	ALightSeekerPlayerState* PS = GetPlayerState<ALightSeekerPlayerState>();
-	if (PS->SkillTreeComponent->AbilityList.Num() < 4)
+	if (SkillTreeComponent->AbilityList.Num() < 4)
 	{
 		UKismetSystemLibrary::PrintString(GetWorld(), FString("You didn't granted Ability4"), true, false, FColor::Red);
 		return;
 	}
 
-	ASC->TryActivateAbilityByClass(PS->SkillTreeComponent->AbilityList[3]);
+	ASC->TryActivateAbilityByClass(SkillTreeComponent->AbilityList[3]);
 }
 
 void ACharacterBase::Dodge()
 {
-	ALightSeekerPlayerState* PS = GetPlayerState<ALightSeekerPlayerState>();
-	ASC->TryActivateAbilityByClass(PS->SkillTreeComponent->DodgeAbility);
+	ASC->TryActivateAbilityByClass(SkillTreeComponent->DodgeAbility);
 }
 
 void ACharacterBase::Die()
 {
 	UKismetSystemLibrary::PrintString(GetWorld(), FString("You died"), true, false, FColor::Red);
+
+	IsDead = true;
+	DisableInput(Cast<APlayerController>(GetController()));
+
+	// Call event in Game Mode, spawn grave
+
 }
