@@ -102,7 +102,14 @@ void ALightSeekerPlayerState::BeginPlay()
 void ALightSeekerPlayerState::HealthChanged(const FOnAttributeChangeData& Data)
 {
 	UE_LOG(LogTemp, Log, TEXT("%s : Player Health Changed"), *FString(__FUNCTION__));
+	UE_LOG(LogTemp, Log, TEXT("%f"), GetHealth());
 
+	if (GetHealth() <= 0.0f)
+	{
+		APlayerController* PC = GetPlayerController();
+		ACharacterBase*	   Character = Cast<ACharacterBase>(PC->GetPawn());
+		Character->Die();
+	}
 	// UPlayerHealthBarWidget* HealthBar = nullptr;
 	// HealthBar = Cast<ACharacterBase>(GetPlayerController()->GetPawn())->HealthBar;
 	RepHealthBar(Data.NewValue);

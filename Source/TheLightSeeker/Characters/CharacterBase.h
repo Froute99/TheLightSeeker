@@ -207,4 +207,7 @@ public:
 	UFUNCTION(Client, Reliable)
 	void RepSkillPointSubtract(class UCharacterAnimAbility* Ability, int SkillPoint);
 
+	UPROPERTY(BlueprintReadWrite)
+	bool IsDead = false;
+
 };
