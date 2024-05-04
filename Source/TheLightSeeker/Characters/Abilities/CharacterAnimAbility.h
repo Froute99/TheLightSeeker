@@ -46,4 +46,7 @@ public:
 	FGameplayTag AnimDoneTag;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Tags")
 	FGameplayTag AnimTriggerTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Property")
+	int NumRequiredSkillPoint = 1;
 };

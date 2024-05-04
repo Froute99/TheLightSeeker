@@ -15,6 +15,7 @@
 #include "CharacterAttributeSet.h"
 #include "CharacterAbilitySystemComponent.h"
 #include "Abilities/CharacterGameplayAbility.h"
+#include "Abilities/CharacterAnimAbility.h"
 
 #include "UI/ItemWidget.h"
 #include "Kismet/GameplayStatics.h"
@@ -27,7 +28,6 @@
 #include "PlayerHUD.h"
 #include "PlayerHealthBarWidget.h"
 #include "UI/EnemyHPBarWidget.h"
-
 
 // Sets default values
 ACharacterBase::ACharacterBase()
@@ -375,7 +375,7 @@ void ACharacterBase::UseItem()
 		UE_LOG(LogTemp, Warning, TEXT("Tried using item with invalid spechandle"));
 		return;
 	}
-	//bool Succeed = ASC->TryActivateAbility(ItemAbilityHandle, false);
+	// bool Succeed = ASC->TryActivateAbility(ItemAbilityHandle, false);
 
 	bool Succeed = ASC->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("Ability.Player.Item"))));
 	if (Succeed)
@@ -383,9 +383,9 @@ void ACharacterBase::UseItem()
 		HasItem = false;
 
 		// remove item ability from player
-		//ASC->ClearAbility(ItemAbilityHandle);
+		// ASC->ClearAbility(ItemAbilityHandle);
 		ItemAbilityHandle = FGameplayAbilitySpecHandle();
-		
+
 		Client_UpdateItemUI(nullptr);
 
 		UE_LOG(LogTemp, Log, TEXT("Activated Item"));
@@ -448,7 +448,7 @@ void ACharacterBase::UpdateBossHealthBar(float CurrentHealth)
 	}
 }
 
-void ACharacterBase::IncreaseSkillPoint()
+void ACharacterBase::IncreaseSkillPoint_Implementation()
 {
 	SkillTreeComponent->IncreaseSkillPoint();
 }
@@ -456,6 +456,25 @@ void ACharacterBase::IncreaseSkillPoint()
 int ACharacterBase::GetSkillPointNum()
 {
 	return SkillTreeComponent->GetSkillPointNum();
+}
+
+void ACharacterBase::GrantAbility_Implementation(TSubclassOf<UGameplayAbility> AbilityClass)
+{
+	UCharacterAnimAbility* CharacterAbility = Cast<UCharacterAnimAbility>(AbilityClass.GetDefaultObject());
+	if (!IsValid(CharacterAbility))
+		return;
+
+	FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 0, 0);	// Ignore level, inputID arguments
+	ASC->GiveAbility(AbilitySpec);
+
+	UKismetSystemLibrary::PrintString(GetWorld(), FString::FromInt(SkillTreeComponent->GetSkillPointNum()), true, false, FColor::Red);
+
+	SkillTreeComponent->SubtractSkillPoint(CharacterAbility->NumRequiredSkillPoint);
+}
+
+void ACharacterBase::RepSkillPointSubtract_Implementation(UCharacterAnimAbility* Ability, int SkillPoint)
+{
+	SkillTreeComponent->SubtractSkillPoint(Ability->NumRequiredSkillPoint);
 }
 
 void ACharacterBase::UseAbility(int Index)
