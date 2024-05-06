@@ -52,6 +52,7 @@ void AEntranceActor::OnDied()
 		return;
 	}
 
+	IsDead = true;
 	Multicast_BreakGeometry();
 
 	// timer for destroy actor
@@ -127,10 +128,9 @@ void AEntranceActor::InitializeAttributes()
 	}
 
 }
-
 void AEntranceActor::OnHealthChanged(const FOnAttributeChangeData& Data)
 {
-	if (!IsAlive())
+	if (IsDead)
 	{
 		return;
 	}
@@ -150,7 +150,7 @@ void AEntranceActor::OnHealthChanged(const FOnAttributeChangeData& Data)
 		return;
 	}
 
-	Multicast_PlaySound(DeathSound);
+	Multicast_PlaySound(HitSound);
 }
 
 float AEntranceActor::GetHealth() const

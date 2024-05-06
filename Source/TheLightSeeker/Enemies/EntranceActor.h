@@ -46,6 +46,7 @@ protected:
 	float GetHealth() const;
 
 	bool  IsAlive() const;
+	bool IsDead;
 
 	void  OnHealthChanged(const FOnAttributeChangeData& Data);
 
