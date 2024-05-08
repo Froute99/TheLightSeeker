@@ -7,6 +7,7 @@
 #include "Components/WidgetComponent.h"
 #include "Components/AudioComponent.h"
 #include "GeometryCollection/GeometryCollectionComponent.h"
+#include "LevelGamemodeBase.h"
 
 AEntranceActor::AEntranceActor()
 {
@@ -67,6 +68,14 @@ void AEntranceActor::OnDied()
 	Multicast_PlaySound(DeathSound);
 
 	// spanwer->notify
+	if(ALevelGamemodeBase* GM = Cast<ALevelGamemodeBase>(GetWorld()->GetAuthGameMode()))
+	{
+		GM->SetGameStart();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed to access ALevelGamemodeBase from Entrance Actor"));
+	}
 }
 
 void AEntranceActor::Multicast_BreakGeometry_Implementation()
