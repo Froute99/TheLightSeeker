@@ -101,7 +101,16 @@ public:
 	void Ability4();
 	void Dodge();
 
+	UFUNCTION(NetMulticast, Reliable)
 	void Die();
+
+	void Revive();
+
+	UFUNCTION(Server, Reliable)
+	void Server_Revive();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void OnRevived();
 
 	bool IsDoingTargeting = false;
 
@@ -145,6 +154,9 @@ public:
 	class UInputAction* ConfirmAction;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 	class UInputAction* CancelAction;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	class UInputAction* ReviveAction;
 
 	/************************
 	 * Item
@@ -194,6 +206,13 @@ public:
 
 	UFUNCTION()
 	void UpdateBossHealthBar(float CurrentHealth);
+
+	void ToggleReviveStatus(bool CanRevive);
+	bool CanRevivePlayer;
+
+	// save info for reviving
+	ECollisionEnabled::Type CollisionEnabled;
+	float					GravityScale;
 
 	int CurrentUsingAbilityIndex;
 	int MaxAbilityNum = 3;

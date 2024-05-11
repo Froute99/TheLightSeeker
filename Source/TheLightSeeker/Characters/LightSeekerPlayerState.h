@@ -33,8 +33,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "PlayerState")
 	bool IsAlive() const;
 
-	// UFUNCTION(BlueprintCallable, Category = "PlayerState|Attributes")
-	// void ShowAbilityConfirmCancelText(bool ShowText);
+	void OnRevived();
+
+	bool IsDead;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Abilities")
 	class USkillTreeComponent* SkillTreeComponent;

@@ -22,6 +22,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetGameStart();
 
+	void OnPlayerDeath(TWeakObjectPtr<class ALightSeekerPlayerState> PS, FTransform Transform);
+
+	void OnPlayerRevive();
+
 protected:
 	UPROPERTY(EditAnywhere)
 	int32 MaxPlayerCount;
@@ -29,4 +33,9 @@ protected:
 	int32 CurrentPlayerCount;
 
 	bool HasGameStarted;
+
+	UPROPERTY(EditDefaultsOnly, Category = "PlayerInfo")
+	TSubclassOf<class ATombstone> TombstoneBP;
+
+	TWeakObjectPtr<class ATombstone> SpawnedTombstone;
 };
