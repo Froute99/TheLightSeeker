@@ -101,17 +101,6 @@ public:
 	void Ability4();
 	void Dodge();
 
-	UFUNCTION(NetMulticast, Reliable)
-	void Die();
-
-	void Revive();
-
-	UFUNCTION(Server, Reliable)
-	void Server_Revive();
-
-	UFUNCTION(NetMulticast, Reliable)
-	void OnRevived();
-
 	bool IsDoingTargeting = false;
 
 	/************************
@@ -207,12 +196,40 @@ public:
 	UFUNCTION()
 	void UpdateBossHealthBar(float CurrentHealth);
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class UUserWidget* ReviveInstructionWidget;
+
+	/************************
+	 * Dead & Revive
+	 ************************/
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Die();
+
+	void Revive(bool IsTriggered);
+
+	UFUNCTION(Server, Reliable)
+	void Server_Revive();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void OnRevived();
+
+	FTimerHandle ReviveCallTimerHandle;
+
 	void ToggleReviveStatus(bool CanRevive);
 	bool CanRevivePlayer;
 
-	// save info for reviving
+	UPROPERTY(EditDefaultsOnly)
+	float TimerForRevive;
+
+	// info for rollback status
 	ECollisionEnabled::Type CollisionEnabled;
 	float					GravityScale;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool IsDead = false;
+	
+
 
 	int CurrentUsingAbilityIndex;
 	int MaxAbilityNum = 3;
@@ -228,8 +245,4 @@ public:
 
 	UFUNCTION(Client, Reliable)
 	void RepSkillPointSubtract(class UCharacterAnimAbility* Ability, int SkillPoint);
-
-	UPROPERTY(BlueprintReadWrite)
-	bool IsDead = false;
-
 };

@@ -125,7 +125,6 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	EIC->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ACharacterBase::Attack);
 	EIC->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &ACharacterBase::Dodge);
 	EIC->BindAction(ItemAction, ETriggerEvent::Triggered, this, &ACharacterBase::UseItem);
-
 	EIC->BindAction(Skill1Action, ETriggerEvent::Triggered, this, &ACharacterBase::Ability1);
 	EIC->BindAction(Skill2Action, ETriggerEvent::Triggered, this, &ACharacterBase::Ability2);
 	EIC->BindAction(Skill3Action, ETriggerEvent::Triggered, this, &ACharacterBase::Ability3);
@@ -135,7 +134,8 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	EIC->BindAction(CancelAction, ETriggerEvent::Triggered, ASC.Get(), &UCharacterAbilitySystemComponent::LocalInputCancel);
 
 	// temp: triggered. holding으로 변경해야함
-	EIC->BindAction(ReviveAction, ETriggerEvent::Triggered, this, &ACharacterBase::Revive);
+	EIC->BindAction(ReviveAction, ETriggerEvent::Triggered, this, &ACharacterBase::Revive, true);
+	EIC->BindAction(ReviveAction, ETriggerEvent::Completed, this, &ACharacterBase::Revive, false);
 
 	ULocalPlayer* LocalPlayer = PC->GetLocalPlayer();
 
@@ -574,27 +574,49 @@ void ACharacterBase::Die_Implementation()
 
 void ACharacterBase::ToggleReviveStatus(bool CanRevive)
 {
-	CanRevivePlayer = CanRevive;
-}
-
-void ACharacterBase::Revive()
-{
-	UE_LOG(LogTemp, Log, TEXT("Character Revive called"));
-	if (CanRevivePlayer)
+	if (IsDead)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Character Revive called3"));
-		Server_Revive();
+		return;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("ACharacterBase::Revive called %i"), CanRevive);
+	CanRevivePlayer = CanRevive;
+	if (ReviveInstructionWidget)
+	{
+		ReviveInstructionWidget->SetVisibility(CanRevive ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::Hidden);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("Character Revive called4"));
+		UE_LOG(LogTemp, Warning, TEXT("ACharacterBase::Revive Instruction widget is not registered"));
+	}
+}
+
+void ACharacterBase::Revive(bool IsTriggered)
+{
+	if (CanRevivePlayer)
+	{
+		//Server_Revive();
+
+		if (IsTriggered)
+		{
+			FTimerDelegate TimerDelegate = FTimerDelegate::CreateLambda([this]() {
+				if (this)
+				{
+					this->Server_Revive();
+				}
+			});
+
+			GetWorld()->GetTimerManager().SetTimer(ReviveCallTimerHandle, TimerDelegate, TimerForRevive, false);
+		}
+		else
+		{
+			GetWorld()->GetTimerManager().ClearTimer(ReviveCallTimerHandle);
+		}
 	}
 }
 
 void ACharacterBase::Server_Revive_Implementation()
 {
-	UE_LOG(LogTemp, Log, TEXT("Character Server Revive called"));
-
 	if (ALevelGamemodeBase* GameMode = Cast<ALevelGamemodeBase>(GetWorld()->GetAuthGameMode()))
 	{
 		GameMode->OnPlayerRevive();
