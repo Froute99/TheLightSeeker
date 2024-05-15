@@ -26,11 +26,12 @@ EBTNodeResult::Type UBTTask_SetTarget::ExecuteTask(UBehaviorTreeComponent& Owner
 
 		// Set random target
 		TArray<TObjectPtr<APlayerState>> Players;
-		int								 TotalPlayerNum = GetWorld()->GetGameState()->PlayerArray.Num();
+		TArray<TObjectPtr<APlayerState>>& PlayerArray = GetWorld()->GetGameState()->PlayerArray;
+		int								  TotalPlayerNum = PlayerArray.Num();
 
 		for (int i = 0; i < TotalPlayerNum; ++i)	
 		{
-			if (GetWorld()->GetGameState()->PlayerArray[i]->GetPlayerController())
+			if (PlayerArray[i]->GetPlayerController() && Cast<ALightSeekerPlayerState>(PlayerArray[i])->IsAlive())
 			{
 				Players.Add(GetWorld()->GetGameState()->PlayerArray[i]);
 			}

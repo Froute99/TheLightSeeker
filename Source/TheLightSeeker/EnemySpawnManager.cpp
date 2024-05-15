@@ -11,6 +11,8 @@
 // Sets default values
 AEnemySpawnManager::AEnemySpawnManager()
 {
+	TotalWeight = 0;
+	IsLastStage = false;
 }
 
 // Called when the game starts or when spawned

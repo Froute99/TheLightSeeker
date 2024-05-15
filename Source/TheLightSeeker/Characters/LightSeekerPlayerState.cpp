@@ -10,6 +10,8 @@
 #include "Components/Image.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "SkillTreeComponent.h"
+#include "Characters/Tombstone.h"
+#include "LevelGamemodeBase.h"
 
 ALightSeekerPlayerState::ALightSeekerPlayerState()
 {
@@ -18,12 +20,14 @@ ALightSeekerPlayerState::ALightSeekerPlayerState()
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
 	SkillTreeComponent = CreateDefaultSubobject<USkillTreeComponent>(TEXT("SkillTree"));
-	
+
 	AttributeSet = CreateDefaultSubobject<UCharacterAttributeSet>(TEXT("AttributeSet"));
 
 	NetUpdateFrequency = 100.0f;
 
 	ElementalEffectDone.BindUObject(this, &ALightSeekerPlayerState::ClearElementalEffect);
+
+	IsDead = false;
 }
 
 UAbilitySystemComponent* ALightSeekerPlayerState::GetAbilitySystemComponent() const
@@ -38,7 +42,18 @@ UCharacterAttributeSet* ALightSeekerPlayerState::GetAttributeSet() const
 
 bool ALightSeekerPlayerState::IsAlive() const
 {
-	return GetHealth() > 0.0f;
+	return !IsDead && GetHealth() > 0.0f;
+}
+
+void ALightSeekerPlayerState::OnRevived()
+{
+	UE_LOG(LogTemp, Log, TEXT("ALightSeekerPlayerState::OnRevived"));
+
+	ACharacterBase* Character = Cast<ACharacterBase>(GetPlayerController()->GetPawn());
+
+	Character->OnRevived();
+
+	IsDead = false;
 }
 
 float ALightSeekerPlayerState::GetHealth() const
@@ -101,14 +116,37 @@ void ALightSeekerPlayerState::BeginPlay()
 
 void ALightSeekerPlayerState::HealthChanged(const FOnAttributeChangeData& Data)
 {
+	if (IsDead)
+		return;
+
 	UE_LOG(LogTemp, Log, TEXT("%s : Player Health Changed"), *FString(__FUNCTION__));
 	UE_LOG(LogTemp, Log, TEXT("%f"), GetHealth());
 
-	if (GetHealth() <= 0.0f)
+	if (AttributeSet && GetHealth() <= 0.0f)
 	{
 		APlayerController* PC = GetPlayerController();
+		if (!PC)
+		{
+			UE_LOG(LogTemp, Log, TEXT("PC not found %s"), *this->GetPlayerName());
+			return;
+		}
 		ACharacterBase*	   Character = Cast<ACharacterBase>(PC->GetPawn());
-		Character->Die();
+
+		if (!Character->IsDead)
+		{
+			Character->Die();
+			IsDead = true;
+
+			// spawn tombstone
+			FTransform TSTransform;
+			TSTransform.SetLocation(Character->GetActorLocation() - FVector(0.0f, 0.0f, 88.0f)); // hard-coded half height of character
+			TSTransform.SetRotation(FQuat(Character->GetActorRotation().Add(0.0, -90.0, 0.0)));
+			
+			if (ALevelGamemodeBase* GameMode = Cast<ALevelGamemodeBase>(GetWorld()->GetAuthGameMode()))
+			{
+				GameMode->OnPlayerDeath(this, TSTransform);
+			}
+		}
 	}
 	// UPlayerHealthBarWidget* HealthBar = nullptr;
 	// HealthBar = Cast<ACharacterBase>(GetPlayerController()->GetPawn())->HealthBar;

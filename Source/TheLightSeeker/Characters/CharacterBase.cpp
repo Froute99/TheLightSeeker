@@ -29,6 +29,9 @@
 #include "PlayerHealthBarWidget.h"
 #include "UI/EnemyHPBarWidget.h"
 
+#include "LevelGamemodeBase.h"
+#include "Tombstone.h"
+
 // Sets default values
 ACharacterBase::ACharacterBase()
 {
@@ -51,7 +54,7 @@ ACharacterBase::ACharacterBase()
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetMesh()->SetCollisionProfileName(FName("NoCollision"));
 
-	//SkillTreeComponent = CreateDefaultSubobject<USkillTreeComponent>(TEXT("SkillTree"));
+	// SkillTreeComponent = CreateDefaultSubobject<USkillTreeComponent>(TEXT("SkillTree"));
 
 	ConstructorHelpers::FObjectFinder<USoundCue> ItemPickupSoundCueFinder(TEXT("/Script/Engine.SoundCue'/Game/SoundCollection/UI/SFX_ItemPickup.SFX_ItemPickup'"));
 	if (ItemPickupSoundCueFinder.Succeeded())
@@ -63,6 +66,9 @@ ACharacterBase::ACharacterBase()
 	{
 		ItemUseFailureSound = ItemUseFailureCueFinder.Object;
 	}
+
+	CollisionEnabled = GetMesh()->GetCollisionEnabled();
+	GravityScale = GetCharacterMovement()->GravityScale;
 }
 
 void ACharacterBase::PossessedBy(AController* NewController)
@@ -88,6 +94,7 @@ void ACharacterBase::BeginPlay()
 	Super::BeginPlay();
 
 	HasItem = false;
+	IsDead = false;
 }
 
 UAbilitySystemComponent* ACharacterBase::GetAbilitySystemComponent() const
@@ -118,7 +125,6 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	EIC->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ACharacterBase::Attack);
 	EIC->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &ACharacterBase::Dodge);
 	EIC->BindAction(ItemAction, ETriggerEvent::Triggered, this, &ACharacterBase::UseItem);
-
 	EIC->BindAction(Skill1Action, ETriggerEvent::Triggered, this, &ACharacterBase::Ability1);
 	EIC->BindAction(Skill2Action, ETriggerEvent::Triggered, this, &ACharacterBase::Ability2);
 	EIC->BindAction(Skill3Action, ETriggerEvent::Triggered, this, &ACharacterBase::Ability3);
@@ -126,6 +132,10 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	EIC->BindAction(ConfirmAction, ETriggerEvent::Triggered, ASC.Get(), &UCharacterAbilitySystemComponent::LocalInputConfirm);
 	EIC->BindAction(CancelAction, ETriggerEvent::Triggered, ASC.Get(), &UCharacterAbilitySystemComponent::LocalInputCancel);
+
+	// temp: triggered. holding으로 변경해야함
+	EIC->BindAction(ReviveAction, ETriggerEvent::Triggered, this, &ACharacterBase::Revive, true);
+	EIC->BindAction(ReviveAction, ETriggerEvent::Completed, this, &ACharacterBase::Revive, false);
 
 	ULocalPlayer* LocalPlayer = PC->GetLocalPlayer();
 
@@ -465,7 +475,7 @@ void ACharacterBase::GrantAbility_Implementation(TSubclassOf<UGameplayAbility> A
 	if (!IsValid(CharacterAbility))
 		return;
 
-	FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 0, 0);	// Ignore level, inputID arguments
+	FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 0, 0); // Ignore level, inputID arguments
 	ASC->GiveAbility(AbilitySpec);
 
 	UKismetSystemLibrary::PrintString(GetWorld(), FString::FromInt(SkillTreeComponent->GetSkillPointNum()), true, false, FColor::Red);
@@ -542,13 +552,83 @@ void ACharacterBase::Dodge()
 	ASC->TryActivateAbilityByClass(SkillTreeComponent->DodgeAbility);
 }
 
-void ACharacterBase::Die()
+void ACharacterBase::Die_Implementation()
 {
 	UKismetSystemLibrary::PrintString(GetWorld(), FString("You died"), true, false, FColor::Red);
+	UE_LOG(LogTemp, Log, TEXT("Character Die called"));
 
 	IsDead = true;
-	DisableInput(Cast<APlayerController>(GetController()));
 
 	// Call event in Game Mode, spawn grave
+	// spawn UI
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCharacterMovement()->GravityScale = 0.0f;
 
+	/*if (GetLocalRole() != ROLE_Authority)
+	{w
+		return;
+	}*/
+
+	DisableInput(Cast<APlayerController>(GetController()));
+	ToggleReviveStatus(false);
+}
+
+void ACharacterBase::ToggleReviveStatus(bool CanRevive)
+{
+	CanRevivePlayer = CanRevive;
+	if (ReviveInstructionWidget)
+	{
+		ReviveInstructionWidget->SetVisibility(CanRevive ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::Hidden);
+	}
+
+	if (!CanRevive)
+	{
+		Revive(false);
+	}
+}
+
+void ACharacterBase::Revive(bool IsTriggered)
+{
+	if (CanRevivePlayer)
+	{
+		if (IsTriggered)
+		{
+			FTimerDelegate TimerDelegate = FTimerDelegate::CreateLambda([this]() {
+				if (this)
+				{
+					this->Server_Revive();
+				}
+			});
+
+			GetWorld()->GetTimerManager().SetTimer(ReviveCallTimerHandle, TimerDelegate, TimerForRevive, false);
+			ReviveTriggeredDelegateHandle.Broadcast(true);
+		}
+		else
+		{
+			GetWorld()->GetTimerManager().ClearTimer(ReviveCallTimerHandle);
+			ReviveTriggeredDelegateHandle.Broadcast(false);
+		}
+	}
+}
+
+void ACharacterBase::Server_Revive_Implementation()
+{
+	if (ALevelGamemodeBase* GameMode = Cast<ALevelGamemodeBase>(GetWorld()->GetAuthGameMode()))
+	{
+		GameMode->OnPlayerRevive();
+	}
+}
+
+void ACharacterBase::OnRevived_Implementation()
+{
+	UE_LOG(LogTemp, Log, TEXT("Character OnRevived called"));
+	InitializeAttributes();
+
+	IsDead = false;
+	EnableInput(Cast<APlayerController>(GetController()));
+
+	// Call event in Game Mode, spawn grave
+	// spawn UI
+	GetMesh()->SetCollisionEnabled(CollisionEnabled);
+	GetCharacterMovement()->GravityScale = GravityScale;
 }

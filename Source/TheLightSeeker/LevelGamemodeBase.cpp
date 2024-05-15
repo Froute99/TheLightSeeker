@@ -1,8 +1,9 @@
 // Copyright (c) 2023 Team Light Seekers All rights reserved.
 
-#include "LevelGamemodeBase.h"	
-#include "GameFramework/GameSession.h"
-#include "GameFramework/OnlineSession.h"
+#include "LevelGamemodeBase.h"
+#include "CharacterBase.h"
+#include "LightSeekerPlayerState.h"
+#include "Tombstone.h"
 
 ALevelGamemodeBase::ALevelGamemodeBase()
 {
@@ -39,4 +40,36 @@ void ALevelGamemodeBase::PreLogin(const FString& Options, const FString& Address
 void ALevelGamemodeBase::SetGameStart()
 {
 	HasGameStarted = true;
+}
+
+void ALevelGamemodeBase::OnPlayerDeath(TWeakObjectPtr<class ALightSeekerPlayerState> PS, FTransform Transform)
+{
+	UE_LOG(LogTemp, Log, TEXT("ALevelGamemodeBase::OnPlayerDeath called"));
+	if (TombstoneBP)
+	{
+		SpawnedTombstone = GetWorld()->SpawnActor<ATombstone>(TombstoneBP, Transform);
+		SpawnedTombstone->SetOwnerPlayer(PS);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("PlayerState: Tombstone class not selected in BP"));
+	}
+}
+
+void ALevelGamemodeBase::OnPlayerRevive()
+{
+	UE_LOG(LogTemp, Log, TEXT("ALevelGamemodeBase::OnPlayerRevive called"));
+	if (SpawnedTombstone.IsValid())
+	{
+		TWeakObjectPtr<class ALightSeekerPlayerState> PlayerToRevive = SpawnedTombstone->GetOwnerPlayer();
+		if (PlayerToRevive.IsValid())
+		{
+			PlayerToRevive->OnRevived();
+			SpawnedTombstone.Get()->Destroy();
+		}
+		else
+		{
+			UE_LOG(LogTemp, Log, TEXT("ALevelGamemodeBase::OnPlayerRevive failed"));
+		}
+	}
 }

@@ -9,6 +9,8 @@
 #include "GameplayAbilitySpec.h"
 #include "CharacterBase.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FReviveTriggerDelegate, bool, IsTriggered);
+
 UCLASS()
 class THELIGHTSEEKER_API ACharacterBase : public ACharacter, public IAbilitySystemInterface
 {
@@ -101,8 +103,6 @@ public:
 	void Ability4();
 	void Dodge();
 
-	void Die();
-
 	bool IsDoingTargeting = false;
 
 	/************************
@@ -145,6 +145,9 @@ public:
 	class UInputAction* ConfirmAction;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
 	class UInputAction* CancelAction;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Input")
+	class UInputAction* ReviveAction;
 
 	/************************
 	 * Item
@@ -195,6 +198,42 @@ public:
 	UFUNCTION()
 	void UpdateBossHealthBar(float CurrentHealth);
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class UUserWidget* ReviveInstructionWidget;
+
+	/************************
+	 * Dead & Revive
+	 ************************/
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Die();
+
+	void Revive(bool IsTriggered);
+
+	UFUNCTION(Server, Reliable)
+	void Server_Revive();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void OnRevived();
+
+	FTimerHandle ReviveCallTimerHandle;
+	
+	UPROPERTY(BlueprintAssignable)
+	FReviveTriggerDelegate ReviveTriggeredDelegateHandle;
+
+	void ToggleReviveStatus(bool CanRevive);
+	bool CanRevivePlayer;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	float TimerForRevive;
+
+	// info for rollback status
+	ECollisionEnabled::Type CollisionEnabled;
+	float					GravityScale;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool IsDead = false;
+
 	int CurrentUsingAbilityIndex;
 	int MaxAbilityNum = 3;
 
@@ -203,14 +242,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	int GetSkillPointNum();
 
-
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void GrantAbility(TSubclassOf<class UGameplayAbility> AbilityClass);
 
 	UFUNCTION(Client, Reliable)
 	void RepSkillPointSubtract(class UCharacterAnimAbility* Ability, int SkillPoint);
-
-	UPROPERTY(BlueprintReadWrite)
-	bool IsDead = false;
-
 };
