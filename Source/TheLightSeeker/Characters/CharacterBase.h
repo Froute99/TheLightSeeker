@@ -9,6 +9,8 @@
 #include "GameplayAbilitySpec.h"
 #include "CharacterBase.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FReviveTriggerDelegate, bool, IsTriggered);
+
 UCLASS()
 class THELIGHTSEEKER_API ACharacterBase : public ACharacter, public IAbilitySystemInterface
 {
@@ -215,11 +217,14 @@ public:
 	void OnRevived();
 
 	FTimerHandle ReviveCallTimerHandle;
+	
+	UPROPERTY(BlueprintAssignable)
+	FReviveTriggerDelegate ReviveTriggeredDelegateHandle;
 
 	void ToggleReviveStatus(bool CanRevive);
 	bool CanRevivePlayer;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	float TimerForRevive;
 
 	// info for rollback status
@@ -228,8 +233,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	bool IsDead = false;
-	
-
 
 	int CurrentUsingAbilityIndex;
 	int MaxAbilityNum = 3;
@@ -238,7 +241,6 @@ public:
 	void IncreaseSkillPoint();
 	UFUNCTION(BlueprintCallable)
 	int GetSkillPointNum();
-
 
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void GrantAbility(TSubclassOf<class UGameplayAbility> AbilityClass);

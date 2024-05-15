@@ -39,7 +39,10 @@ void ATombstone::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Oth
 {
 	if (ACharacterBase* Character = Cast<ACharacterBase>(OtherActor))
 	{
-		Character->ToggleReviveStatus(true);
+		if (!Character->IsDead)
+		{
+			Character->ToggleReviveStatus(true);
+		}
 	}
 }
 

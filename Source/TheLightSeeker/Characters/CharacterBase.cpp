@@ -570,24 +570,20 @@ void ACharacterBase::Die_Implementation()
 	}*/
 
 	DisableInput(Cast<APlayerController>(GetController()));
+	ToggleReviveStatus(false);
 }
 
 void ACharacterBase::ToggleReviveStatus(bool CanRevive)
 {
-	if (IsDead)
-	{
-		return;
-	}
-
-	UE_LOG(LogTemp, Warning, TEXT("ACharacterBase::Revive called %i"), CanRevive);
 	CanRevivePlayer = CanRevive;
 	if (ReviveInstructionWidget)
 	{
 		ReviveInstructionWidget->SetVisibility(CanRevive ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::Hidden);
 	}
-	else
+
+	if (!CanRevive)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ACharacterBase::Revive Instruction widget is not registered"));
+		Revive(false);
 	}
 }
 
@@ -595,8 +591,6 @@ void ACharacterBase::Revive(bool IsTriggered)
 {
 	if (CanRevivePlayer)
 	{
-		//Server_Revive();
-
 		if (IsTriggered)
 		{
 			FTimerDelegate TimerDelegate = FTimerDelegate::CreateLambda([this]() {
@@ -607,10 +601,12 @@ void ACharacterBase::Revive(bool IsTriggered)
 			});
 
 			GetWorld()->GetTimerManager().SetTimer(ReviveCallTimerHandle, TimerDelegate, TimerForRevive, false);
+			ReviveTriggeredDelegateHandle.Broadcast(true);
 		}
 		else
 		{
 			GetWorld()->GetTimerManager().ClearTimer(ReviveCallTimerHandle);
+			ReviveTriggeredDelegateHandle.Broadcast(false);
 		}
 	}
 }
