@@ -213,19 +213,25 @@ public:
 	UFUNCTION(Server, Reliable)
 	void Server_Revive();
 
+	UFUNCTION(Server, Reliable)
+	void Server_TriggerReviveVFX(bool IsTriggered);
+
 	UFUNCTION(NetMulticast, Reliable)
-	void OnRevived();
+	void Multicast_OnRevived();
 
 	FTimerHandle ReviveCallTimerHandle;
 	
 	UPROPERTY(BlueprintAssignable)
 	FReviveTriggerDelegate ReviveTriggeredDelegateHandle;
 
-	void ToggleReviveStatus(bool CanRevive);
+	void ToggleReviveStatus(TWeakObjectPtr<class ATombstone> TombstoneActor, bool CanRevive);
+
 	bool CanRevivePlayer;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	float TimerForRevive;
+
+	TWeakObjectPtr<class ATombstone> Tombstone;
 
 	// info for rollback status
 	ECollisionEnabled::Type CollisionEnabled;

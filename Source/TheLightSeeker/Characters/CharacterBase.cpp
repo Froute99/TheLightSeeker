@@ -570,12 +570,14 @@ void ACharacterBase::Die_Implementation()
 	}*/
 
 	DisableInput(Cast<APlayerController>(GetController()));
-	ToggleReviveStatus(false);
+	ToggleReviveStatus(nullptr, false);
 }
 
-void ACharacterBase::ToggleReviveStatus(bool CanRevive)
+void ACharacterBase::ToggleReviveStatus(TWeakObjectPtr<class ATombstone> TombstoneActor, bool CanRevive)
 {
+	Tombstone = TombstoneActor;
 	CanRevivePlayer = CanRevive;
+
 	if (ReviveInstructionWidget)
 	{
 		ReviveInstructionWidget->SetVisibility(CanRevive ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::Hidden);
@@ -597,17 +599,27 @@ void ACharacterBase::Revive(bool IsTriggered)
 				if (this)
 				{
 					this->Server_Revive();
+					ReviveTriggeredDelegateHandle.Broadcast(false);
 				}
 			});
 
 			GetWorld()->GetTimerManager().SetTimer(ReviveCallTimerHandle, TimerDelegate, TimerForRevive, false);
 			ReviveTriggeredDelegateHandle.Broadcast(true);
+			Server_TriggerReviveVFX(true);
 		}
 		else
 		{
 			GetWorld()->GetTimerManager().ClearTimer(ReviveCallTimerHandle);
 			ReviveTriggeredDelegateHandle.Broadcast(false);
+			Server_TriggerReviveVFX(false);
+
 		}
+	}
+	else
+	{
+		GetWorld()->GetTimerManager().ClearTimer(ReviveCallTimerHandle);
+		ReviveTriggeredDelegateHandle.Broadcast(false);
+		Server_TriggerReviveVFX(false);
 	}
 }
 
@@ -619,16 +631,33 @@ void ACharacterBase::Server_Revive_Implementation()
 	}
 }
 
-void ACharacterBase::OnRevived_Implementation()
+void ACharacterBase::Server_TriggerReviveVFX_Implementation(bool IsTriggered)
+{
+	if (Tombstone.Get())
+	{
+		Tombstone.Get()->Server_ToggleVFX(IsTriggered);
+	}
+}
+
+void ACharacterBase::Multicast_OnRevived_Implementation()
 {
 	UE_LOG(LogTemp, Log, TEXT("Character OnRevived called"));
 	InitializeAttributes();
 
 	IsDead = false;
-	EnableInput(Cast<APlayerController>(GetController()));
+	this->GetMesh()->SetVisibility(false);
+	ToggleReviveStatus(nullptr, false);
 
-	// Call event in Game Mode, spawn grave
-	// spawn UI
-	GetMesh()->SetCollisionEnabled(CollisionEnabled);
-	GetCharacterMovement()->GravityScale = GravityScale;
+
+	FTimerDelegate TimerDelegate = FTimerDelegate::CreateLambda([this]() {
+		this->EnableInput(Cast<APlayerController>(GetController()));
+
+		this->GetMesh()->SetCollisionEnabled(CollisionEnabled);
+		this->GetCharacterMovement()->GravityScale = GravityScale;
+		this->GetMesh()->SetVisibility(true);
+	});
+
+	FTimerHandle   TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 1.5f, false);
+
 }

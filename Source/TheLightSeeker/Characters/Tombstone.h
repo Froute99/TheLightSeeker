@@ -22,18 +22,23 @@ public:
 	void SetOwnerPlayer(TWeakObjectPtr<class ALightSeekerPlayerState> PS);
 	TWeakObjectPtr<class ALightSeekerPlayerState> GetOwnerPlayer() const;
 
-
-	// display UI for revive
-
-
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
 	void OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-public:
-	// Collision
+	UFUNCTION(NetMulticast, Reliable)
+	void OnPlayerRevived();
+
+	UFUNCTION(Server, Reliable)
+	void Server_ToggleVFX(bool IsTriggered);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_ToggleVFX(bool IsTriggered);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ToggleVFX(bool IsTriggered);
 
 protected:
 	TWeakObjectPtr<class ALightSeekerPlayerState> Owner;
@@ -41,4 +46,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	class UCapsuleComponent* CapsuleComponent;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class UAudioComponent* AudioComponent;
+
+	bool IsWaitingDestroy;
 };

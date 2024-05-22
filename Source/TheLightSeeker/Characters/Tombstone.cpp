@@ -5,6 +5,7 @@
 #include "Components/CapsuleComponent.h"
 #include "CharacterBase.h"
 #include "Characters/LightSeekerPlayerState.h"
+#include "Components/AudioComponent.h"
 
 ATombstone::ATombstone()
 {
@@ -15,6 +16,9 @@ ATombstone::ATombstone()
 	CapsuleComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	CapsuleComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Overlap);
 	CapsuleComponent->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
+
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	AudioComponent->SetupAttachment(GetStaticMeshComponent());
 }
 
 void ATombstone::BeginPlay()
@@ -23,6 +27,8 @@ void ATombstone::BeginPlay()
 
 	CapsuleComponent->OnComponentBeginOverlap.AddDynamic(this, &ATombstone::OnBeginOverlap);
 	CapsuleComponent->OnComponentEndOverlap.AddDynamic(this, &ATombstone::OnEndOverlap);
+
+	IsWaitingDestroy = false;
 }
 
 void ATombstone::SetOwnerPlayer(TWeakObjectPtr<class ALightSeekerPlayerState> PS)
@@ -41,7 +47,7 @@ void ATombstone::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Oth
 	{
 		if (!Character->IsDead)
 		{
-			Character->ToggleReviveStatus(true);
+			Character->ToggleReviveStatus(this, true);
 		}
 	}
 }
@@ -50,6 +56,40 @@ void ATombstone::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* Other
 {
 	if (ACharacterBase* Character = Cast<ACharacterBase>(OtherActor))
 	{
-		Character->ToggleReviveStatus(false);
+		Character->ToggleReviveStatus(nullptr, false);
 	}
+}
+
+// Called by Client Character
+void ATombstone::Server_ToggleVFX_Implementation(bool IsTriggered)
+{
+	Multicast_ToggleVFX(IsTriggered);
+}
+
+// Called by Server
+void ATombstone::Multicast_ToggleVFX_Implementation(bool IsTriggered)
+{
+	if (!IsWaitingDestroy)
+	{
+		ToggleVFX(IsTriggered);
+	}
+}
+
+void ATombstone::OnPlayerRevived_Implementation()
+{
+	IsWaitingDestroy = true;
+
+	GetStaticMeshComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetStaticMeshComponent()->SetVisibility(false);
+
+	FTimerDelegate TimerDelegate = FTimerDelegate::CreateLambda([this]() {
+		if (this)
+		{
+			this->Destroy();
+		}
+	});
+	FTimerHandle   TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 2.0f, false);
+
+	AudioComponent->Play();
 }

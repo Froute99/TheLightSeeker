@@ -51,7 +51,7 @@ void ALightSeekerPlayerState::OnRevived()
 
 	ACharacterBase* Character = Cast<ACharacterBase>(GetPlayerController()->GetPawn());
 
-	Character->OnRevived();
+	Character->Multicast_OnRevived();
 
 	IsDead = false;
 }

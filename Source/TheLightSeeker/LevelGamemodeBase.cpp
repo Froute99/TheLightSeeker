@@ -65,7 +65,7 @@ void ALevelGamemodeBase::OnPlayerRevive()
 		if (PlayerToRevive.IsValid())
 		{
 			PlayerToRevive->OnRevived();
-			SpawnedTombstone.Get()->Destroy();
+			SpawnedTombstone.Get()->OnPlayerRevived();
 		}
 		else
 		{
