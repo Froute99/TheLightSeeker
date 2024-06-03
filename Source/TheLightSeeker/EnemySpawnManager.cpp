@@ -7,6 +7,7 @@
 #include "Enemies/EnemyBase.h"
 #include "Math/UnrealMathUtility.h"
 #include "Items/Item.h"
+#include "ConsistentEnemySpawner.h"
 
 // Sets default values
 AEnemySpawnManager::AEnemySpawnManager()
@@ -42,6 +43,14 @@ void AEnemySpawnManager::BeginPlay()
 
 	NumOfActiveEnemies = 0;
 	IsInCombat = false;
+
+	for (AConsistentEnemySpawner* Spawner : BossStageEnemySpawners)
+	{
+		if (Spawner)
+		{
+			Spawner->OnEnemySpawnDelegateHandle.AddUObject(this, &AEnemySpawnManager::GiveItem);
+		}
+	}
 }
 
 void AEnemySpawnManager::GiveItem(TObjectPtr<AEnemyBase> EnemyToSpawn)
@@ -126,6 +135,14 @@ void AEnemySpawnManager::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AAc
 				ActivateActors(Info.Enemies);
 				Info.Trigger->GetCollisionComponent()->OnComponentBeginOverlap.Clear();
 				Trigger->Destroy();
+
+				if (Info.IsLastStage)
+				{
+					for (AConsistentEnemySpawner* Spawner : BossStageEnemySpawners)
+					{
+						Spawner->Activate();
+					}
+				}
 			}
 		}
 	}
@@ -141,6 +158,11 @@ void AEnemySpawnManager::DecreaseNumOfActiveEnemies()
 		if (IsLastStage)
 		{
 			IsBossDefeatedDelegateHandle.Broadcast();
+			for (AConsistentEnemySpawner* Spawner : BossStageEnemySpawners)
+			{
+				Spawner->Deactivate();
+			}
+
 		}
 		else
 		{

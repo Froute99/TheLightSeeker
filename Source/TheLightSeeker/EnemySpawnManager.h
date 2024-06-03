@@ -79,6 +79,9 @@ protected:
 
 	bool IsLastStage;
 
+	UPROPERTY(EditAnywhere)
+	TArray<class AConsistentEnemySpawner*> BossStageEnemySpawners;
+
 public:
 	UPROPERTY(BlueprintAssignable)
 	FOnCombatStatusChangedDelegate OnCombatStatusChangedDelegateHandle;
