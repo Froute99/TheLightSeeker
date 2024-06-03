@@ -39,8 +39,9 @@ void AEnemySpawnManager::BeginPlay()
 			TotalWeight += ItemDropTable[i].Weight;
 			ItemDropTable[i].Weight = TotalWeight;
 		}
+		TotalWeight /= ItemDropRate;
 	}
-
+	
 	NumOfActiveEnemies = 0;
 	IsInCombat = false;
 
@@ -60,8 +61,7 @@ void AEnemySpawnManager::GiveItem(TObjectPtr<AEnemyBase> EnemyToSpawn)
 		return;
 	}
 
-	int32 RandomValue = FMath::RandRange(0, TotalWeight);
-	(int32)(TotalWeight / ItemDropRate);
+	int32 RandomValue = FMath::RandRange(0, TotalWeight - 1);
 
 	if (RandomValue < ItemDropTable.Last().Weight) // can drop item. otherwise - do not drop item
 	{
