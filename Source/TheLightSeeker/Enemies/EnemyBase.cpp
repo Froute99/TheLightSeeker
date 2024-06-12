@@ -145,7 +145,7 @@ void AEnemyBase::OnDied()
 	TArray<TObjectPtr<AActor>> ChildrenToRemove = Children;
 	for (TObjectPtr<AActor> Child : ChildrenToRemove)
 	{
-		UE_LOG(Enemy, Log, TEXT("Child destroyed"));
+		UE_LOG(Enemy, Verbose, TEXT("Child destroyed"));
 		Child->Destroy();
 	}
 
@@ -154,8 +154,7 @@ void AEnemyBase::OnDied()
 	auto& Effects = ASC->GetActiveGameplayEffects();
 	for (auto it = Effects.CreateConstIterator(); it; ++it)
 	{
-		UE_LOG(Enemy, Log, TEXT("destoryed... %s, res: %i"), *it->Spec.Def->GetName(), ASC->RemoveActiveGameplayEffect(it->Handle));
-		//ASC->RemoveActiveGameplayEffect(it->Handle);
+		UE_LOG(Enemy, Verbose, TEXT("Enemy GC destoryed... %s, res: %i"), *it->Spec.Def->GetName(), ASC->RemoveActiveGameplayEffect(it->Handle));
 	}
 
 	if (ASC)
@@ -185,7 +184,7 @@ void AEnemyBase::DropItem()
 
 	if (Item)
 	{
-		UE_LOG(Enemy, Log, TEXT("Enemy dropped Item"));
+		UE_LOG(Enemy, Verbose, TEXT("Enemy dropped Item"));
 
 		FActorSpawnParameters Parameter{};
 		Parameter.Instigator = this;
@@ -207,7 +206,7 @@ void AEnemyBase::FinishDying()
 		return;
 	}
 
-	UE_LOG(Enemy, Log, TEXT("Enemy FinishDying"));
+	UE_LOG(Enemy, Verbose, TEXT("Enemy FinishDying"));
 	Destroy();
 }
 
@@ -278,12 +277,12 @@ UCharacterAttributeSet* AEnemyBase::GetAttributeSet() const
 void AEnemyBase::HandleDamage(float Damage, const FHitResult& HitResult, const FGameplayTagContainer& SourceTags, ACharacterBase* SourceCharacter, AActor* SourceActor)
 {
 	FString Name = SourceCharacter->GetName();
-	UE_LOG(Enemy, Log, TEXT("Damaged from: %s"), *Name);
+	UE_LOG(Enemy, Verbose, TEXT("Damaged from: %s"), *Name);
 }
 
 void AEnemyBase::HandleHealthChanged(float Value, const FGameplayTagContainer& SourceTags)
 {
-	UE_LOG(Enemy, Log, TEXT("Health Changed"));
+	UE_LOG(Enemy, Verbose, TEXT("Health Changed"));
 }
 
 void AEnemyBase::OnHealthChanged(const FOnAttributeChangeData& Data)
@@ -342,7 +341,7 @@ void AEnemyBase::SetHealth(float Value)
 		AttributeSet->SetHealth(Value);
 		if (Value <= 0.0f)
 		{
-			UE_LOG(Enemy, Log, TEXT("SetHealth - OnDied"));
+			UE_LOG(Enemy, Verbose, TEXT("SetHealth - OnDied"));
 			OnDied();
 		}
 	}
@@ -359,9 +358,14 @@ void AEnemyBase::SetMaxHealth(float Value)
 void AEnemyBase::AddCharacterAbilities()
 {
 	// Grant abilities, but only on the server	
-	if (GetLocalRole() != ROLE_Authority || ASC == nullptr || ASC->CharacterAbilitiesGiven)
+	if (GetLocalRole() != ROLE_Authority)
 	{
-		UE_LOG(Enemy, Log, TEXT("AddCharacterAbilities failed"));
+		return;
+	}
+	
+	if (ASC == nullptr || ASC->CharacterAbilitiesGiven)
+	{
+		UE_LOG(Enemy, Error, TEXT("Enemy AddCharacterAbilities failed"));
 		return;
 	}
 

@@ -53,6 +53,11 @@ void AProjectileBase::FireInDirection(const FVector& ShootDirection)
 
 void AProjectileBase::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (GetLocalRole() != ROLE_Authority)
+	{
+		return;
+	}
+
 	if (OtherActor && (OtherActor != this))
 	{
 		AEnemyBase* Overlapped = Cast<AEnemyBase>(OtherActor);

@@ -80,8 +80,6 @@ void AEntranceActor::OnDied()
 
 void AEntranceActor::Multicast_BreakGeometry_Implementation()
 {
-	UE_LOG(LogTemp, Log, TEXT("Client BreakGeometry called"));
-
 	if (GeometryCollection)
 	{
 		GetStaticMeshComponent()->SetHiddenInGame(true);
@@ -94,7 +92,6 @@ void AEntranceActor::Multicast_BreakGeometry_Implementation()
 
 void AEntranceActor::Multicast_PlaySound_Implementation(USoundBase* SoundToPlay)
 {
-	UE_LOG(LogTemp, Log, TEXT("Client playsound called"));
 	if (SoundToPlay)
 	{
 		AudioComponent->SetSound(SoundToPlay);

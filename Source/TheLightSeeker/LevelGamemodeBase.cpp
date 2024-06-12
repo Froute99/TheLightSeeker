@@ -13,7 +13,6 @@ ALevelGamemodeBase::ALevelGamemodeBase()
 
 void ALevelGamemodeBase::PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
 {
-	UE_LOG(LogTemp, Log, TEXT("PreLogin from Gamemodebase called"));
 	Super::PreLogin(Options, Address, UniqueId, ErrorMessage);
 
 	// already rejected for some reason
@@ -44,7 +43,7 @@ void ALevelGamemodeBase::SetGameStart()
 
 void ALevelGamemodeBase::OnPlayerDeath(TWeakObjectPtr<class ALightSeekerPlayerState> PS, FTransform Transform)
 {
-	UE_LOG(LogTemp, Log, TEXT("ALevelGamemodeBase::OnPlayerDeath called"));
+	UE_LOG(LogTemp, Verbose, TEXT("ALevelGamemodeBase::OnPlayerDeath called"));
 	if (TombstoneBP)
 	{
 		SpawnedTombstone = GetWorld()->SpawnActor<ATombstone>(TombstoneBP, Transform);
@@ -58,7 +57,7 @@ void ALevelGamemodeBase::OnPlayerDeath(TWeakObjectPtr<class ALightSeekerPlayerSt
 
 void ALevelGamemodeBase::OnPlayerRevive()
 {
-	UE_LOG(LogTemp, Log, TEXT("ALevelGamemodeBase::OnPlayerRevive called"));
+	UE_LOG(LogTemp, Verbose, TEXT("ALevelGamemodeBase::OnPlayerRevive called"));
 	if (SpawnedTombstone.IsValid())
 	{
 		TWeakObjectPtr<class ALightSeekerPlayerState> PlayerToRevive = SpawnedTombstone->GetOwnerPlayer();
@@ -69,7 +68,7 @@ void ALevelGamemodeBase::OnPlayerRevive()
 		}
 		else
 		{
-			UE_LOG(LogTemp, Log, TEXT("ALevelGamemodeBase::OnPlayerRevive failed"));
+			UE_LOG(LogTemp, Warning, TEXT("ALevelGamemodeBase::OnPlayerRevive failed"));
 		}
 	}
 }

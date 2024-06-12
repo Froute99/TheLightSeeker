@@ -47,7 +47,7 @@ bool ALightSeekerPlayerState::IsAlive() const
 
 void ALightSeekerPlayerState::OnRevived()
 {
-	UE_LOG(LogTemp, Log, TEXT("ALightSeekerPlayerState::OnRevived"));
+	UE_LOG(LogTemp, Verbose, TEXT("ALightSeekerPlayerState::OnRevived"));
 
 	ACharacterBase* Character = Cast<ACharacterBase>(GetPlayerController()->GetPawn());
 
@@ -119,8 +119,8 @@ void ALightSeekerPlayerState::HealthChanged(const FOnAttributeChangeData& Data)
 	if (IsDead)
 		return;
 
-	UE_LOG(LogTemp, Log, TEXT("%s : Player Health Changed"), *FString(__FUNCTION__));
-	UE_LOG(LogTemp, Log, TEXT("%f"), GetHealth());
+	UE_LOG(LogTemp, Verbose, TEXT("%s : Player Health Changed"), *FString(__FUNCTION__));
+	UE_LOG(LogTemp, Verbose, TEXT("%f"), GetHealth());
 
 	if (AttributeSet && GetHealth() <= 0.0f)
 	{
@@ -174,24 +174,24 @@ void ALightSeekerPlayerState::HealthChanged(const FOnAttributeChangeData& Data)
 
 void ALightSeekerPlayerState::MaxHealthChanged(const FOnAttributeChangeData& Data)
 {
-	UE_LOG(LogTemp, Log, TEXT("%s : Player Max Health Changed"), *FString(__FUNCTION__));
+	UE_LOG(LogTemp, Verbose, TEXT("%s : Player Max Health Changed"), *FString(__FUNCTION__));
 }
 
 void ALightSeekerPlayerState::LevelChanged(const FOnAttributeChangeData& Data)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s : Player Level Changed!"), *FString(__FUNCTION__));
+	UE_LOG(LogTemp, Verbose, TEXT("%s : Player Level Changed!"), *FString(__FUNCTION__));
 }
 
 void ALightSeekerPlayerState::MoveSpeedChanged(const FOnAttributeChangeData& Data)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s : Player MoveSpeed Changed!"), *FString(__FUNCTION__))
+	UE_LOG(LogTemp, Verbose, TEXT("%s : Player MoveSpeed Changed!"), *FString(__FUNCTION__))
 
 	RepMovementSpeed(Data.NewValue);
 }
 
 void ALightSeekerPlayerState::RepHealthBar_Implementation(float NewValue)
 {
-	UE_LOG(LogTemp, Log, TEXT("Replicate HealthBar"));
+	UE_LOG(LogTemp, Verbose, TEXT("Replicate HealthBar"));
 
 	APlayerController* PC = GetPlayerController();
 	if (!IsValid(PC))
@@ -219,7 +219,7 @@ void ALightSeekerPlayerState::RepHealthBar_Implementation(float NewValue)
 
 void ALightSeekerPlayerState::RepMovementSpeed_Implementation(float NewValue)
 {
-	UE_LOG(LogTemp, Log, TEXT("Replicate MovemenetSpeed"));
+	UE_LOG(LogTemp, Verbose, TEXT("Replicate MovemenetSpeed"));
 
 	APlayerController* PC = GetPlayerController();
 	if (!IsValid(PC))
@@ -247,8 +247,6 @@ void ALightSeekerPlayerState::RepMovementSpeed_Implementation(float NewValue)
 
 void ALightSeekerPlayerState::RepBossHealthBar_Implementation(float NewValue, bool IsMaxHealth)
 {
-	UE_LOG(LogTemp, Log, TEXT("Replicate BossHealthBar"));
-
 	APlayerController* PC = GetPlayerController();
 	if (!IsValid(PC))
 	{
@@ -282,6 +280,6 @@ void ALightSeekerPlayerState::RepBossHealthBar_Implementation(float NewValue, bo
 
 void ALightSeekerPlayerState::ClearElementalEffect()
 {
-	UE_LOG(LogTemp, Log, TEXT("ClearElemenetalEffect called"));
+	UE_LOG(LogTemp, Verbose, TEXT("ClearElemenetalEffect called"));
 	ElementalEffectHandle = nullptr;
 }

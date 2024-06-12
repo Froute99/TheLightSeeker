@@ -43,7 +43,7 @@ void AConsistentEnemySpawner::BeginPlay()
 
 void AConsistentEnemySpawner::Spawn()
 {
-	for (FSpawnerInfo SpawnerInfo : SpawnerInfos)
+	for (FSpawnerInfo& SpawnerInfo : SpawnerInfos)
 	{
 		FTransform Transform;
 		Transform.SetLocation(SpawnerInfo.SpawnPosition);

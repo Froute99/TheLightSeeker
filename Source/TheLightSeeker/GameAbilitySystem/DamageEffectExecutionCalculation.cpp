@@ -53,10 +53,6 @@ void UDamageEffectExecutionCalculation::Execute_Implementation(const FGameplayEf
 
 	FGameplayTagContainer Container;
 	Spec.GetAllAssetTags(Container);
-	for (auto tag : Container)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Tag: %s"), tag.GetTagName());
-	}
 
 	float BaseDamage = 0.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().BasicDamageDef, EvaluationParameters, BaseDamage);
@@ -66,7 +62,6 @@ void UDamageEffectExecutionCalculation::Execute_Implementation(const FGameplayEf
 	float DamageRate = 0.f;
 	if (ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DamageMultiplierDef, EvaluationParameters, DamageRate))
 	{
-		UE_LOG(LogTemp, Log, TEXT("Damage Rate: %f"), DamageRate);
 		if (DamageRate <= 0.f)
 		{
 			UE_LOG(LogTemp, Log, TEXT("%s: Damage Percentage was 0 or below"), *FString(__FUNCTION__));
