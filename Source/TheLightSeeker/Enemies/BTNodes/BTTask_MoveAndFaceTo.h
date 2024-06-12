@@ -21,7 +21,7 @@ public:
 
 	virtual void				TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds);
 
-	bool IsTaskDone(UBehaviorTreeComponent& OwnerComp) const;
+	bool IsTaskDone(UBehaviorTreeComponent& OwnerComp, float DeltaSeconds) const;
 	
 	/* Actual Acceptable Radius - from MoveTo one will be "fake" value */
 	UPROPERTY(EditAnywhere, Category = MoveAndFaceTo)

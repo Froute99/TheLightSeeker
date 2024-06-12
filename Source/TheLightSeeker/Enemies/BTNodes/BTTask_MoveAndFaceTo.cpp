@@ -19,7 +19,7 @@ EBTNodeResult::Type UBTTask_MoveAndFaceTo::ExecuteTask(UBehaviorTreeComponent& O
 
 	EBTNodeResult::Type Result = UBTTask_MoveTo::ExecuteTask(OwnerComp, NodeMemory);
 
-	if (Result == EBTNodeResult::Type::Succeeded && !IsTaskDone(OwnerComp))
+	if (Result == EBTNodeResult::Type::Succeeded && !IsTaskDone(OwnerComp, 0.0f))
 	{
 		Result = EBTNodeResult::Type::InProgress;
 	}
@@ -29,13 +29,14 @@ EBTNodeResult::Type UBTTask_MoveAndFaceTo::ExecuteTask(UBehaviorTreeComponent& O
 
 void UBTTask_MoveAndFaceTo::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
-	if (IsTaskDone(OwnerComp))
+	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
+	if (IsTaskDone(OwnerComp, DeltaSeconds))
 	{
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 }
 
-bool UBTTask_MoveAndFaceTo::IsTaskDone(UBehaviorTreeComponent& OwnerComp) const
+bool UBTTask_MoveAndFaceTo::IsTaskDone(UBehaviorTreeComponent& OwnerComp, float DeltaSeconds) const
 {
 	auto Target = Cast<ACharacterBase>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(FName("Target")));
 	auto ControllingPawn = Cast<AEnemyBase>(OwnerComp.GetAIOwner()->GetPawn());
@@ -66,7 +67,22 @@ bool UBTTask_MoveAndFaceTo::IsTaskDone(UBehaviorTreeComponent& OwnerComp) const
 	}
 	else
 	{
-		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+		//UE_LOG(LogTemp, Log, TEXT("Rotating..., %f, %f, %f"), ControllingPawn->GetActorRotation().Euler().Z, (ControllingPawn->GetActorRotation() + FRotator(0, 540.f, 0)).Euler().Z);
+		//ControllingPawn->FaceRotation(ControllingPawn->GetActorRotation() + FRotator(0, 540.f, 0));
+		//FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+
+		const float RotationRate = 360.0f;
+
+		if (FVector::CrossProduct(ControllingPawn->GetActorForwardVector(), ToTarget).Z > 0)
+		{
+			ControllingPawn->SetActorRotation(ControllingPawn->GetActorRotation() + FRotator(0, RotationRate * DeltaSeconds, 0));
+		}
+		else
+		{
+			ControllingPawn->SetActorRotation(ControllingPawn->GetActorRotation() - FRotator(0, RotationRate * DeltaSeconds, 0));
+		}
+
+		
 		return false;
 	}
 }
