@@ -67,25 +67,31 @@ void UGA_MeleeEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 		&& EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.Enemy.MeleeAttack")))
 	{
 		AEnemyBase* EnemyBase = Cast<AEnemyBase>(GetActorInfo().OwnerActor.Get());
-		check(EnemyBase != nullptr);
-
-		if (EnemyBase)
+		if (!EnemyBase)
 		{
-			TSet<AActor*> OverlappingActors;
-			EnemyBase->MeleeAttackCollisionVolume->GetOverlappingActors(OverlappingActors, ACharacterBase::StaticClass());
+			return;
+		}
 
-			for (AActor* Actor : OverlappingActors)
+		TSet<AActor*> OverlappingActors;
+		EnemyBase->MeleeAttackCollisionVolume->GetOverlappingActors(OverlappingActors, ACharacterBase::StaticClass());
+
+		for (AActor* Actor : OverlappingActors)
+		{
+			if (ACharacterBase* Player = Cast<ACharacterBase>(Actor))
 			{
-				if (ACharacterBase* Player = Cast<ACharacterBase>(Actor))
+				if (Player->IsInvincible())
 				{
-					ALightSeekerPlayerState* PS = Cast<ALightSeekerPlayerState>(Player->GetPlayerState());
-
-					if (PS)
-					{
-						FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
-						EnemyBase->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*DamageEffectSpecHandle.Data.Get(), PS->GetAbilitySystemComponent());
-					}
+					continue;
 				}
+
+				UAbilitySystemComponent* ASC = nullptr;
+				if (ALightSeekerPlayerState* PS = Cast<ALightSeekerPlayerState>(Player->GetPlayerState()))
+				{
+					ASC = PS->GetAbilitySystemComponent();
+				}
+
+				FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
+				EnemyBase->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*DamageEffectSpecHandle.Data.Get(), ASC);
 			}
 		}
 	}

@@ -103,6 +103,11 @@ void UGA_BossEnemyLeap::EventReceived(FGameplayTag EventTag, FGameplayEventData 
 			{
 				if (ACharacterBase* Player = Cast<ACharacterBase>(OverlapResult.GetActor()))
 				{
+					if (Player->IsInvincible())
+					{
+						continue;
+					}
+
 					if (ALightSeekerPlayerState* PS = Cast<ALightSeekerPlayerState>(Player->GetPlayerState()))
 					{
 						FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());

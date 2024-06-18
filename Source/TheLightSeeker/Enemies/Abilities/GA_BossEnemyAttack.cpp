@@ -93,8 +93,12 @@ void UGA_BossEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 				{
 					if (ACharacterBase* Player = Cast<ACharacterBase>(Hit.GetActor()))
 					{
-						ALightSeekerPlayerState* PS = Cast<ALightSeekerPlayerState>(Player->GetPlayerState());
+						if (Player->IsInvincible())
+						{
+							continue;
+						}
 
+						ALightSeekerPlayerState* PS = Cast<ALightSeekerPlayerState>(Player->GetPlayerState());
 						if (PS)
 						{
 							FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
@@ -121,8 +125,12 @@ void UGA_BossEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventDat
 			{
 				if (ACharacterBase* Player = Cast<ACharacterBase>(Actor))
 				{
-					ALightSeekerPlayerState* PS = Cast<ALightSeekerPlayerState>(Player->GetPlayerState());
+					if (Player->IsInvincible())
+					{
+						continue;
+					}
 
+					ALightSeekerPlayerState* PS = Cast<ALightSeekerPlayerState>(Player->GetPlayerState());
 					if (PS)
 					{
 						FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(AdditionalDamageGameplayEffect, GetAbilityLevel());
