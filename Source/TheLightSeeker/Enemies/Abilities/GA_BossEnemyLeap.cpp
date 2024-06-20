@@ -93,12 +93,16 @@ void UGA_BossEnemyLeap::EventReceived(FGameplayTag EventTag, FGameplayEventData 
 		if (EnemyBase.IsValid())
 		{
 			FVector			ImpactPoint = EnemyBase->GetActorLocation() - FVector(0.f, 0.f, EnemyBase->GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
-			FCollisionShape CollisionShape;
-			CollisionShape.SetSphere(ImpactRange);
+			ImpactPoint.Z -= 10.0f; // Magic number to make player jumping
+
+			FCollisionShape CollisionShapeOuter, CollisionShapeInner;
+			CollisionShapeOuter.SetSphere(ImpactRangeOuter);
+			CollisionShapeInner.SetSphere(ImpactRangeInner);
 
 			TArray<FOverlapResult> OverlapResults;
-			GetWorld()->OverlapMultiByChannel(OverlapResults, ImpactPoint, FQuat(), ECollisionChannel::ECC_GameTraceChannel1, CollisionShape);
 
+			// Outer Range - Apply minimum force only
+			GetWorld()->OverlapMultiByChannel(OverlapResults, ImpactPoint, FQuat(), ECollisionChannel::ECC_GameTraceChannel1, CollisionShapeOuter);
 			for (FOverlapResult OverlapResult : OverlapResults)
 			{
 				if (ACharacterBase* Player = Cast<ACharacterBase>(OverlapResult.GetActor()))
@@ -109,14 +113,32 @@ void UGA_BossEnemyLeap::EventReceived(FGameplayTag EventTag, FGameplayEventData 
 						EnemyBase->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*DamageEffectSpecHandle.Data.Get(), PS->GetAbilitySystemComponent());
 
 						// Apply Knockback to player
-						Player->GetMovementComponent()->AddRadialImpulse(ImpactPoint, ImpactRange, MaxImpactForce, ERadialImpulseFalloff::RIF_Linear, true);
+						Player->GetMovementComponent()->AddRadialImpulse(ImpactPoint, ImpactRangeOuter, MinImpactForce, ERadialImpulseFalloff::RIF_Constant, true);
+					}
+				}
+			}
+
+			// Inner Range - Apply additional force
+			GetWorld()->OverlapMultiByChannel(OverlapResults, ImpactPoint, FQuat(), ECollisionChannel::ECC_GameTraceChannel1, CollisionShapeInner);
+			for (FOverlapResult OverlapResult : OverlapResults)
+			{
+				if (ACharacterBase* Player = Cast<ACharacterBase>(OverlapResult.GetActor()))
+				{
+					if (ALightSeekerPlayerState* PS = Cast<ALightSeekerPlayerState>(Player->GetPlayerState()))
+					{
+						FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
+						EnemyBase->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*DamageEffectSpecHandle.Data.Get(), PS->GetAbilitySystemComponent());
+
+						// Apply Knockback to player
+						Player->GetMovementComponent()->AddRadialImpulse(ImpactPoint, ImpactRangeInner, MaxImpactForce - MinImpactForce, ERadialImpulseFalloff::RIF_Linear, true);
 					}
 				}
 			}
 
 			if (DrawAttackRange)
 			{
-				DrawDebugSphere(GetWorld(), ImpactPoint, ImpactRange, 32, FColor::Blue, false, 2.0f);
+				DrawDebugSphere(GetWorld(), ImpactPoint, ImpactRangeInner, 32, FColor::Blue, false, 2.0f);
+				DrawDebugSphere(GetWorld(), ImpactPoint, ImpactRangeOuter, 32, FColor::Red, false, 2.0f);
 			}
 		}
 	}

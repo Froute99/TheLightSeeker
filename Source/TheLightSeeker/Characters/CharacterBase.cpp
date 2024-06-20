@@ -562,12 +562,7 @@ void ACharacterBase::Die_Implementation()
 	// Call event in Game Mode, spawn grave
 	// spawn UI
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	GetCharacterMovement()->GravityScale = 0.0f;
-
-	/*if (GetLocalRole() != ROLE_Authority)
-	{w
-		return;
-	}*/
+	GetCharacterMovement()->StopActiveMovement();
 
 	DisableInput(Cast<APlayerController>(GetController()));
 	ToggleReviveStatus(nullptr, false);

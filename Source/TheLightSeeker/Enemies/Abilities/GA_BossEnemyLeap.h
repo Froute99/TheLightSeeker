@@ -25,10 +25,16 @@ protected:
 	float LeapDuration;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Impact")
-	float ImpactRange;
+	float ImpactRangeInner;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Impact")
+	float ImpactRangeOuter;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Impact")
 	float MaxImpactForce;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Impact")
+	float MinImpactForce;
 
 	FVector TargetLocation;
 };
