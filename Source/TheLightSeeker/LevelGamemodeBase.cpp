@@ -36,14 +36,36 @@ void ALevelGamemodeBase::PreLogin(const FString& Options, const FString& Address
 	++CurrentPlayerCount;
 }
 
+void ALevelGamemodeBase::Logout(AController* Exiting)
+{
+	// Reduce the number of current player and adjust live player count if needed.
+	--CurrentPlayerCount;
+	LivePlayerCount = (LivePlayerCount < CurrentPlayerCount) ? LivePlayerCount : CurrentPlayerCount;
+	
+	if (HasGameStarted && CurrentPlayerCount == 0)
+	{
+		UE_LOG(LogTemp, Log, TEXT("All player left the game. Reset the level."));
+		ResetLevel();
+		HasGameStarted = false;
+	}
+}
+
 void ALevelGamemodeBase::SetGameStart()
 {
 	HasGameStarted = true;
+	LivePlayerCount = CurrentPlayerCount;
 }
 
 void ALevelGamemodeBase::OnPlayerDeath(TWeakObjectPtr<class ALightSeekerPlayerState> PS, FTransform Transform)
 {
 	UE_LOG(LogTemp, Verbose, TEXT("ALevelGamemodeBase::OnPlayerDeath called"));
+	--LivePlayerCount;
+	if (LivePlayerCount == 0)
+	{
+		// game over
+		UE_LOG(LogTemp, Warning, TEXT("Game Over"));
+	}
+
 	if (TombstoneBP)
 	{
 		SpawnedTombstone = GetWorld()->SpawnActor<ATombstone>(TombstoneBP, Transform);
@@ -65,6 +87,7 @@ void ALevelGamemodeBase::OnPlayerRevive()
 		{
 			PlayerToRevive->OnRevived();
 			SpawnedTombstone.Get()->OnPlayerRevived();
+			++LivePlayerCount;
 		}
 		else
 		{
