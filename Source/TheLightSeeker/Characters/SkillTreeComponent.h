@@ -42,6 +42,17 @@ public:
 	UFUNCTION(Client, Reliable)
 	void SubtractSkillPoint(int NumSkillPoint);
 
+
+	UFUNCTION(BlueprintCallable)
+	void ToggleWidgetC();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TSubclassOf<UUserWidget> SkillTreeWidgetClass;
+
+private:
+	bool IsWidgetRender = false;
+	class UUserWidget* SkillTreeWidgetRef;
+
 protected:
 	UPROPERTY(Replicated, BlueprintReadWrite, EditAnywhere)
 	int SkillPoints = 0;

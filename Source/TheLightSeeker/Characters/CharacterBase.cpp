@@ -174,6 +174,11 @@ void ACharacterBase::CameraZoom(const FInputActionValue& Value)
 	SpringArm->TargetArmLength = FMath::Clamp(NewTargetArmLength, MinZoomLength, MaxZoomLength);
 }
 
+bool ACharacterBase::IsInvincible()
+{
+	return ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("Player.Dodge")));
+}
+
 void ACharacterBase::SetCharacterLevel(float Value)
 {
 	if (AttributeSet.IsValid())
