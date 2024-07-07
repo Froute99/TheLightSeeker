@@ -60,10 +60,22 @@ void ALevelGamemodeBase::OnPlayerDeath(TWeakObjectPtr<class ALightSeekerPlayerSt
 {
 	UE_LOG(LogTemp, Verbose, TEXT("ALevelGamemodeBase::OnPlayerDeath called"));
 	--LivePlayerCount;
+
+	// Game over if there is no live player
 	if (LivePlayerCount == 0)
 	{
-		// game over
 		UE_LOG(LogTemp, Warning, TEXT("Game Over"));
+
+		auto PlayerControllerIterator = GetWorld()->GetPlayerControllerIterator();
+		while (PlayerControllerIterator) // false if not valid
+		{
+			if (ACharacterBase* Character = Cast<ACharacterBase>(PlayerControllerIterator->Get()->GetPawn()))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Called gameover functino for client"));
+				Character->Client_DisplayGameOverUI();
+			}
+			++PlayerControllerIterator;
+		}
 	}
 
 	if (TombstoneBP)

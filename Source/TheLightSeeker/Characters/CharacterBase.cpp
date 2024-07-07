@@ -459,6 +459,12 @@ void ACharacterBase::UpdateBossHealthBar(float CurrentHealth)
 	}
 }
 
+void ACharacterBase::Client_DisplayGameOverUI_Implementation()
+{
+	UE_LOG(LogTemp, Log, TEXT("Client: Game over"));
+	GameOverDelegateHandle.Broadcast();
+}
+
 void ACharacterBase::IncreaseSkillPoint_Implementation()
 {
 	SkillTreeComponent->IncreaseSkillPoint();
@@ -580,7 +586,7 @@ void ACharacterBase::ToggleReviveStatus(TWeakObjectPtr<class ATombstone> Tombsto
 
 	if (!CanRevive)
 	{
-		Revive(false);
+		Revive(false); // cancle revive
 	}
 }
 

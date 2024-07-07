@@ -10,6 +10,7 @@
 #include "CharacterBase.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FReviveTriggerDelegate, bool, IsTriggered);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FGameOverDelegate);
 
 UCLASS()
 class THELIGHTSEEKER_API ACharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -200,6 +201,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	class UUserWidget* ReviveInstructionWidget;
+
+	UFUNCTION(Client, Reliable)
+	void Client_DisplayGameOverUI();
+
+	UPROPERTY(BlueprintAssignable)
+	FGameOverDelegate GameOverDelegateHandle;
 
 	/************************
 	 * Dead & Revive
