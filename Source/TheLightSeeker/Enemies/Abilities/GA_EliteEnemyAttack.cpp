@@ -77,8 +77,12 @@ void UGA_EliteEnemyAttack::EventReceived(FGameplayTag EventTag, FGameplayEventDa
 			{
 				if (ACharacterBase* Player = Cast<ACharacterBase>(Actor))
 				{
-					ALightSeekerPlayerState* PS = Cast<ALightSeekerPlayerState>(Player->GetPlayerState());
+					if (Player->IsInvincible())
+					{
+						continue;
+					}
 
+					ALightSeekerPlayerState* PS = Cast<ALightSeekerPlayerState>(Player->GetPlayerState());
 					if (PS)
 					{
 						FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());

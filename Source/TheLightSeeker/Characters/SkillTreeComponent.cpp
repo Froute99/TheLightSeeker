@@ -3,6 +3,8 @@
 #include "Characters/SkillTreeComponent.h"
 #include "Abilities/CharacterGameplayAbility.h"
 #include "Net/UnrealNetwork.h"
+#include "Blueprint/UserWidget.h"
+#include "Characters/LightSeekerPlayerState.h"
 
 // Sets default values for this component's properties
 USkillTreeComponent::USkillTreeComponent()
@@ -56,4 +58,35 @@ void USkillTreeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 
 	DOREPLIFETIME(USkillTreeComponent, AbilityList);
 	DOREPLIFETIME(USkillTreeComponent, SkillPoints);
+}
+
+void USkillTreeComponent::ToggleWidgetC()
+{
+	if (!SkillTreeWidgetClass)
+	{
+		return;
+	}
+
+	if (!IsWidgetRender)
+	{
+		APlayerController* PlayerController = CastChecked<APlayerState>(GetOwner())->GetPlayerController();
+		SkillTreeWidgetRef = CreateWidget<UUserWidget>(PlayerController, SkillTreeWidgetClass, "Skill Tree");
+		SkillTreeWidgetRef->AddToViewport();
+		SkillTreeWidgetRef->SetFocus();
+		FInputModeUIOnly InputMode;
+		InputMode.SetWidgetToFocus(SkillTreeWidgetRef->GetCachedWidget());
+		PlayerController->SetInputMode(InputMode);
+		PlayerController->SetShowMouseCursor(true);
+		IsWidgetRender = true;
+	}
+	else
+	{
+		SkillTreeWidgetRef->RemoveFromParent();
+		IsWidgetRender = false;
+		APlayerController* PlayerController = CastChecked<APlayerState>(GetOwner())->GetPlayerController();
+		FInputModeGameOnly InputMode;
+		PlayerController->SetInputMode(InputMode);
+		PlayerController->SetShowMouseCursor(false);
+		IsWidgetRender = false;
+	}
 }

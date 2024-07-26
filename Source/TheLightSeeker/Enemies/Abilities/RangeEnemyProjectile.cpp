@@ -26,12 +26,17 @@ void ARangeEnemyProjectile::OnBeginOverlap_EnemyAttack(UPrimitiveComponent* Over
 		return;
 	}
 
+	if (!DamageEffectSpecHandle.IsValid())
+	{
+		UE_LOG(Enemy, Warning, TEXT("RangeEnemyProjectile effect handle is not valid"));
+		return;
+	}
+
 	ACharacterBase* Player = Cast<ACharacterBase>(OtherActor);
 	if (Player)
 	{
-		if (!DamageEffectSpecHandle.IsValid())
+		if (Player->IsInvincible())
 		{
-			UE_LOG(Enemy, Warning, TEXT("RangeEnemyProjectile effect handle is not valid"));
 			return;
 		}
 
@@ -40,10 +45,6 @@ void ARangeEnemyProjectile::OnBeginOverlap_EnemyAttack(UPrimitiveComponent* Over
 		{
 			PS->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*(DamageEffectSpecHandle.Data.Get()));
 		}
-		Destroy();
 	}
-	else
-	{
-		Destroy();
-	}
+	Destroy();
 }

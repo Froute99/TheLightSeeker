@@ -75,6 +75,8 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Abilities")
 	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
 
+	bool IsInvincible();
+
 	void SetCharacterLevel(float Value);
 	UFUNCTION(BlueprintCallable, Category = "Abilities")
 	void SetHealth(float Value);
